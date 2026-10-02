@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-
 /* Measured from the reference layout (1490×939 frame). */
 :root {
   --bg-top: #f5f5f5;
@@ -25,30 +23,6 @@
   --shadow-pop: 0 24px 64px -12px rgba(0, 0, 0, 0.25), 0 0 1px rgba(0, 0, 0, 0.12);
   --glass: rgba(236, 236, 234, 0.5);
   color-scheme: light;
-}
-
-[data-theme="dark"] {
-  --bg-top: #151517;
-  --bg-bottom: #0b0b0c;
-  --stage: #1b1b1e;
-  --card: #26262a;
-  --ink: #f2f2f3;
-  --ink-2: #c8c8cd;
-  --ink-3: #a6a6ac;
-  --muted: #86868e;
-  --faint: #6c6c74;
-  --seg: #a0a0a8;
-  --fill: rgba(255, 255, 255, 0.07);
-  --fill-hover: rgba(255, 255, 255, 0.045);
-  --line: rgba(255, 255, 255, 0.08);
-  --skeleton: rgba(255, 255, 255, 0.08);
-  --shadow-stage: 0 1px 4px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  --shadow-control: 0 1px 1.5px rgba(0, 0, 0, 0.4), 0 0 0 0.5px rgba(255, 255, 255, 0.08);
-  --shadow-media: 0 16px 48px rgba(0, 0, 0, 0.55);
-  --shadow-pop: 0 24px 64px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
-  --glass: rgba(40, 40, 44, 0.6);
-  color-scheme: dark;
 }
 
 @theme inline {

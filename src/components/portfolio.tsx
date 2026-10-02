@@ -7,7 +7,7 @@ import { CommandPalette } from "./command-palette";
 import { Avatar, Monogram, ProjectIcon } from "./project-icon";
 import { AboutSection, HomeSection, ProjectSection, SearchIcon } from "./sections";
 import { SettingsDialog } from "./settings-dialog";
-import { applyTheme, usePaging, useThemePref } from "./settings-store";
+import { usePaging } from "./settings-store";
 import { Sidebar } from "./sidebar";
 import { usePager } from "./use-pager";
 
@@ -16,7 +16,6 @@ const deepLinkScript = `(function(){try{var ids=${JSON.stringify(pageIds)};var i
 
 export function Portfolio() {
   const paging = usePaging();
-  const theme = useThemePref();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -53,15 +52,6 @@ export function Portfolio() {
     const hash = active === "home" ? "" : `#${active}`;
     if (location.hash !== hash) history.replaceState(null, "", hash || location.pathname);
   }, [active]);
-
-  // "System" theme follows the device live.
-  useEffect(() => {
-    if (theme !== "system") return;
-    const mq = matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () => applyTheme("system");
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, [theme]);
 
   // Keyboard: ⌘K searches, arrows / page keys / space turn pages.
   useEffect(() => {
@@ -174,7 +164,7 @@ export function Portfolio() {
 
       {menuOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="fade-in absolute inset-0 bg-black/20 dark:bg-black/50" onClick={() => setMenuOpen(false)} />
+          <div className="fade-in absolute inset-0 bg-black/20" onClick={() => setMenuOpen(false)} />
           <div className="drawer-in backdrop absolute inset-y-0 left-0 shadow-pop">
             <Sidebar active={active} onJump={jump} />
           </div>

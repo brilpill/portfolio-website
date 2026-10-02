@@ -2,8 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 
-/** Visitor preferences, kept in localStorage. "system" for theme means no stored value. */
-export type ThemePref = "system" | "light" | "dark";
+/** Visitor preferences, kept in localStorage. */
 export type Paging = "flip" | "scroll";
 
 const EVENT = "settings-change";
@@ -34,25 +33,10 @@ function subscribe(onChange: () => void) {
   };
 }
 
-const themes = ["system", "light", "dark"] as const;
 const pagings = ["flip", "scroll"] as const;
-
-export function useThemePref() {
-  return useSyncExternalStore(subscribe, () => read("theme", themes, "system"), () => "system" as ThemePref);
-}
 
 export function usePaging() {
   return useSyncExternalStore(subscribe, () => read("paging", pagings, "flip"), () => "flip" as Paging);
-}
-
-export function applyTheme(pref: ThemePref) {
-  const dark = pref === "dark" || (pref === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
-  document.documentElement.dataset.theme = dark ? "dark" : "light";
-}
-
-export function setThemePref(pref: ThemePref) {
-  write("theme", pref === "system" ? null : pref);
-  applyTheme(pref);
 }
 
 export function setPaging(paging: Paging) {

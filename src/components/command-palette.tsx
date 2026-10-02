@@ -25,7 +25,7 @@ const entries: Entry[] = [
     project: p,
   })),
   { id: "about", title: "About & CV", hint: "Experience, education, tools", section: "Pages", icon: <Avatar size={22} /> },
-  { id: "action:settings", title: "Settings", hint: "Theme and scrolling", section: "Actions", icon: <Glyph>⚙︎</Glyph> },
+  { id: "action:settings", title: "Settings", hint: "Turn pages or scroll freely", section: "Actions", icon: <Glyph>⚙︎</Glyph> },
   { id: "action:email", title: "Copy email address", hint: profile.email, section: "Actions", icon: <Glyph>@</Glyph> },
 ];
 
@@ -68,7 +68,7 @@ export function CommandPalette({
 
   return (
     <div
-      className="fade-in fixed inset-0 z-50 flex items-start justify-center bg-black/15 px-4 pt-[14vh] dark:bg-black/45"
+      className="fade-in fixed inset-0 z-50 flex items-start justify-center bg-black/15 px-4 pt-[14vh]"
       onClick={onClose}
     >
       <div

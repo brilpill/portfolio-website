@@ -34,6 +34,6 @@ With two or more items, the switcher under the stage flips between them.
 
 - `src/components/use-pager.ts` — the page turning: one wheel gesture or swipe = one page, trackpad inertia ignored, touch follows the finger, panels that scroll get the wheel first.
 - `src/components/portfolio.tsx` — the shell: sidebar, mobile bar and drawer, ⌘K search, settings, URL hash (`/#licoglass` opens that page).
-- Settings (theme, "Turn pages" or "Scroll freely") are stored in `localStorage`.
+- Settings ("Turn pages" or "Scroll freely") are stored in `localStorage`. The site is light mode only.
 
 Keys: ↑ ↓ / Page Up / Page Down / Space turn pages, Home / End jump to the ends, ⌘K or / search.

@@ -26,7 +26,7 @@ export function Monogram({ size = 18 }: { size?: number }) {
   return (
     <span
       aria-hidden
-      className="inline-grid shrink-0 place-items-center bg-[#121217] font-semibold text-white dark:bg-white dark:text-[#121217]"
+      className="inline-grid shrink-0 place-items-center bg-[#121217] font-semibold text-white"
       style={{
         width: size,
         height: size,
@@ -46,7 +46,7 @@ export function Avatar({ size = 36 }: { size?: number }) {
   return (
     <span
       aria-hidden
-      className="inline-grid shrink-0 place-items-center rounded-full bg-[#121217] font-medium text-white dark:bg-white dark:text-[#121217]"
+      className="inline-grid shrink-0 place-items-center rounded-full bg-[#121217] font-medium text-white"
       style={{ width: size, height: size, fontSize: Math.round(size * 0.36) }}
     >
       OB

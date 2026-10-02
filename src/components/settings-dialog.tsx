@@ -2,13 +2,7 @@
 
 import { useEffect } from "react";
 import { Segmented } from "./segmented";
-import { setPaging, setThemePref, usePaging, useThemePref, type Paging, type ThemePref } from "./settings-store";
-
-const themeOptions: { value: ThemePref; label: string }[] = [
-  { value: "system", label: "System" },
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-];
+import { setPaging, usePaging, type Paging } from "./settings-store";
 
 const pagingOptions: { value: Paging; label: string }[] = [
   { value: "flip", label: "Turn pages" },
@@ -16,7 +10,6 @@ const pagingOptions: { value: Paging; label: string }[] = [
 ];
 
 export function SettingsDialog({ onClose }: { onClose: () => void }) {
-  const theme = useThemePref();
   const paging = usePaging();
 
   useEffect(() => {
@@ -26,7 +19,7 @@ export function SettingsDialog({ onClose }: { onClose: () => void }) {
   }, [onClose]);
 
   return (
-    <div className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/15 px-4 dark:bg-black/45" onClick={onClose}>
+    <div className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/15 px-4" onClick={onClose}>
       <div
         role="dialog"
         aria-modal="true"
@@ -47,39 +40,22 @@ export function SettingsDialog({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <Setting title="Theme" hint="System follows your device.">
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col">
+            <span className="text-[13px] font-medium leading-[19.5px]">Scrolling</span>
+            <span className="text-[12px] leading-[18px] text-muted">
+              {paging === "flip" ? "One scroll turns one page." : "Pages scroll like a normal website."}
+            </span>
+          </div>
           <Segmented
-            label="Theme"
-            items={themeOptions.map((o) => o.label)}
-            value={themeOptions.findIndex((o) => o.value === theme)}
-            onChange={(i) => setThemePref(themeOptions[i].value)}
-          />
-        </Setting>
-
-        <Setting
-          title="Scrolling"
-          hint={paging === "flip" ? "One scroll turns one page." : "Pages scroll like a normal website."}
-        >
-          <Segmented
+            className="self-start"
             label="Scrolling"
             items={pagingOptions.map((o) => o.label)}
             value={pagingOptions.findIndex((o) => o.value === paging)}
             onChange={(i) => setPaging(pagingOptions[i].value)}
           />
-        </Setting>
+        </div>
       </div>
-    </div>
-  );
-}
-
-function Setting({ title, hint, children }: { title: string; hint: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-col">
-        <span className="text-[13px] font-medium leading-[19.5px]">{title}</span>
-        <span className="text-[12px] leading-[18px] text-muted">{hint}</span>
-      </div>
-      <div className="self-start">{children}</div>
     </div>
   );
 }

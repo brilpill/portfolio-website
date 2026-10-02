@@ -62,7 +62,7 @@ function Glow({ accent }: { accent: string }) {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-0 -z-10 opacity-90 dark:opacity-50"
+      className="pointer-events-none absolute inset-0 -z-10 opacity-90"
       style={{
         background: `radial-gradient(42% 46% at 26% 30%, ${tint(accent, 34)}, transparent 72%), radial-gradient(40% 44% at 78% 76%, ${tint(accent, 26)}, transparent 72%)`,
         filter: "blur(24px)",

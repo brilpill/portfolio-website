@@ -156,7 +156,7 @@ export function HomeSection({ onJump, onSearch, onSettings }: Nav) {
           <TextButton onClick={onSearch}>Search</TextButton> finds anything by name, client or industry.
         </p>
         <p>
-          Rather scroll the usual way, or read in the dark? <TextButton onClick={onSettings}>Settings</TextButton>.
+          Rather scroll the usual way? Switch it in <TextButton onClick={onSettings}>Settings</TextButton>.
         </p>
         <p>
           Jobs, education and tools are in <TextButton onClick={() => onJump("about")}>About & CV</TextButton>.

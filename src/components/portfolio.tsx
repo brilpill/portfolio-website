@@ -1,115 +1,198 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { projects } from "@/content/projects";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { pageIds, projects } from "@/content/projects";
 import { profile } from "@/content/profile";
 import { CommandPalette } from "./command-palette";
-import { Monogram } from "./project-icon";
+import { Avatar, Monogram, ProjectIcon } from "./project-icon";
 import { AboutSection, HomeSection, ProjectSection, SearchIcon } from "./sections";
+import { SettingsDialog } from "./settings-dialog";
+import { applyTheme, usePaging, useThemePref } from "./settings-store";
 import { Sidebar } from "./sidebar";
-import { ThemeToggle } from "./theme-toggle";
+import { usePager } from "./use-pager";
+
+// Before paint on a deep link (/#licoglass), put the track on that page so Home never flashes.
+const deepLinkScript = `(function(){try{var ids=${JSON.stringify(pageIds)};var i=ids.indexOf(location.hash.slice(1));if(i<1)return;var v=document.getElementById("pager"),t=document.getElementById("track");if(localStorage.getItem("paging")==="scroll"){v.scrollTop=i*v.clientHeight}else{t.style.transform="translate3d(0,"+(-i*100)+"%,0)"}}catch(e){}})()`;
 
 export function Portfolio() {
-  const [active, setActive] = useState("home");
+  const paging = usePaging();
+  const theme = useThemePref();
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const mainRef = useRef<HTMLElement>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const blocked = paletteOpen || settingsOpen || menuOpen;
 
-  // The active section is the last one whose top has passed the upper third of the screen.
-  useEffect(() => {
-    const main = mainRef.current;
-    let frame = 0;
-    const measure = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const sections = document.querySelectorAll<HTMLElement>("[data-section]");
-        const line = window.innerHeight / 3;
-        let current = sections[0]?.id ?? "home";
-        sections.forEach((s) => {
-          if (s.getBoundingClientRect().top <= line) current = s.id;
-        });
-        setActive(current);
-      });
-    };
-    measure();
-    main?.addEventListener("scroll", measure, { passive: true });
-    window.addEventListener("scroll", measure, { passive: true });
-    window.addEventListener("resize", measure);
-    return () => {
-      cancelAnimationFrame(frame);
-      main?.removeEventListener("scroll", measure);
-      window.removeEventListener("scroll", measure);
-      window.removeEventListener("resize", measure);
-    };
-  }, []);
+  const { index, go, viewportRef, trackRef } = usePager(pageIds.length, paging, blocked);
+  const active = pageIds[index];
+  const activeProject = projects.find((p) => p.slug === active);
 
-  // Keep the URL hash in sync without adding history entries.
+  const jump = useCallback(
+    (id: string) => {
+      const i = pageIds.indexOf(id);
+      if (i >= 0) go(i);
+      setMenuOpen(false);
+    },
+    [go],
+  );
+  const openSearch = useCallback(() => setPaletteOpen(true), []);
+  const openSettings = useCallback(() => setSettingsOpen(true), []);
+
+  // Open on a deep link, and follow hash links.
+  useLayoutEffect(() => {
+    const open = () => {
+      const i = pageIds.indexOf(location.hash.slice(1));
+      if (i >= 0) go(i, true);
+    };
+    open();
+    window.addEventListener("hashchange", open);
+    return () => window.removeEventListener("hashchange", open);
+  }, [go]);
+
+  // Keep the URL on the current page without adding history entries.
   useEffect(() => {
-    history.replaceState(null, "", active === "home" ? location.pathname : `#${active}`);
+    const hash = active === "home" ? "" : `#${active}`;
+    if (location.hash !== hash) history.replaceState(null, "", hash || location.pathname);
   }, [active]);
 
-  const jump = useCallback((id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, []);
-
-  // Open on a deep link.
+  // "System" theme follows the device live.
   useEffect(() => {
-    const id = location.hash.slice(1);
-    if (id) document.getElementById(id)?.scrollIntoView({ block: "start" });
-  }, []);
+    if (theme !== "system") return;
+    const mq = matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => applyTheme("system");
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, [theme]);
 
-  // ⌘K / Ctrl+K, and arrow keys to flip pages.
+  // Keyboard: ⌘K searches, arrows / page keys / space turn pages.
   useEffect(() => {
-    const ids = ["home", ...projects.map((p) => p.slug), "about"];
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
+        setSettingsOpen(false);
         setPaletteOpen((o) => !o);
         return;
       }
-      if (paletteOpen || (e.target as HTMLElement).closest("input, textarea")) return;
-      const i = ids.indexOf(active);
-      if (e.key === "ArrowDown" || e.key === "j") {
+      if (blocked || e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement;
+      if (target.closest("input, textarea, select, [contenteditable='true']")) return;
+      if (e.key === "/") {
         e.preventDefault();
-        jump(ids[Math.min(i + 1, ids.length - 1)]);
+        setPaletteOpen(true);
+        return;
       }
-      if (e.key === "ArrowUp" || e.key === "k") {
+      if (e.key === " " && target.closest("button, a")) return;
+      const step =
+        e.key === "ArrowDown" || e.key === "PageDown" || e.key === "j" || (e.key === " " && !e.shiftKey)
+          ? 1
+          : e.key === "ArrowUp" || e.key === "PageUp" || e.key === "k" || (e.key === " " && e.shiftKey)
+            ? -1
+            : 0;
+      if (step) {
         e.preventDefault();
-        jump(ids[Math.max(i - 1, 0)]);
+        go(index + step);
+      } else if (e.key === "Home" || e.key === "End") {
+        e.preventDefault();
+        go(e.key === "Home" ? 0 : pageIds.length - 1);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active, jump, paletteOpen]);
+  }, [blocked, go, index]);
 
   return (
     <>
-      <Sidebar active={active} onJump={jump} onSearch={() => setPaletteOpen(true)} />
+      <div aria-hidden className="backdrop fixed inset-0 -z-20" />
+      <div
+        aria-hidden
+        className="glow pointer-events-none fixed inset-0 -z-10"
+        style={{ "--glow": activeProject ? `color-mix(in oklab, ${activeProject.accent} 16%, transparent)` : "transparent" } as React.CSSProperties}
+      />
 
-      {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-paper/85 px-4 py-3 backdrop-blur lg:hidden">
-        <Monogram size={16} />
-        <span className="text-[14px] font-medium">{profile.name}</span>
+      <Sidebar active={active} onJump={jump} className="fixed inset-y-0 left-0 z-30 hidden lg:flex" />
+
+      {/* Mobile: the current page in the bar, the sidebar in a drawer. */}
+      <header className="fixed inset-x-0 top-0 z-30 flex h-14 items-center gap-1 px-2 lg:hidden">
         <button
-          onClick={() => setPaletteOpen(true)}
-          className="ml-auto flex items-center gap-2 rounded-lg border border-line px-2.5 py-1.5 text-[13px] text-muted"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Open menu"
+          className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[12px] px-2.5 py-2 text-left active:bg-fill"
         >
-          <SearchIcon /> Projects
+          <MenuIcon />
+          {activeProject ? (
+            <ProjectIcon project={activeProject} size={20} />
+          ) : active === "about" ? (
+            <Avatar size={20} />
+          ) : (
+            <Monogram size={20} />
+          )}
+          <span className="truncate text-[15px] font-medium">
+            {activeProject?.title ?? (active === "about" ? "About & CV" : profile.name)}
+          </span>
+          <span className="shrink-0 text-[12px] tabular-nums text-muted">
+            {index + 1}/{pageIds.length}
+          </span>
         </button>
-        <ThemeToggle />
+        <button
+          onClick={openSearch}
+          aria-label="Search"
+          className="grid size-10 place-items-center rounded-[12px] text-ink active:bg-fill"
+        >
+          <SearchIcon className="text-ink" />
+        </button>
       </header>
 
-      <main
-        ref={mainRef}
-        className="flex flex-col gap-10 px-2 py-4 lg:ml-[240px] lg:h-svh lg:snap-y lg:snap-mandatory lg:gap-4 lg:overflow-y-auto lg:py-2 lg:pr-2 no-scrollbar"
+      <div
+        ref={viewportRef}
+        id="pager"
+        data-pager
+        className={`fixed inset-x-0 bottom-0 top-14 lg:left-[240px] lg:top-0 ${
+          paging === "flip" ? "overflow-hidden" : "overflow-y-auto no-scrollbar"
+        }`}
       >
-        <HomeSection onJump={jump} onSearch={() => setPaletteOpen(true)} />
-        {projects.map((p) => (
-          <ProjectSection key={p.slug} project={p} />
-        ))}
-        <AboutSection />
-      </main>
+        <div ref={trackRef} id="track" className="h-full will-change-transform" suppressHydrationWarning>
+          {pageIds.map((id, i) => {
+            const project = projects.find((p) => p.slug === id);
+            return (
+              <div key={id} className="h-full" inert={paging === "flip" && i !== index}>
+                {id === "home" ? (
+                  <HomeSection onJump={jump} onSearch={openSearch} onSettings={openSettings} />
+                ) : id === "about" ? (
+                  <AboutSection onSettings={openSettings} />
+                ) : project ? (
+                  <ProjectSection project={project} />
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+        <script
+          type={typeof window === "undefined" ? "text/javascript" : "text/plain"}
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: deepLinkScript }}
+        />
+      </div>
 
-      {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} onJump={jump} />}
+      {menuOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <div className="fade-in absolute inset-0 bg-black/20 dark:bg-black/50" onClick={() => setMenuOpen(false)} />
+          <div className="drawer-in backdrop absolute inset-y-0 left-0 shadow-pop">
+            <Sidebar active={active} onJump={jump} />
+          </div>
+        </div>
+      )}
+
+      {paletteOpen && (
+        <CommandPalette onClose={() => setPaletteOpen(false)} onJump={jump} onSettings={openSettings} />
+      )}
+      {settingsOpen && <SettingsDialog onClose={() => setSettingsOpen(false)} />}
     </>
+  );
+}
+
+function MenuIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden className="shrink-0 text-ink">
+      <path d="M2.5 5.5h11M2.5 10.5h11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
   );
 }

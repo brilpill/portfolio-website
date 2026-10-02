@@ -3,18 +3,20 @@
 
 export const profile = {
   name: "Oleh Bril",
+  firstName: "Oleh",
   handle: "brilpill",
   role: "Product designer",
   oneLiner: "Product designer. I design interfaces and build them.",
-  intro:
-    "Five years of product work, websites and design systems — for studios in London and the US, and for my own products. These days I design in Figma and ship in Next.js.",
+  /** Under the greeting on the home screen. `{link}` is replaced by `homeLink`. */
+  intro: ["Product designer in Warsaw, now working on a {link}.", "I design interfaces and build them, in Figma and in code."],
+  homeLink: { label: "crypto card website", slug: "crypto-card-site" },
+  city: "Warsaw",
   location: "Warsaw, Poland",
   timezone: "Europe/Warsaw",
   status: "Open to work",
   statusDetail: "Full-time, freelance or contract. Remote, hybrid or on-site in Warsaw.",
   email: "briloleh@gmail.com",
   links: [
-    { label: "Email", href: "mailto:briloleh@gmail.com" },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/olehbril" },
     { label: "Behance", href: "https://www.behance.net/brilpill" },
     { label: "Dribbble", href: "https://dribbble.com/brilpill" },
@@ -23,9 +25,9 @@ export const profile = {
   ],
   calendly: "https://calendly.com/briloleh/30min",
   numbers: [
-    { value: "5+", label: "years designing products" },
-    { value: "20+", label: "products on one design system" },
-    { value: "10+", label: "websites shipped at one agency" },
+    { value: "5+", label: "Years designing products" },
+    { value: "20+", label: "Products on one design system" },
+    { value: "21.4k", label: "Views on Behance" },
   ],
   languages: "Ukrainian (native), English (B2), Russian (fluent), Polish (A1)",
 };

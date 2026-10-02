@@ -1,95 +1,103 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { groups, projects } from "@/content/projects";
 import { profile } from "@/content/profile";
-import { Monogram, ProjectIcon } from "./project-icon";
-import { SearchIcon } from "./sections";
-import { ThemeToggle } from "./theme-toggle";
+import { Avatar, Monogram, ProjectIcon } from "./project-icon";
 
 type Props = {
   active: string;
   onJump: (id: string) => void;
-  onSearch: () => void;
+  className?: string;
 };
 
-const itemClass = (on: boolean) =>
-  `flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[7px] text-left text-[14px] transition-colors duration-150 ${
-    on ? "bg-raised text-ink shadow-card" : "text-ink-2 hover:bg-line hover:text-ink"
+const tabClass = (on: boolean) =>
+  `flex h-[35px] w-full items-center gap-2.5 rounded-[12px] px-2.5 text-left text-[14px] leading-[21px] text-ink transition-[background-color,box-shadow] duration-150 ${
+    on ? "bg-card shadow-control" : "hover:bg-fill-hover"
   }`;
 
-export function Sidebar({ active, onJump, onSearch }: Props) {
+/** Projects as tabs, grouped by who they were for. */
+export function Sidebar({ active, onJump, className = "" }: Props) {
   const [closed, setClosed] = useState<Record<string, boolean>>({});
+  const navRef = useRef<HTMLElement>(null);
+
+  // Keep the current tab in view when the list is taller than the screen.
+  useEffect(() => {
+    navRef.current?.querySelector<HTMLElement>(`[data-tab="${active}"]`)?.scrollIntoView({ block: "nearest" });
+  }, [active]);
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-[240px] flex-col p-2 lg:flex">
-      <nav className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto no-scrollbar">
-        <button className={itemClass(active === "home")} onClick={() => onJump("home")}>
-          <Monogram size={14} />
-          Home
-        </button>
-        <button className={itemClass(false)} onClick={onSearch}>
-          <span className="grid w-[22px] place-items-center">
-            <SearchIcon />
-          </span>
-          <span className="flex-1">Search</span>
-          <kbd className="font-mono text-[11px] text-muted">⌘K</kbd>
-        </button>
+    <aside className={`flex h-full w-[240px] flex-col p-2 ${className}`}>
+      <nav ref={navRef} aria-label="Projects" className="flex min-h-0 flex-1 flex-col overflow-y-auto no-scrollbar">
+        <div className="pb-3">
+          <button
+            data-tab="home"
+            aria-current={active === "home" ? "page" : undefined}
+            className={tabClass(active === "home")}
+            onClick={() => onJump("home")}
+          >
+            <Monogram size={18} />
+            Home
+          </button>
+        </div>
 
-        {groups.map((g) => {
+        {groups.map((g, gi) => {
           const items = projects.filter((p) => p.group === g.id);
           const isClosed = closed[g.id];
           return (
-            <div key={g.id} className="mt-3 flex flex-col gap-0.5">
+            <div key={g.id} className={gi ? "pt-3" : ""}>
               <button
                 onClick={() => setClosed((c) => ({ ...c, [g.id]: !c[g.id] }))}
-                className="group flex items-center justify-between px-2.5 py-1.5"
+                className="flex w-full items-center justify-between rounded-[8px] px-2.5 py-[5px] text-[12px] font-medium leading-[18px] text-muted transition-colors hover:text-ink"
                 aria-expanded={!isClosed}
               >
-                <span className="label">{g.label}</span>
-                <svg
-                  width="10"
-                  height="10"
-                  viewBox="0 0 10 10"
-                  className={`text-muted opacity-0 transition-[opacity,rotate] duration-200 group-hover:opacity-100 ${isClosed ? "-rotate-90" : ""}`}
-                  aria-hidden
-                >
-                  <path d="m2 3.5 3 3 3-3" stroke="currentColor" strokeWidth="1.3" fill="none" />
-                </svg>
+                {g.label}
+                <Chevron className={`transition-transform duration-200 ${isClosed ? "-rotate-90" : ""}`} />
               </button>
               {!isClosed &&
                 items.map((p) => (
-                  <button key={p.slug} className={itemClass(active === p.slug)} onClick={() => onJump(p.slug)}>
-                    <ProjectIcon project={p} size={18} />
-                    <span className="flex-1 truncate">{p.title}</span>
-                    {p.status === "in progress" && <span className="size-1.5 rounded-full bg-signal" title="In progress" />}
-                  </button>
+                  <div key={p.slug} className="pt-1">
+                    <button
+                      data-tab={p.slug}
+                      aria-current={active === p.slug ? "page" : undefined}
+                      className={tabClass(active === p.slug)}
+                      onClick={() => onJump(p.slug)}
+                    >
+                      <ProjectIcon project={p} size={18} />
+                      <span className="min-w-0 flex-1 truncate">{p.title}</span>
+                      {p.status === "in progress" && (
+                        <span className="size-1.5 rounded-full bg-[#f97316]" title="In progress" />
+                      )}
+                    </button>
+                  </div>
                 ))}
             </div>
           );
         })}
-
-        <div className="mt-3 flex flex-col gap-0.5">
-          <span className="label px-2.5 py-1.5">More</span>
-          <button className={itemClass(active === "about")} onClick={() => onJump("about")}>
-            <span className="grid size-[18px] place-items-center rounded-[6px] border border-line-strong font-mono text-[10px]">
-              i
-            </span>
-            About & CV
-          </button>
-        </div>
+        <div className="h-6 shrink-0" />
       </nav>
 
-      <div className="flex items-center gap-2.5 px-2 pt-3">
-        <span className="grid size-9 place-items-center rounded-full bg-ink font-mono text-[12px] font-semibold text-paper">
-          OB
+      <button
+        onClick={() => onJump("about")}
+        aria-current={active === "about" ? "page" : undefined}
+        className={`flex h-[52px] w-full shrink-0 items-center gap-3 rounded-[14px] p-2 text-left transition-[background-color,box-shadow] duration-150 ${
+          active === "about" ? "bg-card shadow-control" : "hover:bg-fill-hover"
+        }`}
+      >
+        <Avatar size={36} />
+        <span className="flex flex-col gap-1">
+          <span className="text-[14px] font-medium leading-[14px]">{profile.name}</span>
+          <span className="text-[12px] leading-[12px] text-ink-3">{profile.role}</span>
         </span>
-        <div className="flex-1 leading-tight">
-          <div className="text-[14px] font-medium">{profile.name}</div>
-          <div className="text-[12px] text-muted">{profile.role}</div>
-        </div>
-        <ThemeToggle />
-      </div>
+      </button>
     </aside>
+  );
+}
+
+export function Chevron({ className = "" }: { className?: string }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden className={className}>
+      <path d="m4 5.5 3 3 3-3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }

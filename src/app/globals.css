@@ -2,79 +2,124 @@
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+/* Measured from the reference layout (1490×939 frame). */
 :root {
-  --paper: #f2f1ec;
-  --panel: #fbfaf7;
-  --raised: #ffffff;
-  --ink: #16161a;
-  --ink-2: #4a4945;
-  --muted: #8a887f;
-  --line: rgba(22, 22, 26, 0.08);
-  --line-strong: rgba(22, 22, 26, 0.14);
-  --dot: rgba(22, 22, 26, 0.09);
-  --signal: #ff5b1f;
-  --shadow: 0 1px 2px rgba(22, 22, 26, 0.04), 0 8px 24px -12px rgba(22, 22, 26, 0.12);
+  --bg-top: #f5f5f5;
+  --bg-bottom: #e0e0e0;
+  --stage: #f9f9f7;
+  --card: #ffffff;
+  --ink: #121217;
+  --ink-2: #3d3d3d;
+  --ink-3: #5d5d5d;
+  --muted: #7a7a82;
+  --faint: #9a9aa2;
+  --seg: #686870;
+  --fill: rgba(0, 0, 0, 0.05);
+  --fill-hover: rgba(0, 0, 0, 0.035);
+  --line: rgba(0, 0, 0, 0.06);
+  --skeleton: rgba(18, 18, 23, 0.07);
+  --shadow-stage: 1px 1px 4px rgba(18, 18, 23, 0.08);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.06);
+  --shadow-control: 0 1px 1.5px rgba(0, 0, 0, 0.08), 0 0 0.5px rgba(0, 0, 0, 0.06);
+  --shadow-media: 0 16px 48px rgba(0, 0, 0, 0.18);
+  --shadow-pop: 0 24px 64px -12px rgba(0, 0, 0, 0.25), 0 0 1px rgba(0, 0, 0, 0.12);
+  --glass: rgba(236, 236, 234, 0.5);
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --paper: #0d0d0f;
-  --panel: #151518;
-  --raised: #1c1c20;
-  --ink: #eeede8;
-  --ink-2: #b4b2aa;
-  --muted: #77756e;
-  --line: rgba(238, 237, 232, 0.08);
-  --line-strong: rgba(238, 237, 232, 0.14);
-  --dot: rgba(238, 237, 232, 0.08);
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+  --bg-top: #151517;
+  --bg-bottom: #0b0b0c;
+  --stage: #1b1b1e;
+  --card: #26262a;
+  --ink: #f2f2f3;
+  --ink-2: #c8c8cd;
+  --ink-3: #a6a6ac;
+  --muted: #86868e;
+  --faint: #6c6c74;
+  --seg: #a0a0a8;
+  --fill: rgba(255, 255, 255, 0.07);
+  --fill-hover: rgba(255, 255, 255, 0.045);
+  --line: rgba(255, 255, 255, 0.08);
+  --skeleton: rgba(255, 255, 255, 0.08);
+  --shadow-stage: 0 1px 4px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-control: 0 1px 1.5px rgba(0, 0, 0, 0.4), 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+  --shadow-media: 0 16px 48px rgba(0, 0, 0, 0.55);
+  --shadow-pop: 0 24px 64px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --glass: rgba(40, 40, 44, 0.6);
   color-scheme: dark;
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-panel: var(--panel);
-  --color-raised: var(--raised);
+  --color-stage: var(--stage);
+  --color-card: var(--card);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
   --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-seg: var(--seg);
+  --color-fill: var(--fill);
+  --color-fill-hover: var(--fill-hover);
   --color-line: var(--line);
-  --color-line-strong: var(--line-strong);
-  --color-signal: var(--signal);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --shadow-card: var(--shadow);
+  --color-glass: var(--glass);
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --shadow-stage: var(--shadow-stage);
+  --shadow-card: var(--shadow-card);
+  --shadow-control: var(--shadow-control);
+  --shadow-media: var(--shadow-media);
+  --shadow-pop: var(--shadow-pop);
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html,
 body {
-  background: var(--paper);
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: var(--bg-bottom);
   color: var(--ink);
 }
 
 body {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sans);
+  letter-spacing: -0.011em;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
 ::selection {
-  background: var(--signal);
-  color: #fff;
+  background: var(--ink);
+  color: var(--card);
 }
 
-/* Dot grid used on the stage */
-.dot-grid {
-  background-image: radial-gradient(var(--dot) 1px, transparent 1px);
-  background-size: 18px 18px;
+/* Page background: soft grey gradient, as in the reference. */
+.backdrop {
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-top) 30%, var(--bg-bottom) 75%, var(--bg-bottom) 100%);
 }
 
-.label {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
+/* A faint wash of the current project's colour behind everything. */
+@property --glow {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: transparent;
+}
+
+.glow {
+  background: radial-gradient(70% 60% at 62% 108%, var(--glow), transparent 70%);
+  transition: --glow 0.9s ease;
+}
+
+.link {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 2px;
+}
+.link:hover {
+  text-decoration-color: var(--muted);
 }
 
 .no-scrollbar {
@@ -84,10 +129,10 @@ body {
   display: none;
 }
 
-@keyframes rise {
+@keyframes pop-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(6px) scale(0.985);
   }
   to {
     opacity: 1;
@@ -95,18 +140,32 @@ body {
   }
 }
 
-.rise {
-  animation: rise 0.7s var(--ease-out-quint) both;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-@keyframes pulse-dot {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+@keyframes drawer-in {
+  from {
+    transform: translateX(-100%);
   }
-  50% {
-    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0);
+  to {
+    transform: none;
   }
+}
+
+.pop-in {
+  animation: pop-in 0.22s var(--ease-out-quint) both;
+}
+.drawer-in {
+  animation: drawer-in 0.32s var(--ease-out-quint) both;
+}
+.fade-in {
+  animation: fade-in 0.2s ease-out both;
 }
 
 @media (prefers-reduced-motion: reduce) {

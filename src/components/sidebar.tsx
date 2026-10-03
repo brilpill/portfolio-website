@@ -26,10 +26,14 @@ export function Sidebar({ active, onJump, className = "" }: Props) {
     navRef.current?.querySelector<HTMLElement>(`[data-tab="${active}"]`)?.scrollIntoView({ block: "nearest" });
   }, [active]);
 
+  // Load-in order for the roll-up animation.
+  let order = 0;
+  const reel = () => ({ className: "reel", style: { "--i": order++ } as React.CSSProperties });
+
   return (
     <aside className={`flex h-full w-[240px] flex-col p-2 ${className}`}>
       <nav ref={navRef} aria-label="Projects" className="flex min-h-0 flex-1 flex-col overflow-y-auto no-scrollbar">
-        <div className="pb-3">
+        <div {...reel()} className="reel pb-3">
           <button
             data-tab="home"
             aria-current={active === "home" ? "page" : undefined}
@@ -47,8 +51,9 @@ export function Sidebar({ active, onJump, className = "" }: Props) {
           return (
             <div key={g.id} className={gi ? "pt-3" : ""}>
               <button
+                {...reel()}
                 onClick={() => setClosed((c) => ({ ...c, [g.id]: !c[g.id] }))}
-                className="flex w-full items-center justify-between rounded-[8px] px-2.5 py-[5px] text-[12px] font-medium leading-[18px] text-muted transition-colors hover:text-ink"
+                className="reel flex w-full items-center justify-between rounded-[8px] px-2.5 py-[5px] text-[12px] font-medium leading-[18px] text-muted transition-colors hover:text-ink"
                 aria-expanded={!isClosed}
               >
                 {g.label}
@@ -56,7 +61,7 @@ export function Sidebar({ active, onJump, className = "" }: Props) {
               </button>
               {!isClosed &&
                 items.map((p) => (
-                  <div key={p.slug} className="pt-1">
+                  <div key={p.slug} {...reel()} className="reel pt-1">
                     <button
                       data-tab={p.slug}
                       aria-current={active === p.slug ? "page" : undefined}
@@ -78,9 +83,10 @@ export function Sidebar({ active, onJump, className = "" }: Props) {
       </nav>
 
       <button
+        {...reel()}
         onClick={() => onJump("about")}
         aria-current={active === "about" ? "page" : undefined}
-        className={`flex h-[52px] w-full shrink-0 items-center gap-3 rounded-[14px] p-2 text-left transition-[background-color,box-shadow] duration-150 ${
+        className={`reel flex h-[52px] w-full shrink-0 items-center gap-3 rounded-[14px] p-2 text-left transition-[background-color,box-shadow] duration-150 ${
           active === "about" ? "bg-card shadow-control" : "hover:bg-fill-hover"
         }`}
       >

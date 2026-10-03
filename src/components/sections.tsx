@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { Children, useState } from "react";
 import { featured, groupLabel, projects, type Project } from "@/content/projects";
 import { education, experience, offScreen, profile, skills, tools } from "@/content/profile";
-import { Clock, ClockScript, Greeting } from "./clock";
+import { Clock, ClockScript, useGreeting } from "./clock";
 import { Avatar, Monogram, ProjectIcon } from "./project-icon";
 import { Stage } from "./stage";
+import { Typewriter } from "./typewriter";
 
 /** One page of the pager: the stage on the left, the info panel on the right. */
 const pageClass = "flex h-full flex-col gap-3 p-2 pt-0 lg:flex-row lg:gap-6 lg:py-2 lg:pl-0 lg:pr-2";
 
-type Nav = { onJump: (id: string) => void; onSearch: () => void; onSettings: () => void };
+type Nav = { onJump: (id: string) => void; onSearch: () => void; onSettings: () => void; active: boolean };
 
 /* ---------- Shared right-hand panel ---------- */
 
@@ -29,30 +30,52 @@ function InfoPanel({
   rows?: { label: string; value: React.ReactNode }[];
   className?: string;
 }) {
+  const items = Children.toArray(children);
   return (
     <aside
       className={`flex min-h-0 shrink-0 flex-col gap-4 overflow-y-auto px-2 pb-2 no-scrollbar lg:w-[280px] lg:px-0 lg:pb-4 lg:pr-2 ${className}`}
     >
-      <div className="flex shrink-0 items-center gap-2.5 self-start rounded-[16px] bg-fill py-2 pl-3 pr-4">
+      <div
+        className="reveal flex shrink-0 items-center gap-2.5 self-start rounded-[16px] bg-fill py-2 pl-3 pr-4"
+        style={step(0)}
+      >
         {icon}
         <div className="flex flex-col">
           <span className="text-[13px] font-medium leading-[19.5px]">{title}</span>
           <span className="text-[12px] leading-[18px] text-muted">{subtitle}</span>
         </div>
       </div>
-      <div className="flex flex-col gap-3.5 text-[14px] leading-[23.1px] text-ink-2">{children}</div>
-      {rows && rows.length > 0 && <Rows rows={rows} className="mt-auto" />}
+      <div className="flex flex-col gap-3.5 text-[14px] leading-[23.1px] text-ink-2">
+        {items.map((child, i) => (
+          <div key={i} className="reveal" style={step(i + 1)}>
+            {child}
+          </div>
+        ))}
+      </div>
+      {rows && rows.length > 0 && <Rows rows={rows} from={items.length + 1} className="mt-auto" />}
     </aside>
   );
 }
 
-function Rows({ rows, className = "" }: { rows: { label: string; value: React.ReactNode }[]; className?: string }) {
+/** Stagger index for `.reveal` / `.reel` items. */
+const step = (i: number) => ({ "--i": i }) as React.CSSProperties;
+
+function Rows({
+  rows,
+  from,
+  className = "",
+}: {
+  rows: { label: string; value: React.ReactNode }[];
+  from: number;
+  className?: string;
+}) {
   return (
     <dl className={`flex shrink-0 flex-col text-[13px] leading-[19.5px] ${className}`}>
       {rows.map((r, i) => (
         <div
           key={r.label}
-          className={`flex items-center justify-between gap-4 py-3 ${i < rows.length - 1 ? "border-b border-line" : ""}`}
+          className={`reveal flex items-center justify-between gap-4 py-3 ${i < rows.length - 1 ? "border-b border-line" : ""}`}
+          style={step(from + i)}
         >
           <dt className="text-muted">{r.label}</dt>
           <dd className="text-right text-ink">{r.value}</dd>
@@ -72,35 +95,62 @@ function TextButton({ onClick, children }: { onClick: () => void; children: Reac
 
 /* ---------- Home ---------- */
 
-export function HomeSection({ onJump, onSearch, onSettings }: Nav) {
+export function HomeSection({ onJump, onSearch, onSettings, active }: Nav) {
   const cards = featured.map((s) => projects.find((p) => p.slug === s)).filter((p): p is Project => !!p);
   const [first, second] = profile.intro;
   const [before, after] = first.split("{link}");
+  const hello = useGreeting();
+
+  // Type the heading the first time Home is on screen, then the intro under it.
+  const [seen, setSeen] = useState(active);
+  if (active && !seen) setSeen(true);
+  const [headingDone, setHeadingDone] = useState(false);
 
   return (
     <section id="home" aria-label="Home" className={pageClass}>
-      <div className="relative flex min-h-0 flex-1 flex-col items-center overflow-hidden rounded-[16px] bg-stage shadow-stage">
-        <Clock className="shrink-0 px-6 pt-6 text-center text-[13px] leading-[19.5px] text-muted" />
+      <div className="reveal-stage relative flex min-h-0 flex-1 flex-col items-center overflow-hidden rounded-[16px] bg-stage shadow-stage">
+        <div className="reel shrink-0" style={step(0)}>
+          <Clock className="px-6 pt-6 text-center text-[13px] leading-[19.5px] text-muted" />
+        </div>
 
         <div className="flex w-full max-w-[560px] flex-1 flex-col items-center justify-center gap-7 px-5 py-6 sm:gap-8 sm:px-8">
           <div className="flex flex-col items-center gap-4 text-center">
             <h1 className="flex items-center gap-2.5 text-balance text-[clamp(23px,6.2vw,32px)] font-semibold leading-[1.15] tracking-[-0.0073em] text-ink">
-              <Monogram size={28} />
-              <span>
-                <Greeting />, I&apos;m {profile.firstName}
+              <span className="reel inline-flex" style={step(1)}>
+                <Monogram size={28} />
               </span>
+              <Typewriter
+                className="text-left"
+                start={seen}
+                delay={350}
+                speed={45}
+                onDone={() => setHeadingDone(true)}
+                parts={[{ text: `${hello}, I'm ${profile.firstName}` }]}
+              />
             </h1>
             <p className="text-[15px] leading-[24px] text-ink-3">
-              {before}
-              <TextButton onClick={() => onJump(profile.homeLink.slug)}>{profile.homeLink.label}</TextButton>
-              {after}
-              <br className="hidden sm:block" /> {second}
+              <Typewriter
+                start={headingDone}
+                delay={120}
+                speed={14}
+                parts={[
+                  { text: before },
+                  {
+                    text: profile.homeLink.label,
+                    wrap: (t) => <TextButton onClick={() => onJump(profile.homeLink.slug)}>{t}</TextButton>,
+                  },
+                  { text: after },
+                  { text: " ", wrap: (t) => t && <> <br className="hidden sm:block" /></> },
+                  { text: second },
+                ]}
+              />
             </p>
           </div>
 
           <button
             onClick={onSearch}
-            className="flex w-full items-center gap-2.5 rounded-[16px] bg-card px-4 py-[13px] text-left shadow-control transition-shadow duration-200 hover:shadow-card"
+            style={step(4)}
+            className="reel flex w-full items-center gap-2.5 rounded-[16px] bg-card px-4 py-[13px] text-left shadow-control transition-shadow duration-200 hover:shadow-card"
           >
             <SearchIcon />
             <span className="flex-1 text-[14px] text-faint">Find a project, client or industry…</span>
@@ -110,13 +160,14 @@ export function HomeSection({ onJump, onSearch, onSettings }: Nav) {
           </button>
 
           <div className="flex w-full flex-col gap-2.5">
-            <span className="px-0.5 text-[13px] font-medium leading-[19.5px] text-muted">Good places to start</span>
+            <span style={step(6)} className="reel px-0.5 text-[13px] font-medium leading-[19.5px] text-muted">Good places to start</span>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
-              {cards.map((p) => (
+              {cards.map((p, i) => (
                 <button
                   key={p.slug}
                   onClick={() => onJump(p.slug)}
-                  className="group flex items-center gap-3 rounded-[16px] bg-card p-3 text-left shadow-card transition-[translate,box-shadow] duration-300 ease-out-quint hover:-translate-y-0.5 hover:shadow-[0_6px_16px_-6px_rgba(0,0,0,0.16),0_0_1px_rgba(0,0,0,0.08)] sm:flex-col sm:items-start sm:gap-2.5 sm:p-3.5"
+                  style={step(7 + i)}
+                  className="reel group flex items-center gap-3 rounded-[16px] bg-card p-3 text-left shadow-card transition-[translate,box-shadow] duration-300 ease-out-quint hover:-translate-y-0.5 hover:shadow-[0_6px_16px_-6px_rgba(0,0,0,0.16),0_0_1px_rgba(0,0,0,0.08)] sm:flex-col sm:items-start sm:gap-2.5 sm:p-3.5"
                 >
                   <ProjectIcon project={p} size={28} />
                   <span className="flex min-w-0 flex-col gap-0.5">
@@ -135,7 +186,9 @@ export function HomeSection({ onJump, onSearch, onSettings }: Nav) {
           </div>
         </div>
 
-        <FooterLinks onJump={onJump} />
+        <div className="reel shrink-0" style={step(11)}>
+          <FooterLinks onJump={onJump} />
+        </div>
         <ClockScript />
       </div>
 
@@ -205,7 +258,7 @@ function FooterLinks({ onJump }: { onJump: (id: string) => void }) {
 export function ProjectSection({ project }: { project: Project }) {
   return (
     <section id={project.slug} aria-label={project.title} className={pageClass}>
-      <div className="min-h-0 flex-[1.3] lg:flex-1">
+      <div className="reveal-stage min-h-0 flex-[1.3] lg:flex-1">
         <Stage project={project} />
       </div>
       <InfoPanel
@@ -235,7 +288,7 @@ export function ProjectSection({ project }: { project: Project }) {
 export function AboutSection({ onSettings }: { onSettings: () => void }) {
   return (
     <section id="about" aria-label="About and CV" className={pageClass}>
-      <div className="relative min-h-0 flex-[1.3] overflow-y-auto rounded-[16px] bg-stage shadow-stage no-scrollbar lg:flex-1">
+      <div className="reveal-stage relative min-h-0 flex-[1.3] overflow-y-auto rounded-[16px] bg-stage shadow-stage no-scrollbar lg:flex-1">
         <div className="mx-auto flex max-w-[560px] flex-col gap-9 px-5 py-8 sm:px-8 lg:py-14">
           <div className="flex items-center gap-3">
             <Avatar size={44} />

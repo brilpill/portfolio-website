@@ -5,8 +5,8 @@ import { profile } from "@/content/profile";
 
 /*
  * The greeting and the clock depend on the visitor's time, which the server can't know.
- * An inline script fills them in before the first paint; React then keeps them current.
- * The script mirrors `greeting()` and `clockLine()` below — change both together.
+ * The greeting is typed in on the client. The clock is filled in by an inline script before
+ * the first paint, then kept current by React; the script mirrors `clockLine()` below.
  */
 
 export function greeting(hour = new Date().getHours()) {
@@ -28,20 +28,15 @@ export function clockLine(now = new Date()) {
   return `${time} in ${profile.city}, ${relation}.`;
 }
 
-const script = `(function(){try{var n=new Date(),h=n.getHours();var g=document.getElementById("greeting");if(g)g.textContent=h<5?"Good night":h<12?"Good morning":h<18?"Good afternoon":"Good evening";var c=document.getElementById("clock");if(!c)return;var tz=${JSON.stringify(profile.timezone)};var t=new Intl.DateTimeFormat("en-GB",{hour:"2-digit",minute:"2-digit",timeZone:tz}).format(n);var d=Math.round((new Date(n.toLocaleString("en-US",{timeZone:tz}))-new Date(n.toLocaleString("en-US")))/9e5)/4,a=Math.abs(d);c.textContent=t+" in "+${JSON.stringify(profile.city)}+", "+(d===0?"same time as you":a+" hour"+(a===1?"":"s")+" "+(d>0?"ahead of":"behind")+" you")+".";}catch(e){}})()`;
+const script = `(function(){try{var n=new Date();var c=document.getElementById("clock");if(!c)return;var tz=${JSON.stringify(profile.timezone)};var t=new Intl.DateTimeFormat("en-GB",{hour:"2-digit",minute:"2-digit",timeZone:tz}).format(n);var d=Math.round((new Date(n.toLocaleString("en-US",{timeZone:tz}))-new Date(n.toLocaleString("en-US")))/9e5)/4,a=Math.abs(d);c.textContent=t+" in "+${JSON.stringify(profile.city)}+", "+(d===0?"same time as you":a+" hour"+(a===1?"":"s")+" "+(d>0?"ahead of":"behind")+" you")+".";}catch(e){}})()`;
 
 function subscribeMinute(onChange: () => void) {
   const id = setInterval(onChange, 15_000);
   return () => clearInterval(id);
 }
 
-export function Greeting() {
-  const text = useSyncExternalStore(subscribeMinute, () => greeting(), () => "Hello");
-  return (
-    <span id="greeting" suppressHydrationWarning>
-      {text}
-    </span>
-  );
+export function useGreeting() {
+  return useSyncExternalStore(subscribeMinute, () => greeting(), () => "Hello");
 }
 
 export function Clock({ className = "" }: { className?: string }) {

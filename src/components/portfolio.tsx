@@ -20,6 +20,12 @@ export function Portfolio() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const blocked = paletteOpen || settingsOpen || menuOpen;
+  // Panels start hidden and reveal on the first frame, so the current page animates in on load.
+  const [intro, setIntro] = useState(true);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => requestAnimationFrame(() => setIntro(false)));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   const { index, go, viewportRef, trackRef } = usePager(pageIds.length, paging, blocked);
   const active = pageIds[index];
@@ -139,13 +145,24 @@ export function Portfolio() {
           paging === "flip" ? "overflow-hidden" : "overflow-y-auto no-scrollbar"
         }`}
       >
-        <div ref={trackRef} id="track" className="h-full will-change-transform" suppressHydrationWarning>
+        <div
+          ref={trackRef}
+          id="track"
+          className="h-full will-change-transform"
+          data-intro={intro || undefined}
+          suppressHydrationWarning
+        >
           {pageIds.map((id, i) => {
             const project = projects.find((p) => p.slug === id);
             return (
-              <div key={id} className="h-full" inert={paging === "flip" && i !== index}>
+              <div
+                key={id}
+                className="h-full"
+                data-state={i === index ? "active" : i < index ? "before" : "after"}
+                inert={paging === "flip" && i !== index}
+              >
                 {id === "home" ? (
-                  <HomeSection onJump={jump} onSearch={openSearch} onSettings={openSettings} />
+                  <HomeSection onJump={jump} onSearch={openSearch} onSettings={openSettings} active={i === index} />
                 ) : id === "about" ? (
                   <AboutSection onSettings={openSettings} />
                 ) : project ? (

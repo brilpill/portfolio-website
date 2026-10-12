@@ -1,0 +1,284 @@
+{
+  "version": 1,
+  "generatedAt": "2026-10-12T19:30:12.432Z",
+  "facets": {
+    "types": [
+      {
+        "name": "inspiration",
+        "count": 9
+      },
+      {
+        "name": "tool",
+        "count": 6
+      },
+      {
+        "name": "fragment",
+        "count": 4
+      },
+      {
+        "name": "learn",
+        "count": 2
+      },
+      {
+        "name": "checklist",
+        "count": 1
+      },
+      {
+        "name": "plugin",
+        "count": 1
+      },
+      {
+        "name": "prompt",
+        "count": 1
+      }
+    ],
+    "lanes": [
+      {
+        "name": "reference",
+        "count": 7
+      },
+      {
+        "name": "library",
+        "count": 5
+      }
+    ],
+    "categories": [
+      {
+        "name": "ai",
+        "count": 5
+      },
+      {
+        "name": "design-tools",
+        "count": 3
+      },
+      {
+        "name": "dev",
+        "count": 2
+      },
+      {
+        "name": "productivity",
+        "count": 2
+      },
+      {
+        "name": "web-design",
+        "count": 2
+      },
+      {
+        "name": "branding",
+        "count": 1
+      },
+      {
+        "name": "colors",
+        "count": 1
+      },
+      {
+        "name": "ecommerce",
+        "count": 1
+      },
+      {
+        "name": "image",
+        "count": 1
+      },
+      {
+        "name": "portfolio",
+        "count": 1
+      },
+      {
+        "name": "prototyping",
+        "count": 1
+      },
+      {
+        "name": "templates",
+        "count": 1
+      },
+      {
+        "name": "ux-principles",
+        "count": 1
+      },
+      {
+        "name": "web3",
+        "count": 1
+      }
+    ],
+    "tags": [
+      {
+        "name": "ai-tool",
+        "count": 5
+      },
+      {
+        "name": "gallery",
+        "count": 3
+      },
+      {
+        "name": "multipage",
+        "count": 3
+      },
+      {
+        "name": "asset-tool",
+        "count": 2
+      },
+      {
+        "name": "assets",
+        "count": 2
+      },
+      {
+        "name": "component-lib",
+        "count": 2
+      },
+      {
+        "name": "icon-library",
+        "count": 2
+      },
+      {
+        "name": "no-code",
+        "count": 2
+      },
+      {
+        "name": "open-source",
+        "count": 2
+      },
+      {
+        "name": "react",
+        "count": 2
+      },
+      {
+        "name": "tailwind",
+        "count": 2
+      }
+    ],
+    "hues": [
+      {
+        "name": "grey",
+        "count": 21
+      },
+      {
+        "name": "white",
+        "count": 21
+      },
+      {
+        "name": "black",
+        "count": 16
+      },
+      {
+        "name": "blue",
+        "count": 9
+      },
+      {
+        "name": "orange",
+        "count": 9
+      },
+      {
+        "name": "red",
+        "count": 6
+      },
+      {
+        "name": "teal",
+        "count": 3
+      },
+      {
+        "name": "yellow",
+        "count": 3
+      },
+      {
+        "name": "green",
+        "count": 2
+      },
+      {
+        "name": "pink",
+        "count": 2
+      }
+    ],
+    "fonts": [
+      {
+        "name": "Geist",
+        "count": 4
+      },
+      {
+        "name": "IBM Plex Sans",
+        "count": 2
+      },
+      {
+        "name": "Inter",
+        "count": 2
+      },
+      {
+        "name": "AkzidenzGrotesk-BoldExtended",
+        "count": 1
+      },
+      {
+        "name": "Avenir",
+        "count": 1
+      },
+      {
+        "name": "Cadiz",
+        "count": 1
+      },
+      {
+        "name": "General Sans",
+        "count": 1
+      },
+      {
+        "name": "Haffer XH",
+        "count": 1
+      },
+      {
+        "name": "Inter Tight",
+        "count": 1
+      },
+      {
+        "name": "Poppins",
+        "count": 1
+      },
+      {
+        "name": "ppmondwest",
+        "count": 1
+      },
+      {
+        "name": "Saans",
+        "count": 1
+      },
+      {
+        "name": "Source Sans Pro",
+        "count": 1
+      },
+      {
+        "name": "TT Hoves",
+        "count": 1
+      },
+      {
+        "name": "TWK Lausanne Pan",
+        "count": 1
+      },
+      {
+        "name": "walsheim",
+        "count": 1
+      }
+    ]
+  },
+  "items": [
+    {"slug":"iso-glow-5f3d4402","title":"iso-glow","summary":"A Claude skill that generates interactive isometric line drawings with glow lighting effects from natural language descriptions.","url":"https://iso-glow.vercel.app/","domain":"iso-glow.vercel.app","type":"plugin","subtype":"skill","lane":null,"category":"design-tools","tags":["claude-code","ai-generation","interactive","open-source"],"status":"kept","rating":null,"savedOn":"2026-10-07","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/8a2552af-f129-4f8a-86e9-6d8735fc1dcf.svg","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/8a2552af-f129-4f8a-86e9-6d8735fc1dcf.jpg","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/8a2552af-f129-4f8a-86e9-6d8735fc1dcf.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/8a2552af-f129-4f8a-86e9-6d8735fc1dcf.jpg","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/5c1666b9-ba99-4532-a68c-d7b9aec042a1.webm","width":720,"height":540,"embeddable":false},"similar":{"meaning":[],"look":[]},"tool":{"pricing":"free","platforms":["claude","claude-code"],"openSource":true},"look":{"dark":false,"bg":"#f4f4f2","text":"#33373a","accent":null,"palette":["#151716","#262928","#1e2222","#d3b15a","#24231b","#b19550"],"hues":["white","black","orange"],"heading":"IBM Plex Sans","body":"IBM Plex Sans","animated":true}},
+    {"slug":"21st-react-components-templates-themes-cc0dbcd2","title":"21st — React Components, Templates & Themes","summary":"A library of 12,000+ hand-crafted React and Tailwind CSS components, templates, and shadcn themes with live preview and one-command installation.","url":"https://21st.dev/","domain":"21st.dev","type":"fragment","subtype":"component-lib","lane":"library","category":"dev","tags":["react","tailwind","ui-kit","templates","shadcn","open-source"],"status":"kept","rating":null,"savedOn":"2026-09-21","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/7cb47872-206a-4931-86e5-e3fb88669398.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/7cb47872-206a-4931-86e5-e3fb88669398.png","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/7cb47872-206a-4931-86e5-e3fb88669398.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/7cb47872-206a-4931-86e5-e3fb88669398.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/1d49486d-d817-4469-ae8a-fe8d3a619ab6.webm","width":2400,"height":1260,"embeddable":true},"similar":{"meaning":["shadcn-ui-components-9d1f24e8","one-page-love-one-page-website-inspiration-and-templates-395c38da","osmo-dev-toolkit-3e59363b"],"look":["svgl-aff4d38a"]},"tool":{"pricing":"unknown","platforms":["web","npm"],"openSource":true},"look":{"dark":null,"bg":null,"text":null,"accent":null,"palette":["#f5f6f5","#d0b2d3","#f10e08","#d0cfd1","#b0b0b0","#d1d7f2"],"hues":["white","pink","red","grey","blue"],"heading":"General Sans","body":"General Sans","animated":true}},
+    {"slug":"checklist-design-e5c10350","title":"Checklist Design","summary":"A collection of design checklists for websites, web apps, mobile, components, and flows to help ensure quality before shipping.","url":"https://www.checklist.design/","domain":"checklist.design","type":"checklist","subtype":"library","lane":"library","category":"ux-principles","tags":["design-tools","checklist","quality-assurance","design-reference"],"status":"kept","rating":null,"savedOn":"2026-09-21","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/d6368bcf-68c2-4239-a66d-c153b1b068f1.svg","og":null,"screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/d6368bcf-68c2-4239-a66d-c153b1b068f1.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/d6368bcf-68c2-4239-a66d-c153b1b068f1.jpg","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/b7dd3461-fb27-4b45-9b7e-56f4df4d061a.webm","width":1440,"height":900,"embeddable":true},"similar":{"meaning":["typeui-abce4e90","one-page-love-one-page-website-inspiration-and-templates-395c38da","osmo-dev-toolkit-3e59363b","dessn-05d77747"],"look":["shadcn-ui-components-9d1f24e8","best-website-designs-with-grids-framer-website-design-galler-b96d8f18","dessn-05d77747","svgl-aff4d38a","osmo-dev-toolkit-3e59363b","coursera-online-courses-from-top-universities-join-for-free-bfb905a0"]},"look":{"dark":false,"bg":"#f4f3ee","text":null,"accent":"#26211c","palette":["#f1f1ed","#eee7d9","#dce6f0","#d3d2d0","#b4b2ae","#938f8b"],"hues":["yellow","orange","white","blue","grey"],"heading":"TT Hoves","body":"TT Hoves","animated":true}},
+    {"slug":"slp-sorted-labeled-prompts-59169f2a","title":"SLP — Sorted Labeled Prompts","summary":"A curated gallery of tested AI image prompts, sorted and labeled for easy discovery and copy-paste generation.","url":"https://slp.gallery/","domain":"slp.gallery","type":"prompt","subtype":"library","lane":null,"category":"image","tags":["prompt-field","ai-tool","gallery","curated","assets"],"status":"kept","rating":null,"savedOn":"2026-09-21","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/9519b40b-8d5a-49a8-b7a6-9ad71b534655.svg","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/9519b40b-8d5a-49a8-b7a6-9ad71b534655.png","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/9519b40b-8d5a-49a8-b7a6-9ad71b534655.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/9519b40b-8d5a-49a8-b7a6-9ad71b534655.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/02627d93-d5bd-42c2-b4c1-ccf3746df521.webm","width":1200,"height":630,"embeddable":false},"similar":{"meaning":["anatomy-of-ai-input-d9ad1f78"],"look":[]},"look":{"dark":true,"bg":"#000000","text":"#ffffff","accent":null,"palette":["#010202","#6d6f71","#2c2f32","#111525","#4f4f51","#19252d"],"hues":["black","grey","blue","white"],"heading":"Inter Tight","body":"Geist Mono","animated":true}},
+    {"slug":"anatomy-of-ai-input-d9ad1f78","title":"Anatomy of AI Input","summary":"A guide to understanding the structural components and best practices for crafting effective AI input prompts.","url":"https://ibelick.com/anatomy-ai-input#attachment-zone","domain":"ibelick.com","type":"learn","subtype":"article","lane":null,"category":"ai","tags":["ai-tool","prompt-engineering","guidelines","ai-input","structure"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/4c3bf041-9781-43ca-b5c9-dcd296fb4a8a.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/4c3bf041-9781-43ca-b5c9-dcd296fb4a8a.png","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/4c3bf041-9781-43ca-b5c9-dcd296fb4a8a.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MKPE7CO32G1MD.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/4c3bf041-9781-43ca-b5c9-dcd296fb4a8a.webm","width":720,"height":343,"embeddable":true},"similar":{"meaning":["slp-sorted-labeled-prompts-59169f2a","intercom-the-best-ai-agent-built-on-the-best-customer-servic-b353864a"],"look":["shadcn-ui-components-9d1f24e8"]},"look":{"dark":false,"bg":"#ffffff","text":"#646464","accent":null,"palette":["#fcfcfb","#d7d7d7","#f4f4f4","#ececec","#cccccc","#e4e4e4"],"hues":["white","grey"],"heading":"Inter","body":"Inter","animated":true}},
+    {"slug":"best-website-designs-with-grids-framer-website-design-galler-b96d8f18","title":"Best Website Designs with Grids — Framer Website Design Gallery","summary":"Get inspired by our gallery of the best website design on the internet. Build a website in Framer's no-code website builder and submit it to the Framer Website Design Gallery for a chance to win a…","url":"https://www.framer.com/gallery/styles/grid","domain":"framer.com","type":"inspiration","subtype":null,"lane":"library","category":"web-design","tags":["gallery"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/09ba78db-462f-489c-b81c-769e6a88cbb5.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/09ba78db-462f-489c-b81c-769e6a88cbb5.jpg","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/09ba78db-462f-489c-b81c-769e6a88cbb5.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MDK4LBP5IU6S6.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/09ba78db-462f-489c-b81c-769e6a88cbb5.webm","width":720,"height":354,"embeddable":false},"similar":{"meaning":["one-page-love-one-page-website-inspiration-and-templates-395c38da","best-website-templates-expert-curated-best-website-templates-e6de1bf2"],"look":["osmo-dev-toolkit-3e59363b","one-page-love-one-page-website-inspiration-and-templates-395c38da","best-website-templates-expert-curated-best-website-templates-e6de1bf2","dessn-05d77747","checklist-design-e5c10350","coursera-online-courses-from-top-universities-join-for-free-bfb905a0"]},"look":{"dark":true,"bg":"#111111","text":"#999999","accent":"#0099ff","palette":["#050505","#cdd8d6","#595654","#69959f","#908881","#b77946"],"hues":["black","blue","grey","teal","orange"],"heading":"walsheim","body":"inter","animated":true}},
+    {"slug":"best-website-templates-expert-curated-best-website-templates-e6de1bf2","title":"BEST WEBSITE TEMPLATES  Expert-Curated Best Website Templates","summary":"881+ hand-picked free & paid website templates, each reviewed and scored by our team. Find your perfect template.","url":"https://bestwebsitetemplate.com/templates","domain":"bestwebsitetemplate.com","type":"inspiration","subtype":null,"lane":"library","category":"templates","tags":[],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/7df5eb95-0d0d-4c22-94da-f3596b503ad0.svg","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/7df5eb95-0d0d-4c22-94da-f3596b503ad0.png","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/7df5eb95-0d0d-4c22-94da-f3596b503ad0.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/7df5eb95-0d0d-4c22-94da-f3596b503ad0.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/7df5eb95-0d0d-4c22-94da-f3596b503ad0.webm","width":1440,"height":906,"embeddable":true},"similar":{"meaning":["one-page-love-one-page-website-inspiration-and-templates-395c38da","best-website-designs-with-grids-framer-website-design-galler-b96d8f18"],"look":["best-website-designs-with-grids-framer-website-design-galler-b96d8f18","osmo-dev-toolkit-3e59363b","one-page-love-one-page-website-inspiration-and-templates-395c38da","hera-8fb72383"]},"look":{"dark":false,"bg":"#ffffff","text":"#000000","accent":null,"palette":["#f7f7f7","#323335","#c8c8c8","#dcdcdc","#9fa0a1","#bcbcbc"],"hues":["white","black","grey"],"heading":"Poppins","body":"Poppins","animated":true}},
+    {"slug":"chainzoku-mint-your-zoku-take-a-side-72549b50","title":"ChainZoku Mint your Zoku, Take a Side","summary":"A multimedia experience where fashion, manga, gaming & storytelling come together. Powered by NFTs.","url":"https://chainzoku.io/","domain":"chainzoku.io","type":"inspiration","subtype":null,"lane":"reference","category":"web3","tags":["meme"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/4c7cf30c-f67b-4229-8fdb-f18d5ab995f6.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/4c7cf30c-f67b-4229-8fdb-f18d5ab995f6.jpg","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/00d70eec-bb73-4b16-a8ff-9b60eaed37cb.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MIYRNAW4DAF6E.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/4c7cf30c-f67b-4229-8fdb-f18d5ab995f6.webm","width":720,"height":343,"embeddable":true},"similar":{"meaning":[],"look":["osmo-dev-toolkit-3e59363b","dessn-05d77747","hera-8fb72383","best-website-designs-with-grids-framer-website-design-galler-b96d8f18"]},"look":{"dark":null,"bg":null,"text":"#000000","accent":"#cdfb52","palette":["#151636","#edecec","#db2425","#c09e9c","#6d6e80","#dbc364"],"hues":["green","blue","white","red","grey","yellow","black"],"heading":"AkzidenzGrotesk-BoldExtended","body":"NeueHaasGrotDisp-76BoldItalic","animated":true}},
+    {"slug":"cher-6d2d16ef","title":"Жіночий і чоловічий одяг, взуття та аксесуари в інтернет‑магазині Cher","summary":"Ukrainian fashion retailer — clothing, shoes and accessories. A local e-commerce reference.","url":"https://cher17.com/","domain":"cher17.com","type":"inspiration","subtype":null,"lane":"reference","category":"ecommerce","tags":[],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/0983b291-2bee-4f33-8335-97fb3fb0c00c.ico","og":null,"screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/0983b291-2bee-4f33-8335-97fb3fb0c00c.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MAO4YD110717O.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/0983b291-2bee-4f33-8335-97fb3fb0c00c.webm","width":720,"height":354,"embeddable":false},"similar":{"meaning":[],"look":[]},"look":{"dark":false,"bg":"#ffffff","text":"#000000","accent":null,"palette":["#a3a3a3","#9c806a","#462f25","#7a5643","#f2f1ea","#808287"],"hues":["white","grey","orange","yellow","black"],"heading":"TWK Lausanne Pan","body":"TWK Lausanne Pan","animated":true}},
+    {"slug":"colorbox-color-palette-generator-aaacd6df","title":"ColorBox – Color Palette Generator","summary":"Generate accessible color palettes with precision using customizable curves for hue, saturation, and luminosity to design complete color systems.","url":"https://colorbox.io/","domain":"colorbox.io","type":"tool","subtype":null,"lane":null,"category":"colors","tags":["accessibility","asset-tool","color-system","palette-generator"],"status":"to_try","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/3649882e-7a4b-43b4-b04a-43437ec11e05.svg","og":null,"screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/3649882e-7a4b-43b4-b04a-43437ec11e05.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MH3SHXJANT1O8.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/3649882e-7a4b-43b4-b04a-43437ec11e05.webm","width":720,"height":343,"embeddable":true},"similar":{"meaning":[],"look":[]},"tool":{"pricing":"free","platforms":["web"],"openSource":null},"look":{"dark":false,"bg":"#ffffff","text":"#020203","accent":null,"palette":["#f1f5f6","#322f74","#9c9ccc","#bcbee8","#6c6abc","#cccce1"],"hues":["white","teal","blue","black"],"heading":null,"body":null,"animated":true}},
+    {"slug":"coursera-online-courses-from-top-universities-join-for-free-bfb905a0","title":"Coursera  Online Courses From Top Universities. Join for Free","summary":"10,000+ courses from schools like Stanford and Yale - no application required. Build career skills in data science, computer science, business, and more.","url":"https://www.coursera.org/search?query=ui%20%2F%20ux%20design","domain":"coursera.org","type":"learn","subtype":"course","lane":null,"category":null,"tags":["ux-research"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/be4e6476-5bc6-45df-8fd9-0ddcf6c4f5c4.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/be4e6476-5bc6-45df-8fd9-0ddcf6c4f5c4.png","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/be4e6476-5bc6-45df-8fd9-0ddcf6c4f5c4.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MKCOTOBFSYZSV.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/be4e6476-5bc6-45df-8fd9-0ddcf6c4f5c4.webm","width":720,"height":343,"embeddable":false},"similar":{"meaning":["typeui-abce4e90"],"look":["best-website-designs-with-grids-framer-website-design-galler-b96d8f18","checklist-design-e5c10350","dessn-05d77747","typeui-abce4e90","osmo-dev-toolkit-3e59363b","svgl-aff4d38a"]},"look":{"dark":false,"bg":"#ffffff","text":"#0d0f12","accent":"#dae1ed","palette":["#faf9fa","#252a34","#9b9ca2","#cacdcf","#5a6f6f","#9c645a"],"hues":["white","blue","grey","red"],"heading":"Source Sans Pro","body":"Source Sans Pro","animated":true}},
+    {"slug":"craig-reynolds-welcome-to-winona-ed1b1d2c","title":"Craig Reynolds Welcome to WInona","summary":"Craig Reynolds is a New York-based photographer and Creative Director, currently leading the studio team at Squarespace.","url":"https://www.craig-reynolds.com/welcome-to-winona","domain":"craig-reynolds.com","type":"inspiration","subtype":null,"lane":"reference","category":"portfolio","tags":["gallery"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":null,"og":null,"screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/0687753d-cc8e-49ad-a903-3d715f8d96d0.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/LUCXNG7FQSIEY.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/0687753d-cc8e-49ad-a903-3d715f8d96d0.webm","width":720,"height":355,"embeddable":false},"similar":{"meaning":[],"look":[]},"look":{"dark":false,"bg":"#ffffff","text":"#000000","accent":null,"palette":["#e7e3db","#5c513d","#868072","#bdb1a1","#b8b2b0","#646762"],"hues":["white","orange","grey","black"],"heading":"Inter","body":"aktiv-grotesk","animated":true}},
+    {"slug":"dessn-05d77747","title":"Dessn","summary":"A design and prototyping platform that integrates directly into your codebase without requiring coding knowledge.","url":"https://www.dessn.ai/","domain":"dessn.ai","type":"tool","subtype":null,"lane":null,"category":"prototyping","tags":["design-tool","no-code","ui-generator"],"status":"to_try","rating":2,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/f39be3ef-62a2-4c22-9672-8609df102a23.svg","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/f39be3ef-62a2-4c22-9672-8609df102a23.webp","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/f39be3ef-62a2-4c22-9672-8609df102a23.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/ML00GDK32JC6R.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/f39be3ef-62a2-4c22-9672-8609df102a23.webm","width":720,"height":343,"embeddable":true},"similar":{"meaning":["rork-fc328c49","osmo-dev-toolkit-3e59363b","typeui-abce4e90","checklist-design-e5c10350"],"look":["osmo-dev-toolkit-3e59363b","best-website-designs-with-grids-framer-website-design-galler-b96d8f18","hera-8fb72383","checklist-design-e5c10350","chainzoku-mint-your-zoku-take-a-side-72549b50","coursera-online-courses-from-top-universities-join-for-free-bfb905a0"]},"tool":{"pricing":"freemium","platforms":["web"],"openSource":null},"look":{"dark":null,"bg":null,"text":null,"accent":"#d07848","palette":["#f3ebe3","#100e0c","#bab19f","#b6b2ac","#c58f53","#9c3f38"],"hues":["orange","black","grey","red"],"heading":null,"body":null,"animated":true}},
+    {"slug":"general-intelligence-company-bd48098e","title":"General Intelligence Company","summary":"The General Intelligence Company is an applied AI lab working towards automating businesses full-stack with AI.","url":"https://www.generalintelligencecompany.com/","domain":"generalintelligencecompany.com","type":"inspiration","subtype":null,"lane":"reference","category":"ai","tags":["landing"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/c1ceb6a9-a9d7-4d94-af00-1976cdbc8bc9.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/c1ceb6a9-a9d7-4d94-af00-1976cdbc8bc9.png","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/c1ceb6a9-a9d7-4d94-af00-1976cdbc8bc9.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MNKVSUQVKX7XH.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/c1ceb6a9-a9d7-4d94-af00-1976cdbc8bc9.webm","width":1440,"height":906,"embeddable":false},"similar":{"meaning":[],"look":[]},"look":{"dark":false,"bg":"#ffffff","text":"#f3f5f2","accent":null,"palette":["#455270","#eff0f2","#89827e","#55729e","#343337","#6b89a3"],"hues":["white","blue","grey","black"],"heading":"ppmondwest","body":"af","animated":true}},
+    {"slug":"guestready-short-term-rental-management-company-3238e833","title":"GuestReady Short-term rental management company","summary":"GuestReady is a full-service property management company trusted in 35+ cities, helping property owners earn more while guests enjoy hassle-free stays.","url":"https://www.guestready.com/","domain":"guestready.com","type":"inspiration","subtype":null,"lane":"reference","category":"productivity","tags":["multipage"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/ff309fcc-11b2-44e5-84b4-802cb1d632fd.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/ff309fcc-11b2-44e5-84b4-802cb1d632fd.png","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/ff309fcc-11b2-44e5-84b4-802cb1d632fd.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/M6YRHYIKXAU33.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/ff309fcc-11b2-44e5-84b4-802cb1d632fd.webm","width":720,"height":351,"embeddable":true},"similar":{"meaning":[],"look":[]},"look":{"dark":null,"bg":null,"text":"#ffffff","accent":"#71192e","palette":["#f8f4f3","#cc9482","#483f31","#c8c2bd","#8b7965","#c0b7a8"],"hues":["red","white","orange","grey"],"heading":"Cadiz","body":"Cadiz","animated":true}},
+    {"slug":"hera-8fb72383","title":"Hera","summary":"AI tool for creating studio-quality product launch videos from prompts or websites, with editable motion graphics for SaaS and social media.","url":"https://hera.video/","domain":"hera.video","type":"tool","subtype":null,"lane":null,"category":"ai","tags":["ai-tool","product-videos","video-generation","motion"],"status":"to_try","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/068b4d45-cdb1-44d6-90cc-ea6ddf234fbf.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/068b4d45-cdb1-44d6-90cc-ea6ddf234fbf.png","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/65fb7f9d-06a4-4a32-88f3-37e249049571.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MKPVVQG72E9YO.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/068b4d45-cdb1-44d6-90cc-ea6ddf234fbf.webm","width":720,"height":343,"embeddable":false},"similar":{"meaning":["rork-fc328c49"],"look":["dessn-05d77747","osmo-dev-toolkit-3e59363b","best-website-templates-expert-curated-best-website-templates-e6de1bf2","best-website-designs-with-grids-framer-website-design-galler-b96d8f18","rork-fc328c49","intercom-the-best-ai-agent-built-on-the-best-customer-servic-b353864a"]},"tool":{"pricing":"freemium","platforms":["web"],"openSource":null},"look":{"dark":null,"bg":null,"text":null,"accent":null,"palette":["#fbfbfb","#34363d","#989ba0","#cccdd0"],"hues":["white","grey"],"heading":"IBM Plex Sans","body":"Inter","animated":true}},
+    {"slug":"intercom-the-best-ai-agent-built-on-the-best-customer-servic-b353864a","title":"Intercom The best AI agent built on the best customer service platform","summary":"Intercom is the only helpdesk with a natively integrated AI Agent, Fin, meaning every customer conversation improves the next one, enabling perfect experiences that were never possible before.","url":"https://www.intercom.com/","domain":"intercom.com","type":"inspiration","subtype":null,"lane":"reference","category":"ai","tags":["multipage","ai-tool","productivity"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/b5892ffa-ec4f-4489-a440-e59e8f416192.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/b5892ffa-ec4f-4489-a440-e59e8f416192.jpg","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/b5892ffa-ec4f-4489-a440-e59e8f416192.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MA6S6JOIPHOM8.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/b5892ffa-ec4f-4489-a440-e59e8f416192.webm","width":720,"height":354,"embeddable":false},"similar":{"meaning":["anatomy-of-ai-input-d9ad1f78"],"look":["hera-8fb72383"]},"look":{"dark":null,"bg":null,"text":"#111111","accent":null,"palette":["#4d3f24","#eeebea","#9d7866","#c59b84","#110e0a","#bf8e6b"],"hues":["orange","white","black"],"heading":"Saans","body":"Serrif","animated":true}},
+    {"slug":"macosicons-21902831","title":"macOSicons","summary":"A free collection of 30,000+ macOS app icons available in .icns and PNG formats for Mac and iOS design projects.","url":"https://macosicons.com/","domain":"macosicons.com","type":"fragment","subtype":"icon-set","lane":null,"category":"design-tools","tags":["asset-tool","free-icons","icon-library","macos"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/23cc2031-5d8f-4ce9-804a-a458e7f31445.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/23cc2031-5d8f-4ce9-804a-a458e7f31445.ico","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/23cc2031-5d8f-4ce9-804a-a458e7f31445.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MMLZQYXAF88HZ.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/23cc2031-5d8f-4ce9-804a-a458e7f31445.webm","width":720,"height":343,"embeddable":true},"similar":{"meaning":["one-page-love-one-page-website-inspiration-and-templates-395c38da"],"look":["svgl-aff4d38a","best-website-designs-with-grids-framer-website-design-galler-b96d8f18"]},"tool":{"pricing":"free","platforms":["web"],"openSource":null},"look":{"dark":false,"bg":"#ffffff","text":null,"accent":null,"palette":["#f5f8fb","#485357","#94a0a8","#c2cbd6","#c8365b","#3891e3"],"hues":["white","grey","blue","pink"],"heading":"Avenir","body":"Avenir","animated":true}},
+    {"slug":"one-page-love-one-page-website-inspiration-and-templates-395c38da","title":"One Page Love - One Page Website Inspiration and Templates","summary":"One Page Love is a One Page website design gallery showcasing the best Single Page websites, templates and resources.","url":"https://onepagelove.com/","domain":"onepagelove.com","type":"inspiration","subtype":null,"lane":"library","category":"web-design","tags":["ui-inspiration"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/3efb1b4f-315b-4ba0-8ee3-80a449f863d1.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/3efb1b4f-315b-4ba0-8ee3-80a449f863d1.jpg","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/3efb1b4f-315b-4ba0-8ee3-80a449f863d1.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MGWGU79YQNV53.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/3efb1b4f-315b-4ba0-8ee3-80a449f863d1.webm","width":720,"height":343,"embeddable":true},"similar":{"meaning":["best-website-designs-with-grids-framer-website-design-galler-b96d8f18","best-website-templates-expert-curated-best-website-templates-e6de1bf2","macosicons-21902831","21st-react-components-templates-themes-cc0dbcd2","osmo-dev-toolkit-3e59363b","checklist-design-e5c10350"],"look":["best-website-designs-with-grids-framer-website-design-galler-b96d8f18","osmo-dev-toolkit-3e59363b","best-website-templates-expert-curated-best-website-templates-e6de1bf2","dessn-05d77747"]},"look":{"dark":false,"bg":"#f7f4f3","text":"#604f43","accent":"#7e6858","palette":["#151515","#ced2d4","#6a5c61","#5ca9c7","#9e7c94","#a99c8d"],"hues":["white","orange","black","grey","teal"],"heading":"Geist","body":null,"animated":true}},
+    {"slug":"osmo-dev-toolkit-3e59363b","title":"Osmo - Dev Toolkit","summary":"A collection of Webflow and HTML resources, components and techniques for creative developers building award-winning web experiences.","url":"https://www.osmo.supply/","domain":"osmo.supply","type":"tool","subtype":"library","lane":"reference","category":"design-tools","tags":["component-lib","webflow","multipage"],"status":"to_try","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/c073bbe1-a38a-4f8d-90fa-8e31d26bbb28.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/c073bbe1-a38a-4f8d-90fa-8e31d26bbb28.jpg","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/c073bbe1-a38a-4f8d-90fa-8e31d26bbb28.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/M7LQ080GVGN9A.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/c073bbe1-a38a-4f8d-90fa-8e31d26bbb28.webm","width":720,"height":351,"embeddable":true},"similar":{"meaning":["one-page-love-one-page-website-inspiration-and-templates-395c38da","dessn-05d77747","21st-react-components-templates-themes-cc0dbcd2","shadcn-ui-components-9d1f24e8","typeui-abce4e90","checklist-design-e5c10350"],"look":["best-website-designs-with-grids-framer-website-design-galler-b96d8f18","dessn-05d77747","best-website-templates-expert-curated-best-website-templates-e6de1bf2","one-page-love-one-page-website-inspiration-and-templates-395c38da","chainzoku-mint-your-zoku-take-a-side-72549b50","hera-8fb72383"]},"tool":{"pricing":"freemium","platforms":["web"],"openSource":null},"look":{"dark":false,"bg":"#f4f4f4","text":"#201d1d","accent":"#a1ff62","palette":["#050505","#dcd4d0","#594945","#f06140","#2a2321","#b57b70"],"hues":["white","green","black","grey","red"],"heading":"Haffer XH","body":"Haffer Mono","animated":true}},
+    {"slug":"rork-fc328c49","title":"Rork","summary":"AI-powered no-code app builder for creating iOS, Android, and web apps that can be published to app stores in hours.","url":"https://rork.com/","domain":"rork.com","type":"tool","subtype":null,"lane":null,"category":"ai","tags":["ux-tools","app-builder","ai-tool","coding","no-code","cross-platform"],"status":"to_try","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/9963a1ba-c2b7-4bfd-a5f0-a80df20ad604.ico","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/9963a1ba-c2b7-4bfd-a5f0-a80df20ad604.png","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/9963a1ba-c2b7-4bfd-a5f0-a80df20ad604.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MK5G5FX5EZFXV.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/9963a1ba-c2b7-4bfd-a5f0-a80df20ad604.webm","width":720,"height":343,"embeddable":false},"similar":{"meaning":["dessn-05d77747","hera-8fb72383"],"look":["hera-8fb72383","osmo-dev-toolkit-3e59363b"]},"tool":{"pricing":"freemium","platforms":["web","ios","android"],"openSource":null},"look":{"dark":true,"bg":"#171717","text":null,"accent":null,"palette":["#141414","#242424","#2c2c2b","#555555","#343434","#bebebf"],"hues":["black","grey"],"heading":null,"body":null,"animated":true}},
+    {"slug":"shadcn-ui-components-9d1f24e8","title":"shadcn/ui Components","summary":"A collection of accessible, customizable React components built on Radix UI and Tailwind CSS for rapid UI development.","url":"https://ui.shadcn.com/docs/components","domain":"ui.shadcn.com","type":"fragment","subtype":"component-lib","lane":null,"category":"dev","tags":["tailwind","react"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/beb65d4e-cdda-4f6a-8e84-ee3d676aaaf0.png","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/beb65d4e-cdda-4f6a-8e84-ee3d676aaaf0.png","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/beb65d4e-cdda-4f6a-8e84-ee3d676aaaf0.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MH2HK2YGODAIK.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/beb65d4e-cdda-4f6a-8e84-ee3d676aaaf0.webm","width":720,"height":343,"embeddable":true},"similar":{"meaning":["21st-react-components-templates-themes-cc0dbcd2","typeui-abce4e90","osmo-dev-toolkit-3e59363b","one-page-love-one-page-website-inspiration-and-templates-395c38da"],"look":["svgl-aff4d38a","anatomy-of-ai-input-d9ad1f78","checklist-design-e5c10350"]},"tool":{"pricing":"free","platforms":["web"],"openSource":null},"look":{"dark":null,"bg":null,"text":null,"accent":null,"palette":["#fbfbfb","#a4a4a4","#cfcfcf","#e4e4e5","#dcdcdc","#c3c4c4"],"hues":["white","grey"],"heading":"Geist","body":"Geist","animated":true}},
+    {"slug":"svgl-aff4d38a","title":"SVGL","summary":"A beautiful library of SVG logos for designers to use as assets in projects and designs.","url":"https://svgl.app/","domain":"svgl.app","type":"fragment","subtype":"icon-set","lane":null,"category":"branding","tags":["assets","component-lib","icon-library","svg-logos"],"status":"kept","rating":null,"savedOn":"2026-09-04","media":{"logo":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/logos/efe2eb1d-5e7e-493e-9ec7-02160fa63301.svg","og":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/thumbs/efe2eb1d-5e7e-493e-9ec7-02160fa63301.svg","screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/efe2eb1d-5e7e-493e-9ec7-02160fa63301.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MHNAPW2QM6ISG.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/efe2eb1d-5e7e-493e-9ec7-02160fa63301.webm","width":720,"height":343,"embeddable":true},"similar":{"meaning":[],"look":["shadcn-ui-components-9d1f24e8","macosicons-21902831","checklist-design-e5c10350","21st-react-components-templates-themes-cc0dbcd2","coursera-online-courses-from-top-universities-join-for-free-bfb905a0"]},"tool":{"pricing":"free","platforms":["web"],"openSource":null},"look":{"dark":null,"bg":null,"text":"#000000","accent":null,"palette":["#fafafa","#c9c9ca","#e1e1e2","#a0a3a8","#3d4250"],"hues":["white","grey","black"],"heading":"Geist","body":"Geist","animated":true}},
+    {"slug":"typeui-abce4e90","title":"TypeUI","summary":"A comprehensive resource for learning and mastering UI/UX design skills with practical guides and best practices.","url":"https://www.typeui.sh/design-skills","domain":"typeui.sh","type":"tool","subtype":null,"lane":null,"category":"productivity","tags":["design","learning","skills","ui-ux"],"status":"to_try","rating":null,"savedOn":"2026-09-04","media":{"logo":null,"og":null,"screenshot":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/screenshots/2610feaa-4535-4f7f-8754-045520b96533.jpg","thumb":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/eagle/MORIH3W1EQFMH.png","motion":"https://bnkbgdqihznoxildgxas.supabase.co/storage/v1/object/public/media/motion/2610feaa-4535-4f7f-8754-045520b96533.webm","width":1440,"height":906,"embeddable":true},"similar":{"meaning":["checklist-design-e5c10350","coursera-online-courses-from-top-universities-join-for-free-bfb905a0","shadcn-ui-components-9d1f24e8","one-page-love-one-page-website-inspiration-and-templates-395c38da","osmo-dev-toolkit-3e59363b","dessn-05d77747"],"look":["coursera-online-courses-from-top-universities-join-for-free-bfb905a0"]},"tool":{"pricing":"free","platforms":["web"],"openSource":null},"look":{"dark":false,"bg":"#ffffff","text":null,"accent":null,"palette":["#050505","#1c1c1c","#585859","#2a2a2a","#d8d8d9","#3c3c3c"],"hues":["white","black","grey"],"heading":"Geist","body":"Geist","animated":true}}
+  ]
+}

@@ -29,6 +29,8 @@ export type Project = {
   status?: "in progress" | "unreleased" | "concept";
   /** Needs client approval before the real name/screens go public */
   confirm?: string;
+  /** Pages to go on to, shown under the text */
+  links?: { label: string; href: string }[];
 };
 
 export type GroupId = "case-studies" | "client-work" | "concepts" | "lab";
@@ -124,6 +126,7 @@ export const projects: Project[] = [
     frame: "browser",
     accent: "#10B981",
     url: "localhost:3939",
+    links: [{ label: "Browse what's in it", href: "/library" }],
   },
   {
     slug: "crypto-card-site",

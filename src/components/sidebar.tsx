@@ -1,8 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { groups, projects } from "@/content/projects";
 import { profile } from "@/content/profile";
+import { LibraryIcon } from "./library/icons";
+import { itemClass } from "./nav-item";
 import { Monogram, ProjectIcon } from "./project-icon";
 import { SearchIcon } from "./sections";
 import { ThemeToggle } from "./theme-toggle";
@@ -12,11 +15,6 @@ type Props = {
   onJump: (id: string) => void;
   onSearch: () => void;
 };
-
-const itemClass = (on: boolean) =>
-  `flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[7px] text-left text-[14px] transition-colors duration-150 ${
-    on ? "bg-raised text-ink shadow-card" : "text-ink-2 hover:bg-line hover:text-ink"
-  }`;
 
 export function Sidebar({ active, onJump, onSearch }: Props) {
   const [closed, setClosed] = useState<Record<string, boolean>>({});
@@ -77,6 +75,10 @@ export function Sidebar({ active, onJump, onSearch }: Props) {
             </span>
             About & CV
           </button>
+          <Link href="/library" className={itemClass(false)}>
+            <LibraryIcon />
+            Library
+          </Link>
         </div>
       </nav>
 

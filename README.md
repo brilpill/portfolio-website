@@ -1,3 +1,30 @@
+## Library (`/library`)
+
+A public slice of my knowledge base: tools, references and UI kits, filterable by shelf,
+subject, colour and page theme, with a page per item (its look, a recorded clip, a live
+preview, and the closest items by meaning and by look).
+
+The data is one file, `src/content/library.json`, written by the knowledge-base worker:
+
+```bash
+cd ~/Projects/kb/worker
+pnpm export:public -- --dry                                                        # what would go out, and why the rest stays
+pnpm export:public -- --out ~/Projects/portfolio-website/src/content/library.json  # write it
+```
+
+Then commit the file here. The site reads nothing else and calls no API: neighbours are
+worked out at export. What may leave the base (no client research, nothing unreviewed, no
+private notes) is decided in the knowledge base (`worker/src/lib/public-export.ts`), not here.
+
+- `src/lib/library.ts` — types and labels; safe for client components.
+- `src/lib/library-data.ts` — the data; **server only** (a client import would ship every item
+  to the browser, and the `server-only` guard fails the build if one tries).
+- `src/components/library/` — the grid, cards, item preview and the rail.
+
+Pictures are served from the knowledge base's Supabase storage, so visitors use its bandwidth.
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

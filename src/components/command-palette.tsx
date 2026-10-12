@@ -1,11 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { groups, projects } from "@/content/projects";
 import { ProjectIcon } from "./project-icon";
 import { SearchIcon } from "./sections";
 
-type Entry = { id: string; title: string; hint: string; project?: (typeof projects)[number] };
+/** A section on this page, or (with `href`) another page. */
+type Entry = { id: string; title: string; hint: string; href?: string; project?: (typeof projects)[number] };
 
 const entries: Entry[] = [
   { id: "home", title: "Home", hint: "Start" },
@@ -16,6 +18,7 @@ const entries: Entry[] = [
     project: p,
   })),
   { id: "about", title: "About & CV", hint: "Experience, education, tools" },
+  { id: "library", title: "Library", hint: "Tools, references and kits I keep", href: "/library" },
 ];
 
 export function CommandPalette({
@@ -40,9 +43,11 @@ export function CommandPalette({
     requestAnimationFrame(() => inputRef.current?.focus());
   }, []);
 
+  const router = useRouter();
   const choose = (e?: Entry) => {
     if (!e) return;
-    onJump(e.id);
+    if (e.href) router.push(e.href);
+    else onJump(e.id);
     onClose();
   };
 

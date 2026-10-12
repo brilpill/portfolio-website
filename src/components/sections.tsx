@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import { featured, projects, type Project } from "@/content/projects";
 import { education, experience, offScreen, profile, skills, tools } from "@/content/profile";
@@ -11,7 +12,7 @@ const sectionClass =
 
 /* ---------- Shared right-hand panel ---------- */
 
-function InfoPanel({
+export function InfoPanel({
   header,
   children,
   facts,
@@ -60,6 +61,16 @@ export function ProjectSection({ project }: { project: Project }) {
       >
         {project.body.map((p, i) => (
           <p key={i}>{p}</p>
+        ))}
+        {project.links?.map((l) => (
+          <Link
+            key={l.href}
+            href={l.href}
+            className="flex items-center justify-between rounded-xl border border-line-strong bg-raised px-3.5 py-2.5 text-[14px] text-ink shadow-card transition-[translate] duration-500 ease-out-quint hover:-translate-y-0.5"
+          >
+            {l.label}
+            <span aria-hidden>→</span>
+          </Link>
         ))}
       </InfoPanel>
     </section>

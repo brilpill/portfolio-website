@@ -1,5 +1,5 @@
-// Source of truth: Knowledge Base → Context → "About me".
-// Edit facts there first, then mirror them here.
+// Legacy profile data. Current conversation and Portfolio content.md take priority.
+// New sitemap sections use portfolio-content.ts; do not promote old KB details automatically.
 
 export const profile = {
   name: "Oleh Bril",

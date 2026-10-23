@@ -42,3 +42,13 @@ export function usePaging() {
 export function setPaging(paging: Paging) {
   write("paging", paging === "flip" ? null : paging);
 }
+
+const switches = ["on", "off"] as const;
+export function useSidebarVisible() {
+  return useSyncExternalStore(subscribe, () => read("portfolio-sidebar", switches, "on") === "on", () => true);
+}
+export function setSidebarVisible(visible: boolean) { write("portfolio-sidebar", visible ? "on" : "off"); }
+export function useSoundEnabled() {
+  return useSyncExternalStore(subscribe, () => read("portfolio-sound", switches, "off") === "on", () => false);
+}
+export function setSoundEnabled(enabled: boolean) { write("portfolio-sound", enabled ? "on" : "off"); }

@@ -1,0 +1,155 @@
+/* Agreed portfolio foundation. Use semantic roles instead of component-specific colors. */
+:root {
+  --background: #ffffff;
+  --foreground: #191919;
+  --surface: #fafafa;
+  --body-text: #333333;
+  --card: #ffffff;
+  --card-foreground: #191919;
+  --popover: #ffffff;
+  --popover-foreground: #191919;
+  --primary: #004bfe;
+  --primary-foreground: #ffffff;
+  --primary-hover: #003dd6;
+  --primary-soft: #eef3ff;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #191919;
+  --muted: #f0f0f0;
+  --muted-foreground: #666666;
+  --accent: #eef3ff;
+  --accent-foreground: #004bfe;
+  --action: #191919;
+  --action-foreground: #ffffff;
+  --action-hover: #333333;
+  --border: #e8e8e8;
+  --input: #8a8a8a;
+  --ring: #004bfe;
+  --destructive: #b42318;
+  --radius: .5rem;
+  --radius-preview: .75rem;
+  --radius-panel: 1rem;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #333333;
+  --sidebar-primary: #004bfe;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef3ff;
+  --sidebar-accent-foreground: #004bfe;
+  --sidebar-border: #e8e8e8;
+  --sidebar-ring: #004bfe;
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+  --text-hero: clamp(2.75rem, 3.8vw, 3.5rem);
+  --text-case-title: clamp(2.25rem, 3.3vw, 3rem);
+  --text-section: clamp(1.75rem, 2.2vw, 2rem);
+  --text-prose: 1rem;
+  --text-ui: .875rem;
+  --text-label: .8125rem;
+  --text-caption: .75rem;
+  --leading-hero: 1.08;
+  --leading-title: 1.12;
+  --leading-section: 1.2;
+  --leading-prose: 1.625;
+  --tracking-hero: -.035em;
+  --tracking-case: -.025em;
+  --tracking-section: -.02em;
+  --tracking-body: 0em;
+  --tracking-ui: -.01em;
+  --tracking-label: .06em;
+  --motion-press: 100ms;
+  --motion-fast: 150ms;
+  --motion-popover: 180ms;
+  --motion-panel: 260ms;
+  --motion-slide: 400ms;
+  --motion-process: 550ms;
+  --motion-intro: 700ms;
+  --motion-ease-out: cubic-bezier(.22, 1, .36, 1);
+  --shadow-preview: 0 4px 16px #1919190a, 0 1px 3px #19191908;
+  --shadow-overlay: 0 16px 64px #19191914, 0 2px 8px #19191908;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-body-text: var(--body-text);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-action: var(--action);
+  --color-action-foreground: var(--action-foreground);
+  --color-action-hover: var(--action-hover);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --font-sans: var(--font-ronzino), sans-serif;
+  --font-heading: var(--font-radley), serif;
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius-preview);
+  --radius-2xl: var(--radius-panel);
+}
+@layer base {
+  * { @apply border-border; }
+  body { background: var(--background); color: var(--foreground); }
+  :where(a, button, summary):focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }
+  ::selection { background: var(--primary-soft); color: var(--primary); }
+}
+.ui-button {
+  cursor: pointer;
+  font-family: var(--font-ronzino), sans-serif;
+  letter-spacing: var(--tracking-ui);
+  line-height: 1.25rem;
+  touch-action: manipulation;
+  transition: background-color var(--motion-fast) ease, color var(--motion-fast) ease, box-shadow var(--motion-fast) ease, transform var(--motion-press) var(--motion-ease-out);
+}
+.ui-button:active:not(:disabled) { transform: scale(.97); }
+[data-slot="tooltip-content"] {
+  font-family: var(--font-ronzino), sans-serif;
+  letter-spacing: var(--tracking-body);
+}
+[data-slot="dialog-content"], [data-slot="sheet-content"] { font-family: var(--font-ronzino), sans-serif; box-shadow: var(--shadow-overlay); }
+@media (max-width: 767px) {
+  :root { --tracking-hero: -.025em; }
+  .ui-button { min-height: 44px; }
+  .ui-button[data-size="icon"] { min-width: 44px; }
+}
+
+
+/* Overlays use transitions, not keyframes, so a quick reopen reverses from where it is.
+   Exits are faster than entries; anchored popups grow from their trigger, dialogs from the centre. */
+:is([data-slot="tooltip-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="dialog-content"]) {
+  transition: opacity var(--motion-popover) var(--motion-ease-out), transform var(--motion-popover) var(--motion-ease-out);
+}
+[data-slot="dialog-content"] { transition-duration: var(--motion-panel); }
+:is([data-slot="tooltip-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"]) { transform-origin: var(--transform-origin); }
+:is([data-slot="tooltip-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"]):is([data-starting-style], [data-ending-style]) { opacity: 0; transform: scale(.97); }
+[data-slot="dialog-content"]:is([data-starting-style], [data-ending-style]) { opacity: 0; transform: scale(.98); }
+:is([data-slot="tooltip-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="dialog-content"])[data-ending-style] { transition-duration: var(--motion-fast); }
+[data-slot="tooltip-content"][data-instant] { transition-duration: 0ms; }
+[data-slot="dialog-overlay"] { transition: opacity var(--motion-panel) var(--motion-ease-out); }
+[data-slot="dialog-overlay"]:is([data-starting-style], [data-ending-style]) { opacity: 0; }
+
+/* Reduced motion keeps short fades and removes movement; these rules reach portalled overlays too. */
+@media (prefers-reduced-motion: reduce) {
+  .ui-button:active:not(:disabled) { transform: none; }
+  :is([data-slot="tooltip-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="dialog-content"], [data-slot="sheet-content"]):is([data-starting-style], [data-ending-style]) { transform: none; translate: none; }
+}

@@ -1,0 +1,148 @@
+/* Isolated alternative shell; the original portfolio remains at /. */
+.home-screen[data-layout="card-shell"] {
+  --home-sidebar: transparent;
+  --shell-gutter: 8px;
+  --shell-shadow: 0 1.4px 5.6px rgb(25 25 25 / .0385), 0 11.2px 33.6px rgb(25 25 25 / .0175);
+  background: linear-gradient(180deg, #f8f8f8 0%, #f7f7f8 42%, #f5f5f7 100%);
+}
+.home-screen[data-layout="card-shell"] .home-sidebar { background: transparent; border: 0; }
+.home-screen[data-layout="card-shell"] .portfolio-pager {
+  top: var(--shell-gutter); bottom: var(--shell-gutter);
+  right: calc(var(--portfolio-assistant-width) + var(--shell-gutter));
+  border: 0; border-radius: 0; background: transparent; box-shadow: none;
+}
+.home-screen[data-layout="card-shell"] .portfolio-topbar { border: 0; box-shadow: none; background: transparent; }
+.home-screen[data-layout="card-shell"] .portfolio-assistant {
+  background: transparent; border: 0; top: 8px; bottom: 0;
+}
+.home-screen[data-layout="card-shell"] .assistant-header { border: 0; }
+.home-screen[data-layout="card-shell"] .project-slide { background: transparent; scrollbar-width: none; }
+.home-screen[data-layout="card-shell"] .project-media {
+  background: #fff; border-radius: 18px; box-shadow: var(--shell-shadow);
+  min-height: calc(100dvh - 16px);
+}
+.home-screen[data-layout="card-shell"] .project-info {
+  height: calc(100dvh - 16px); max-height: calc(100dvh - 16px);
+  padding-top: 8px; background: transparent;
+}
+.home-screen[data-layout="card-shell"] .home-slide { min-height: 100%; height: 100%; }
+.home-screen[data-layout="card-shell"] .project-info .project-badge { background: rgb(255 255 255 / .55); }
+.home-screen[data-layout="card-shell"] .assistant-composer-box { background: rgb(255 255 255 / .6); }
+@media (max-width: 767px) {
+  .home-screen[data-layout="card-shell"] .portfolio-pager { left: 8px; border-radius: 0; }
+  .home-screen[data-layout="card-shell"] .portfolio-assistant { top: 0; background: #f8f8f8; }
+  .home-screen[data-layout="card-shell"] .project-info { height: auto; max-height: none; }
+}
+
+/* Reference: 12px rise, 900ms ease-out, staggered 150/330/510ms. */
+@keyframes card-shell-sidebar-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.home-screen[data-layout="card-shell"] .portfolio-page[data-state="active"] .project-badge,
+.home-screen[data-layout="card-shell"] .assistant-header {
+  animation: card-shell-sidebar-in 900ms cubic-bezier(0, 0, .2, 1) 150ms both;
+}
+.home-screen[data-layout="card-shell"] .portfolio-page[data-state="active"] :is(.project-draft-label, .project-overview, .project-facts),
+.home-screen[data-layout="card-shell"] :is(.assistant-intro, .assistant-suggestions) {
+  animation: card-shell-sidebar-in 900ms cubic-bezier(0, 0, .2, 1) 330ms both;
+}
+.home-screen[data-layout="card-shell"] .portfolio-page[data-state="active"] .project-resource-links,
+.home-screen[data-layout="card-shell"] .assistant-composer {
+  animation: card-shell-sidebar-in 900ms cubic-bezier(0, 0, .2, 1) 510ms both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-screen[data-layout="card-shell"] :is(.project-badge, .project-draft-label, .project-overview, .project-facts, .project-resource-links, .assistant-header, .assistant-intro, .assistant-suggestions, .assistant-composer) { animation: none !important; }
+}
+
+/* Reference desktop rails: 240px navigation, 280px details, 24px gutter. */
+@media (min-width: 768px) {
+  .home-screen[data-layout="card-shell"] {
+    --sidebar-expanded-width: 240px;
+    --portfolio-right-panel-width: 304px;
+    --project-column-gap: 24px;
+  }
+  .home-screen[data-layout="card-shell"][data-sidebar="open"] { --portfolio-sidebar-width: 240px; }
+  .home-screen[data-layout="card-shell"] .portfolio-assistant { width: 280px; }
+}
+
+/* Each case example is an individual card, rather than one long white surface. */
+.home-screen[data-layout="card-shell"] .project-media,
+.home-screen[data-layout="card-shell"][data-assistant="open"] .project-layout[data-overview-hidden="true"] .project-media {
+  background: transparent; box-shadow: none; border-radius: 0;
+  padding: 0 0 24px; min-height: 0;
+}
+.home-screen[data-layout="card-shell"] .project-media > .case-media {
+  margin: 0 0 16px; overflow: hidden; border-radius: 18px;
+  background: #fff; box-shadow: var(--shell-shadow);
+}
+.home-screen[data-layout="card-shell"] .project-media > .case-media:last-child { margin-bottom: 0; }
+.home-screen[data-layout="card-shell"] .project-media figcaption { display: none; }
+
+@media (min-width: 768px) {
+  .home-screen[data-layout="card-shell"] .portfolio-assistant { right: var(--shell-gutter); }
+}
+
+@media (min-width: 768px) {
+  /* Match the AI intro/suggestions' 12px outer + 8px inner inset. */
+  .home-screen[data-layout="card-shell"] .project-info { padding-inline: 20px; }
+}
+
+/* The original overview inset is the shared spacing reference. */
+@media (min-width: 768px) {
+  .home-screen[data-layout="card-shell"] .project-info { padding-left: 0; padding-right: 16px; }
+  .home-screen[data-layout="card-shell"] .assistant-header { padding-left: 0; padding-right: 8px; }
+  .home-screen[data-layout="card-shell"] .assistant-transcript { padding-left: 0; padding-right: 16px; }
+  .home-screen[data-layout="card-shell"] .assistant-bottom { padding-left: 0; padding-right: 16px; }
+  .home-screen[data-layout="card-shell"] .assistant-intro { padding-left: 0; padding-right: 0; }
+  .home-screen[data-layout="card-shell"] .assistant-suggestions > .ui-button { padding-left: 0; padding-right: 0; }
+}
+.home-screen[data-layout="card-shell"] .project-draft-label,
+.home-screen[data-layout="card-shell"] .assistant-composer > p { display: none; }
+
+/* Native section snapping, as on the reference. Case examples scroll freely inside. */
+.home-screen[data-layout="card-shell"] .portfolio-pager { overflow-y: auto; overflow-x: hidden; scroll-snap-type: y mandatory; overscroll-behavior-y: contain; scrollbar-width: none; }
+.home-screen[data-layout="card-shell"] .portfolio-pager::-webkit-scrollbar { display: none; }
+.home-screen[data-layout="card-shell"] .portfolio-page { scroll-snap-align: start; scroll-snap-stop: always; }
+.home-screen[data-layout="card-shell"] .project-slide { overscroll-behavior-y: auto; }
+.home-screen[data-layout="card-shell"]:has(.playground-view) .portfolio-pager { overflow: hidden; scroll-snap-type: none; }
+@media (max-width: 767px) { .home-screen[data-layout="card-shell"] .portfolio-page { overscroll-behavior-y: auto; } }
+
+
+/* Each section owns its card; the scrolling viewport is always transparent. */
+.home-screen[data-layout="card-shell"] .portfolio-page > section:not(.project-slide) {
+  border-radius: 18px; background: #fff; box-shadow: var(--shell-shadow);
+}
+@media (max-width: 767px) {
+  .home-screen[data-layout="card-shell"] .portfolio-page > section:not(.project-slide) { border-radius: 14px; }
+}
+
+/* Keep the original 16px separation between cards at section boundaries. */
+.home-screen[data-layout="card-shell"] .portfolio-page {
+  box-sizing: border-box;
+  padding-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .home-screen[data-layout="card-shell"] .home-slide {
+    width: 100%;
+    margin-inline: 0;
+  }
+  .home-screen[data-layout="card-shell"][data-section="home"] .portfolio-topbar {
+    left: var(--portfolio-sidebar-width);
+    right: calc(var(--portfolio-assistant-width) + var(--shell-gutter));
+  }
+}
+
+.home-screen[data-layout="card-shell"] .playground-view {
+  border-radius: 18px;
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .home-screen[data-layout="card-shell"] .playground-view { border-radius: 14px; }
+}
+
+.home-screen[data-layout="card-shell"] .playground-view,
+.home-screen[data-layout="card-shell"] .playground-board {
+  background-color: #fff;
+}

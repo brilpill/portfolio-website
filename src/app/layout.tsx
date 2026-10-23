@@ -1,33 +1,42 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Inter } from "next/font/google";
+import localFont from "next/font/local";
+import { UIProvider } from "@/components/ui-provider";
 import { profile } from "@/content/profile";
 import "./globals.css";
+import "./home.css";
 
-// SF Pro on Apple devices; Inter everywhere else.
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+const ronzino = localFont({
+  src: [
+    { path: "../../public/fonts/Ronzino-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../../public/fonts/Ronzino-Medium.woff2", weight: "500", style: "normal" },
+  ],
+  variable: "--font-ronzino",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const radley = localFont({
+  src: [
+    { path: "../../public/fonts/Radley-Regular.ttf", weight: "400", style: "normal" },
+    { path: "../../public/fonts/Radley-Italic.ttf", weight: "400", style: "italic" },
+  ],
+  variable: "--font-radley",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: `${profile.name} — ${profile.role}`,
-  description: profile.oneLiner,
+  title: `${profile.name} — UX/UI Designer & Engineer`,
+  description: "I design how products look, move and feel, and I build them that way.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f5f5f5",
+  themeColor: "#ffffff",
   colorScheme: "light",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} ${geistMono.variable} antialiased`}>
-      <body>{children}</body>
+    <html lang="en" className={`${ronzino.variable} ${radley.variable} antialiased`}>
+      <body><UIProvider>{children}</UIProvider></body>
     </html>
   );
 }

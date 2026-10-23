@@ -1,5 +1,7 @@
 # Oleh Bril — portfolio
 
+> Current project handoff: [docs/portfolio-handoff.md](docs/portfolio-handoff.md). It contains the latest decisions, implementation status, design/motion rules, reference links, and working content brief; older notes below may describe the original skeleton.
+
 A one-screen-per-page portfolio: a sidebar of project tabs on the left, the work in the middle, notes on the right. Scrolling turns one page at a time.
 
 ```bash

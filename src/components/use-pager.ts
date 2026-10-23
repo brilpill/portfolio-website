@@ -1,22 +1,23 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { motionTokens } from "@/lib/motion";
 import type { Paging } from "./settings-store";
 
-export const FLIP_MS = 720;
-const FLIP_EASE = "cubic-bezier(0.76, 0, 0.24, 1)";
+export const FLIP_MS = motionTokens.duration.slide * 1000;
+const FLIP_EASE = `cubic-bezier(${motionTokens.easeOut.join(",")})`;
 
 /** Wheel distance that counts as "turn the page". */
 const WHEEL_THRESHOLD = 12;
 /** A pause this long between wheel events starts a new gesture. */
-const GESTURE_GAP = 160;
+const GESTURE_GAP = 220;
 
 /**
  * Full-screen vertical pager. Every page is exactly one viewport tall; the track slides by
  * one viewport per gesture. The track's `translateY(-n * 100%)` works because the track is
  * as tall as the viewport and the pages overflow it.
  */
-export function usePager(count: number, paging: Paging, blocked: boolean) {
+export function usePager(count: number, paging: Paging, blocked: boolean, elasticSections = false) {
   const [index, setIndex] = useState(0);
   const indexRef = useRef(0);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -51,7 +52,7 @@ export function usePager(count: number, paging: Paging, blocked: boolean) {
         return;
       }
       if (!instant) lockUntil.current = performance.now() + FLIP_MS;
-      place(i, 0, !instant);
+      place(i, 0, !instant && !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
       if (i !== indexRef.current) {
         indexRef.current = i;
         setIndex(i);
@@ -93,23 +94,43 @@ export function usePager(count: number, paging: Paging, blocked: boolean) {
     const viewport = viewportRef.current;
     if (!viewport || paging !== "flip") return;
 
-    // One gesture turns one page. Trackpads keep sending decaying "inertia" deltas for a second
-    // or more after the finger lifts; those must not turn more pages. A new gesture is a pause,
-    // a fresh push (deltas rising again), or a mouse wheel that keeps turning (steady deltas).
-    const gesture = { last: 0, dir: 0, acc: 0, armed: true, recent: [] as number[] };
+    // One gesture turns one page. A trackpad's momentum can last longer than the slide;
+    // a steady stream of wheel events remains the same gesture until it pauses or builds
+    // from a clear low-delta valley into a new push.
+    let settleTimer: ReturnType<typeof setTimeout> | undefined;
+    const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const gesture = { last: 0, dir: 0, acc: 0, armed: true, turned: false, recent: [] as number[] };
 
     const onWheel = (e: WheelEvent) => {
       if (blockedRef.current || e.ctrlKey) return;
+      if (e.target instanceof Node && !viewport.contains(e.target)) return;
       if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
       const now = performance.now();
       const dir = Math.sign(e.deltaY);
       if (!dir) return;
 
+      // Protect the destination during the transition and a short settling period.
+      // Never extend this deadline as momentum events arrive: that traps fast scrollers.
+      const continued = dir === gesture.dir && now - gesture.last <= GESTURE_GAP;
+      if (now < lockUntil.current || (gesture.turned && continued && now < lockUntil.current + 100)) {
+        e.preventDefault();
+        gesture.turned = true;
+        gesture.armed = false;
+        gesture.acc = 0;
+        gesture.last = now;
+        gesture.dir = dir;
+        return;
+      }
+      gesture.turned = false;
+
       // A panel that can still scroll this way gets the wheel; the page only turns at its edge,
       // and only on a fresh gesture.
       if (scrollableToward(e.target, dir)) {
+        clearTimeout(settleTimer);
+        if (gesture.acc) { place(indexRef.current, 0, !reduced()); gesture.acc = 0; }
         gesture.armed = false;
         gesture.last = now;
+        gesture.dir = dir;
         return;
       }
       e.preventDefault();
@@ -120,26 +141,37 @@ export function usePager(count: number, paging: Paging, blocked: boolean) {
       const gap = reversed ? Infinity : now - gesture.last;
       gesture.last = now;
       gesture.dir = dir;
-      if (gap > GESTURE_GAP) gesture.recent = [];
+      if (gap > GESTURE_GAP) { gesture.recent = []; gesture.acc = 0; }
       gesture.recent.push(Math.abs(delta));
       if (gesture.recent.length > 8) gesture.recent.shift();
 
-      // While a page is turning, the rest of this gesture is spent.
-      if (now < lockUntil.current) {
-        gesture.armed = false;
-        gesture.acc = 0;
-        return;
-      }
-      if (!gesture.armed && (gap > GESTURE_GAP || isNewPush(gesture.recent))) gesture.armed = true;
+      // Sustained intentional scrolling can continue at an edge after a bounded
+      // cooldown; small decaying momentum still cannot trigger another slide.
+      const sustainedPush = now >= lockUntil.current + 300 && Math.abs(delta) >= 24;
+      if (!gesture.armed && (gap > GESTURE_GAP || isNewPush(gesture.recent) || sustainedPush)) gesture.armed = true;
       if (!gesture.armed) return;
 
       if (gap > 400 || Math.sign(gesture.acc) === -dir) gesture.acc = 0;
       gesture.acc += delta;
-      if (Math.abs(gesture.acc) < WHEEL_THRESHOLD) return;
+      const threshold = elasticSections ? 110 : WHEEL_THRESHOLD;
+      if (Math.abs(gesture.acc) < threshold) {
+        if (elasticSections) {
+          const target = indexRef.current + dir;
+          if (!reduced()) place(indexRef.current, -gesture.acc * (target >= 0 && target < count ? .55 : .18), false);
+          clearTimeout(settleTimer);
+          settleTimer = setTimeout(() => {
+            gesture.acc = 0;
+            place(indexRef.current, 0, !reduced());
+          }, 140);
+        }
+        return;
+      }
+      clearTimeout(settleTimer);
       gesture.armed = false;
       gesture.acc = 0;
       const target = indexRef.current + dir;
-      if (target >= 0 && target < count) go(target);
+      if (target >= 0 && target < count) { gesture.turned = true; go(target); }
+      else place(indexRef.current, 0, !reduced());
     };
 
     // Touch: the page follows the finger, then settles on the nearest page.
@@ -191,7 +223,7 @@ export function usePager(count: number, paging: Paging, blocked: boolean) {
       touch = null;
       const velocity = dy / Math.max(1, performance.now() - t0);
       const far = Math.abs(dy) > viewport.clientHeight * 0.18;
-      const flick = Math.abs(velocity) > 0.35 && Math.abs(dy) > 24;
+      const flick = Math.abs(velocity) > 0.35 && Math.abs(dy) > (elasticSections ? 64 : 24);
       const dir = far || flick ? -Math.sign(dy) : 0;
       const target = indexRef.current + dir;
       if (dir && target >= 0 && target < count) go(target);
@@ -210,6 +242,7 @@ export function usePager(count: number, paging: Paging, blocked: boolean) {
     viewport.addEventListener("touchcancel", onTouchEnd);
     viewport.addEventListener("scroll", onScroll);
     return () => {
+      clearTimeout(settleTimer);
       window.removeEventListener("wheel", onWheel);
       viewport.removeEventListener("touchstart", onTouchStart);
       viewport.removeEventListener("touchmove", onTouchMove);
@@ -217,20 +250,18 @@ export function usePager(count: number, paging: Paging, blocked: boolean) {
       viewport.removeEventListener("touchcancel", onTouchEnd);
       viewport.removeEventListener("scroll", onScroll);
     };
-  }, [paging, count, go, place]);
+  }, [paging, count, go, place, elasticSections]);
 
   return { index, go, viewportRef, trackRef };
 }
 
-/** Compares the last 4 wheel deltas with the 4 before them. Inertia only ever decays. */
+/** Detects a renewed push after the prior gesture has slowed almost to rest. */
 function isNewPush(recent: number[]) {
   if (recent.length < 8) return false;
   const avg = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
   const older = avg(recent.slice(0, 4));
   const newer = avg(recent.slice(4));
-  const rising = newer > older * 1.2 && newer > 8;
-  const steadyWheel = newer >= older * 0.98 && newer >= 30;
-  return rising || steadyWheel;
+  return older < 8 && newer > Math.max(18, older * 2.5);
 }
 
 /** True when an element between `target` and the page can still scroll in `dir` (1 = down). */

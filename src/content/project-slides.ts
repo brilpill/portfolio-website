@@ -56,6 +56,21 @@ export type ProjectSlideContent = {
   webUrl?: string;
   otherUrl?: string;
   media: ProjectSlideMedia[];
+  // Fields for the "quiet facts" case details (experiment). Empty ones are simply not shown.
+  /** One line under the name, e.g. "AI health app for daily tracking". */
+  oneLiner?: string;
+  /** The single title of the details column. */
+  headline?: string;
+  /** Two or three short lines: the problem and my part. */
+  summary?: string;
+  platform?: string;
+  status?: "Shipped" | "Unreleased" | "Concept" | "Experiment";
+  /** Tile colour behind the project icon; defaults to the soft peach. */
+  tint?: string;
+  appStoreUrl?: string;
+  playStoreUrl?: string;
+  /** Only cases with a full study get the "Open case study" button. */
+  caseStudyUrl?: string;
 };
 
 /** Fictional placeholder copy shared by every project slide. */
@@ -64,6 +79,9 @@ const sampleProjectCopy = {
   role: "UX Review / UI Design / Visual Direction",
   timeline: "6 weeks · 2026",
   industry: "Digital Products",
+  headline: "Making a complex flow feel simple.",
+  summary: "I designed the core flows and the interface, keeping each step clear and the details consistent.",
+  status: "Concept" as const,
 };
 
 export const projectSlides: ProjectSlideContent[] = [
@@ -71,7 +89,10 @@ export const projectSlides: ProjectSlideContent[] = [
     slug: "luminasset", title: "LuminAsset", group: "Mobile",
     format: "Mobile App",
     ...sampleProjectCopy,
-    figmaUrl: "",
+    oneLiner: "Sample: a cash loan app in five steps",
+    figmaUrl: "https://www.figma.com/design/Zz5XMxNo2hP9DHpavqBhO7/brilpill",
+    // Sample: shows the button; the case study page itself does not exist yet.
+    caseStudyUrl: "#luminasset",
     media: sampleMedia,
   },
   {

@@ -1091,3 +1091,13 @@ Both pager modes reset the destination project's vertical scroll to zero on entr
 
 ### Case-position reset reverted — 23 October 2026
 User rejected the reset-on-entry behavior. Removed the reset helper and both calls; cases retain their previous scroll position again.
+
+### Rounded playground artwork — 23 October 2026
+Applied the 12px preview radius to actual image bounds, including covers and secondary stack images. Centered intrinsic image sizing preserves aspect ratio within existing pin boxes, so portrait/landscape corners are rounded even with letterboxing. Browser verified radius and image size limits.
+
+
+### Playground spacing — 23 October 2026
+Increased horizontal and vertical pin gaps by 20%: desktop 64px to 76.8px; mobile 40px to 48px. Alternating column offsets derive from the gap automatically.
+
+### More-project link hover — 23 October 2026
+Removed the shared background highlight from expanded sidebar “x more projects” links. Hover/focus now darkens and underlines the label with a small arrow nudge; active row remains background-free. Rail count interaction unchanged. Browser verified transparent hover and no highlight span; TypeScript/lint pass.

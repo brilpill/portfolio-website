@@ -1,0 +1,36 @@
+/* Case details, option B "quiet facts" (experiment): identity, one title, a short summary, facts, thin actions. */
+.case-facts { gap: 0; }
+.case-facts-id { display: flex; align-items: center; gap: 12px; }
+/* The soft peach tile from the reference; a project can set its own tint. */
+.case-facts-tile { display: grid; flex: none; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: #fde6dc; color: #3a2a24; }
+.case-facts-tile svg { width: 20px; height: 20px; }
+.case-facts-tile img { width: 24px; height: 24px; border-radius: 6px; }
+.case-facts-name { display: block; color: var(--foreground); font-size: var(--text-ui); font-weight: 500; line-height: 20px; letter-spacing: var(--tracking-ui); }
+.case-facts-line { display: block; color: var(--muted-foreground); font-size: var(--text-caption); line-height: 18px; }
+.case-facts-title { margin: 24px 0 8px; color: var(--foreground); font: 400 24px/1.2 var(--font-radley), serif; letter-spacing: var(--tracking-section); text-wrap: balance; }
+.case-facts-summary { margin: 0; color: var(--body-text); font-size: var(--text-ui); line-height: 22px; text-wrap: pretty; }
+.case-facts-list { margin: 24px 0 0; }
+.case-facts-list > div { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; border-top: 1px solid var(--border); font-size: var(--text-label); line-height: 20px; }
+.case-facts-list dt { color: var(--muted-foreground); }
+.case-facts-list dd { margin: 0; color: var(--foreground); text-align: right; }
+/* Status always carries a word, the dot only adds a hint. */
+.case-facts-list dd[data-status] { display: inline-flex; align-items: center; gap: 6px; }
+.case-facts-list dd[data-status]::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--muted-foreground); }
+.case-facts-list dd[data-status="Shipped"]::before { background: #2f9e5b; }
+.case-facts-list dd[data-status="Unreleased"]::before { background: #d39b2a; }
+.case-facts-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: auto; padding-top: 24px; }
+.case-facts-open { height: 28px; }
+.case-facts-link { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; color: var(--muted-foreground); font-size: var(--text-label); letter-spacing: var(--tracking-ui); }
+.case-facts-link svg { transition: transform var(--motion-fast) var(--motion-ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .case-facts-link:hover { color: var(--foreground); }
+  .case-facts-link:hover svg { transform: translate(1px, -1px); }
+}
+@media (max-width: 767px) { .case-facts-open, .case-facts-link { min-height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .case-facts-link svg { transition: none; } }
+
+/* The same staggered arrival as the classic details on the card shell. */
+.home-screen[data-layout="card-shell"] .portfolio-page[data-state="active"] .case-facts-id { animation: card-shell-sidebar-in 900ms cubic-bezier(0, 0, .2, 1) 150ms both; }
+.home-screen[data-layout="card-shell"] .portfolio-page[data-state="active"] :is(.case-facts-title, .case-facts-summary, .case-facts-list) { animation: card-shell-sidebar-in 900ms cubic-bezier(0, 0, .2, 1) 330ms both; }
+.home-screen[data-layout="card-shell"] .portfolio-page[data-state="active"] .case-facts-actions { animation: card-shell-sidebar-in 900ms cubic-bezier(0, 0, .2, 1) 510ms both; }
+@media (prefers-reduced-motion: reduce) { .home-screen[data-layout="card-shell"] :is(.case-facts-id, .case-facts-title, .case-facts-summary, .case-facts-list, .case-facts-actions) { animation: none !important; } }

@@ -90,7 +90,7 @@ function MoreReveal({ label, more }: { label: string; more: GroupMore }) {
   const interaction = useSidebarMotionItem(more.slug, current);
   const name = `${more.count} more ${label.toLowerCase()} project${more.count === 1 ? "" : "s"}`;
   return <div className={`nav-more-reveal${current ? " is-pinned" : ""}`}><div>
-    <a href={`#${more.slug}`} {...interaction.events} className={`nav-more-link${current ? " is-current" : ""}`} aria-label={name} aria-current={current ? "page" : undefined} onClick={event => { event.preventDefault(); more.onJump(more.slug); }}><SidebarMotionHighlight visible={interaction.highlighted} /><span className="nav-more-label">{more.count} more project{more.count === 1 ? "" : "s"}</span><ArrowRightIcon size={14} aria-hidden /></a>
+    <a href={`#${more.slug}`} {...interaction.events} className={`nav-more-link${current ? " is-current" : ""}`} aria-label={name} aria-current={current ? "page" : undefined} onClick={event => { event.preventDefault(); more.onJump(more.slug); }}><span className="nav-more-label">{more.count} more project{more.count === 1 ? "" : "s"}</span><ArrowRightIcon size={14} aria-hidden /></a>
   </div></div>;
 }
 
@@ -125,7 +125,7 @@ function SidebarContent({ onJump, onOpen, active, openPanel, compact = false, as
   </>;
 }
 
-export function PortfolioHome({ layout = "default" }: { layout?: "default" | "card-shell" }) {
+export function PortfolioHome({ layout = "default", caseSidebar = "classic" }: { layout?: "default" | "card-shell"; caseSidebar?: "classic" | "facts" }) {
   const [panel, setPanel] = useState<Panel>(null);
   const [factIndex, setFactIndex] = useState(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -267,7 +267,7 @@ export function PortfolioHome({ layout = "default" }: { layout?: "default" | "ca
             const ProjectIcon = groups.flatMap((group) => group.items).find((item) => item.slug === id)?.icon;
             return (
               <div key={id} className="portfolio-page" data-page={id} data-state={i === index ? "active" : i < index ? "before" : "after"} inert={i !== index} aria-hidden={i !== index}>
-                {id === "home" ? <HomeSlide onOpen={openPanel} onFacts={openFacts} active={index === 0 && panel !== "playground"} /> : id === "mobile-more" || id === "web-more" ? <MoreProjectsSlide group={id === "mobile-more" ? "Mobile" : "Web"} onPreviewChange={setProjectPreviewOpen} /> : id === "about" ? <AboutSlide /> : id === "experience" ? <ExperienceSlide /> : id === "contact" ? <ContactSlide /> : id === "process" ? <ProcessSlide onContact={() => openPanel("contact")} /> : project && ProjectIcon ? <ProjectSlide project={project} icon={ProjectIcon} overviewHidden={assistantOpen} /> : null}
+                {id === "home" ? <HomeSlide onOpen={openPanel} onFacts={openFacts} active={index === 0 && panel !== "playground"} /> : id === "mobile-more" || id === "web-more" ? <MoreProjectsSlide group={id === "mobile-more" ? "Mobile" : "Web"} onPreviewChange={setProjectPreviewOpen} /> : id === "about" ? <AboutSlide /> : id === "experience" ? <ExperienceSlide /> : id === "contact" ? <ContactSlide /> : id === "process" ? <ProcessSlide onContact={() => openPanel("contact")} /> : project && ProjectIcon ? <ProjectSlide sidebar={caseSidebar} project={project} icon={ProjectIcon} overviewHidden={assistantOpen} /> : null}
               </div>
             );
           })}

@@ -1,4 +1,5 @@
-/* Isolated alternative shell; the original portfolio remains at /. */
+/* Card shell: the main layout. Sections and case examples are white cards on a soft grey canvas,
+   and the page scrolls with section snapping instead of the page-flip pager. */
 .home-screen[data-layout="card-shell"] {
   --home-sidebar: transparent;
   --shell-gutter: 8px;
@@ -29,6 +30,10 @@
 .home-screen[data-layout="card-shell"] .project-info .project-badge { background: rgb(255 255 255 / .55); }
 .home-screen[data-layout="card-shell"] .assistant-composer-box { background: rgb(255 255 255 / .6); }
 @media (max-width: 767px) {
+  /* The phone header stays fixed above the cards: case details start below it, and the Home status
+     lines up with the menu button even though the card begins 8px down. */
+  .home-screen[data-layout="card-shell"] .project-info { padding-top: calc(var(--portfolio-header-height) + 8px); }
+  .home-screen[data-layout="card-shell"] .home-work-status { top: calc(10px - var(--shell-gutter)); }
   .home-screen[data-layout="card-shell"] .portfolio-pager { left: 8px; border-radius: 0; }
   .home-screen[data-layout="card-shell"] .portfolio-assistant { top: 0; background: #f8f8f8; }
   .home-screen[data-layout="card-shell"] .project-info { height: auto; max-height: none; }

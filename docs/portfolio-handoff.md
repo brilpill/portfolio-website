@@ -1105,3 +1105,61 @@ Removed the shared background highlight from expanded sidebar “x more projects
 
 ### More galleries are navigation-only — 23 October 2026
 Removed Mobile More and Web More from the scrolling track. They now render as separate sidebar-accessed galleries, with direct hashes retained. Wheel/touch/arrow navigation skips them, so the final featured mobile case leads straight to the first featured web case, and the final web case leads to About. Gallery browsing does not advance the pager; selecting a regular sidebar item restores the slide track. Browser verified scroll handoff, sidebar opening, wheel isolation, Home exit, and direct More links. TypeScript/lint pass.
+
+### Active-group More visibility — 23 October 2026
+Expanded-sidebar “X more projects” now appears only when a case from that group, or its More gallery, is active. Hover/focus and touch no longer reveal inactive groups. Hidden links are inert and excluded from accessibility navigation. Rail counts retain their existing access. Browser verified Home hover stays hidden, Mobile/Web visibility switches with active case, and the gallery retains its link; TypeScript/lint pass.
+
+### Arrow navigation after sidebar activation — 23 October 2026
+Sidebar navigation now transfers focus to the destination heading once that section actually becomes active, using preventScroll so case positions are preserved. Arrow/Page Up/Down also work from focused sidebar section links; form controls and other interactive widgets retain their own keys. Repeated arrow navigation focuses the new heading. Browser verified sidebar click then Down/Up across Snooze Band and TutorIQ. TypeScript passes; lint passed for this change.
+
+### Rail group dividers and contextual counts — 23 October 2026
+Rail now always shows a divider before Mobile, Web and About. The active Mobile/Web group gets its +X More link below its project icons; inactive groups show no count. More gallery keeps that group's count visible. Browser verified Home has dividers/no counts, Mobile +4 and Web +2 appear below their icons, and counts open their galleries. TypeScript/lint pass.
+
+### Ask AI preserves Playground — 23 October 2026
+Opening the assistant now retains panel=playground instead of clearing it. Other transient panels still close when AI opens. Browser verified AI open/close leaves the same playground canvas mounted and the Home/slide track hidden. TypeScript/lint pass.
+
+### Directional case overview entrance — 23 October 2026
+Pager exposes forward/backward direction for both flip and native scroll modes. Case overview entrance animations now run only on forward entry; backward/upward entry renders badge, body, facts and links immediately. Browser verified upward scroll from TutorIQ to Snooze Band has animation:none and forward navigation restores the entrance. TypeScript/lint pass.
+
+### More links also reveal on project hover — 23 October 2026
+More is now visible for the active group OR while hovering that group's project icons/items. Hovering only the group heading does not reveal it. Once revealed, it remains reachable until the pointer leaves the group. Rail +X links now use the same darker/underlined text hover with no shared background pill. Browser verified expanded reveal/hide and rail styling; lint passes. TypeScript check encountered an unrelated existing optional-string error in case-study-nav.tsx:28.
+
+### More surface, layout comparison, and navigation fix — 23 October 2026
+- More now owns a raised white rounded surface like the other sections; removed its “Mobile / More” eyebrow.
+- Separate `/explore/more-projects` comparison presents gallery, compact list and featured-first variants using current Mobile/Web content. Main More remains on gallery pending preference.
+- Fixed sidebar navigation from More to a main case: reveal the main track synchronously before calculating its scroll destination. Previously scrolling the hidden track clamped its position to Home.
+- Browser verified both More galleries still open project previews, sidebar navigation lands on TutorIQ instead of Home, white surface/no eyebrow, and all three comparison controls. TypeScript/lint pass.
+
+### Mobbin inspiration for More Projects — 23 October 2026
+Research-only review of returned screenshots; no UI implementation in this turn.
+- Unseen Studio: two-column equal-size image covers, minimal title/descriptor below, outgoing arrow. Strongest baseline for the four Mobile More projects; borrow grid hierarchy, retain our white surface/Radley/Ronzino and omit unnecessary filter bar. https://mobbin.com/sites/sections/79d328bc-800b-4830-9de1-7ef8fd2dd00f
+- MOUTHWASH Studio: unequal image sizes and staggered columns create hierarchy. Useful if one project should be featured; avoid if all additional projects have equal weight. https://mobbin.com/sites/sections/e2bc218a-3568-43c0-a95e-b95b0d829e6c
+- Fiasco: varied image proportions with short descriptions and small category tags below. Useful for a more editorial, contextual gallery. https://mobbin.com/sites/sections/4ed7c118-a866-41fa-824c-32a24323c927
+- Analogue Agency: compact project strip using thumbnail, name and short descriptor, separated by fine vertical rules. Good compact index direction. https://mobbin.com/sites/sections/8e1d64b0-7c88-4989-b510-515186fc2b75
+Additional app references reviewed: Replit project grid https://mobbin.com/screens/6c3e21b8-c719-4e53-9c59-a33ee2d7fa8b ; Recraft gallery https://mobbin.com/screens/805440bc-f029-4567-a5cc-b2f191ff6317 ; Variant https://mobbin.com/screens/18a30f4a-3071-42a7-a378-7b0b85011146 ; Plane https://mobbin.com/screens/e004cca5-f406-4474-9f2a-a5668bcd8e50 . Portfolio sections were more relevant than their dashboard controls.
+
+### Selected More layout: Unseen-inspired gallery — 23 October 2026
+Applied the selected two-column project grid to More's default gallery variant. Landscape covers use a consistent 1.9 aspect ratio and 12px corners; below them are a compact Ronzino project title/type, subtle baseline and right-aligned arrow. Header is centered; raised white surface retained, without eyebrow/breadcrumb. Hover gently zooms cover and nudges arrow; reduced-motion fallback retained. Mobile/narrow containers use one column. Current projects without cover artwork retain honest pending previews. Browser verified desktop/mobile columns, four Mobile projects, no eyebrow and working project preview; TypeScript/lint pass. Reference https://mobbin.com/sites/sections/79d328bc-800b-4830-9de1-7ef8fd2dd00f . Screenshots /tmp/more-unseen-desktop.png and /tmp/more-unseen-mobile.png.
+
+### More Projects deferred to phase two — 23 October 2026
+Set moreProjectsEnabled=false. Removed More entry points in expanded/mobile navigation and rail, including hover reveals. Old More/gallery-project hashes resolve to Home; /explore/more-projects returns the not-found view. Retained gallery content, layouts and component source for phase two. More remains excluded from the scrolling sequence. Browser verified both sidebar states, legacy hash handling and disabled comparison route. TypeScript/lint pass.
+
+### Hero action expansions — 23 October 2026
+- Reference: https://ktz.dk/ — Contact expands in place from a small dark button into a contact card.
+- Hero Contact and Random fact now unfold inline below the greeting, with the action pair centered as its width changes. No modal backdrop; greeting stays stationary.
+- Contact reveals existing Email, LinkedIn and Telegram destinations. Random fact uses the existing four facts with an Another fact action.
+- 380ms expansion, short detail fade, reduced-motion support. Close using the header toggle/X, Escape, or an outside click. Only one opens at a time.
+- On narrow screens the sibling action hides while expanded so the card fits. Other Contact entry points retain their existing behavior.
+- Verified desktop/mobile rendering, contact reveal, fact cycling, Escape; TypeScript and lint checked.
+
+### Hero expansion motion correction — 23 October 2026
+- Removed nested Motion layout scaling, which stretched labels and icons during expansion/collapse.
+- Animate the card dimensions directly around fixed-width details; content no longer reflows or scales during the transition. Detail height is measured so longer facts fit.
+- Reference-like 380ms eased expansion, 150–220ms label fade/slide, delayed detail entrance and faster 120ms detail exit. Centered action pair and reduced-motion behavior retained.
+- Browser verified icons remain exactly 16×16 during opening and closing, repeated toggles, mobile layout, fact cycling and reduced motion. TypeScript and lint pass.
+
+### Case-study Contact and shared contact feedback — 23 October 2026
+- Case-study floating Contact now uses the same expanding component as the hero, anchored at its bottom so it grows upward and remains centered.
+- Contact rows share a moving hover/focus highlight and small icon motion. Email is a copy button, never an outbound email link in these cards.
+- Successful clipboard writes show Copied and animate the copy icon into a check-square for 2.2 seconds; failed writes announce failure instead of claiming success. Reduced motion supported.
+- Verified fixed bottom edge during expansion, mobile fit, Escape, actual clipboard contents and matching hero copy feedback. TypeScript and lint pass.

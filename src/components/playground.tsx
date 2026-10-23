@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { animate, motion, useMotionValue } from "motion/react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { MediaViewer, originOf } from "./media-viewer";
 import { playgroundItems, type PlaygroundItem } from "@/content/playground";
 import { motionTokens } from "@/lib/motion";
 
@@ -21,8 +21,6 @@ export function Playground({ onClose }: { onClose: () => void }) {
   const [selected, setSelected] = useState<PlaygroundItem | null>(null);
   const [open, setOpen] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
-  const galleryGesture = useRef(false);
-  const galleryTrack = useRef<HTMLDivElement>(null);
   const zoom = useMotionValue(1);
   const zoomCanvas = useRef<(scale: number, clientX?: number, clientY?: number) => void>(() => {});
   const [origin, setOrigin] = useState({ x: 0, y: 0, scale: .4 });
@@ -126,9 +124,8 @@ export function Playground({ onClose }: { onClose: () => void }) {
   }
   function preview(item: PlaygroundItem, element: HTMLButtonElement, timestamp: number) {
     if (dragging.current || timestamp < suppressClickUntil.current) return;
-    const rect = element.getBoundingClientRect();
     trigger.current = element;
-    setOrigin({ x: rect.left + rect.width / 2 - innerWidth / 2, y: rect.top + rect.height / 2 - innerHeight / 2, scale: Math.min(.7, rect.width / Math.min(860, innerWidth - 48)) });
+    setOrigin(originOf(element, 860));
     setSelected(item); setImageIndex(0); setOpen(true);
   }
 
@@ -176,44 +173,7 @@ export function Playground({ onClose }: { onClose: () => void }) {
       </motion.div>
     </div>
     <p id="playground-help" className="home-sr-only">Drag or scroll to pan; Shift-scroll moves horizontally. Pinch or press plus/minus to zoom; zero resets. Arrow keys pan when the board is focused; Home resets. Select an image to preview; Escape returns to the previous slide.</p>
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="playground-preview" showCloseButton={false} finalFocus={trigger}
-        onKeyDown={event => {
-          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-          event.preventDefault(); event.stopPropagation();
-          setImageIndex(index => clamp(index + (event.key === "ArrowRight" ? 1 : -1), 0, (selected?.images.length ?? 1) - 1));
-        }}
-        onClick={event => { if (event.target === event.currentTarget) setOpen(false); }}
-        style={{ "--preview-x": `${origin.x}px`, "--preview-y": `${origin.y}px`, "--preview-scale": origin.scale } as CSSProperties}>
-        {selected && <>
-          <DialogTitle className="home-sr-only">{selected.title}</DialogTitle>
-          <DialogDescription className="home-sr-only">Image gallery. Swipe or use arrow keys to select images. Press Escape to close.</DialogDescription>
-          <DialogClose className="home-sr-only">Close image preview</DialogClose>
-          <motion.div className="playground-gallery" onClick={event => { if (event.target === event.currentTarget) setOpen(false); }}
-            onPanStart={() => { galleryGesture.current = true; galleryTrack.current?.setAttribute("data-swiping", "true"); }}
-            onPan={(_, info) => {
-              const atEdge = (imageIndex === 0 && info.offset.x > 0) || (imageIndex === selected.images.length - 1 && info.offset.x < 0);
-              galleryTrack.current?.style.setProperty("--swipe-x", `${info.offset.x * (atEdge ? .2 : 1)}px`);
-            }}
-            onPanEnd={(_, info) => {
-              galleryTrack.current?.removeAttribute("data-swiping");
-              galleryTrack.current?.style.setProperty("--swipe-x", "0px");
-              const horizontal = Math.abs(info.offset.x) > Math.abs(info.offset.y);
-              if (horizontal && (Math.abs(info.offset.x) > 40 || (Math.abs(info.offset.x) > 10 && Math.abs(info.velocity.x) > 450))) setImageIndex(index => clamp(index + (info.offset.x < 0 ? 1 : -1), 0, selected.images.length - 1));
-              setTimeout(() => { galleryGesture.current = false; }, 0);
-            }}>
-            <div ref={galleryTrack} className="playground-gallery-track" style={{ "--gallery-index": imageIndex } as CSSProperties}>
-              {selected.images.map((image, index) => <button key={`${image.src}-${index}`} type="button"
-                className="playground-gallery-image" data-current={index === imageIndex} aria-label={`View image ${index + 1} of ${selected.images.length}: ${image.alt}`}
-                aria-current={index === imageIndex ? "true" : undefined}
-                onFocus={event => { if (event.currentTarget.matches(":focus-visible") && index !== imageIndex) { setImageIndex(index); } }} onClick={() => { if (!galleryGesture.current && index !== imageIndex) { setImageIndex(index); } }}>
-                <Image src={image.src} alt={image.alt} fill draggable={false} sizes="(max-width: 767px) 78vw, 820px" />
-              </button>)}
-            </div>
-          </motion.div>
-          <p className="home-sr-only" aria-live="polite">Image {imageIndex + 1} of {selected.images.length}</p>
-        </>}
-      </DialogContent>
-    </Dialog>
+    {/* The shared full-screen viewer; a pin with several images keeps its own slider. */}
+    {selected && <MediaViewer open={open} onOpenChange={setOpen} title={selected.title} items={selected.images} index={imageIndex} onIndexChange={setImageIndex} trigger={trigger} origin={origin} size="narrow" />}
   </section>;
 }

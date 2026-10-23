@@ -55,6 +55,8 @@ export type ProjectSlideContent = {
   figmaUrl: string;
   webUrl?: string;
   otherUrl?: string;
+  /** The full case study page; shown as the one emphasised link. */
+  caseStudyUrl?: string;
   media: ProjectSlideMedia[];
   /** The one title of the case details; falls back to "Title: Format". */
   headline?: string;
@@ -76,7 +78,9 @@ export const projectSlides: ProjectSlideContent[] = [
     slug: "luminasset", title: "LuminAsset", group: "Mobile",
     format: "Mobile App",
     ...sampleProjectCopy,
-    figmaUrl: "",
+    // Placeholder links so every link style shows; replace with the real ones before going public.
+    figmaUrl: "https://example.com/figma", webUrl: "https://example.com", otherUrl: "https://example.com/other",
+    caseStudyUrl: "/cases/luminasset",
     media: sampleMedia,
   },
   {
@@ -179,6 +183,9 @@ export const projectSlides: ProjectSlideContent[] = [
   },
 ];
 
+/** Phase two: keep More content available in source, hidden from the live portfolio. */
+export const moreProjectsEnabled = false;
+
 export const portfolioSlideIds = [
   "home",
   ...projectSlides.filter(project => project.group === "Mobile" && project.placement !== "more").map(project => project.slug),
@@ -196,5 +203,6 @@ export const sectionTitles: Record<string, string> = {
 /** More projects resolve to their gallery rather than entering the main slide sequence. */
 export function projectDestination(slug: string) {
   const project = projectSlides.find(item => item.slug === slug);
+  if (!moreProjectsEnabled && (project?.placement === "more" || slug === "mobile-more" || slug === "web-more")) return "home";
   return project?.placement === "more" ? `${project.group.toLowerCase()}-more` : slug;
 }

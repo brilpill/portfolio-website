@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { type Icon } from "@phosphor-icons/react";
 import type { ProjectSlideContent } from "@/content/project-slides";
-import { Button } from "@/components/ui/button";
+import { CaseLinks } from "./case-links";
 import { CaseMedia } from "./case-media";
 
 type Props = {
@@ -12,11 +12,6 @@ type Props = {
 
 /** Shared project layout. Copy and media are deliberately supplied through content data. */
 export function ProjectSlide({ project, icon: ProjectIcon, overviewHidden = false }: Props) {
-  const links = [
-    { label: "Figma", href: project.figmaUrl },
-    { label: "Weblink", href: project.webUrl },
-    { label: "Other link", href: project.otherUrl },
-  ];
   return (
     <section className="project-slide" aria-labelledby={`project-${project.slug}`}>
       <div className="project-layout" data-overview-hidden={overviewHidden || undefined}>
@@ -41,18 +36,7 @@ export function ProjectSlide({ project, icon: ProjectIcon, overviewHidden = fals
               <div><dt>Timeline - Year</dt><dd>{project.timeline || "—"}</dd></div>
               <div><dt>Industry</dt><dd>{project.industry || "—"}</dd></div>
             </dl>
-            <div className="project-resource-links" role="group" aria-label={`${project.title} links`}>
-              {links.map(({ label, href }) => {
-                const content = <><span className="project-resource-label">{label}</span><span className="project-resource-open">Open<Image src="/figma/project-links/arrow-up-right.svg" alt="" width={14} height={14} /></span></>;
-                return href ? (
-                  <Button key={label} variant="quiet" className="project-resource-row" nativeButton={false} role="link" render={<a href={href} target="_blank" rel="noopener noreferrer" />} aria-label={`Open ${project.title} ${label}`}>{content}</Button>
-                ) : (
-                  <div key={label} className="project-resource-unavailable" title={`${label} link has not been added yet`}>
-                    <Button variant="quiet" className="project-resource-row" disabled aria-label={`Open ${project.title} ${label}`}>{content}</Button>
-                  </div>
-                );
-              })}
-            </div>
+            <CaseLinks project={project} />
           </div>
 
         </aside>

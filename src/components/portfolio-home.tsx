@@ -1,5 +1,6 @@
 "use client";
 
+import { flushSync } from "react-dom";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   ArrowRightIcon, ArrowUpRightIcon, AtomIcon,
@@ -7,12 +8,13 @@ import {
   DiamondsFourIcon,
   GraduationCapIcon, HouseSimpleIcon, LightningIcon,
   ListIcon, StackIcon, MoonStarsIcon,
-  PaperPlaneTiltIcon, ShuffleIcon, SparkleIcon,
+  ShuffleIcon,
   UserIcon, XIcon, KeyIcon, WaveformSlashIcon,
   type Icon,
 } from "@phosphor-icons/react";
 import { ProfileMenu } from "./profile-menu";
 import { SidebarResizer } from "./sidebar-resizer";
+import { AskAiIcon } from "./ask-ai-icon";
 import { AssistantPanel } from "./assistant-panel";
 import { SoundWaveform } from "./sound-waveform";
 import { playUiSound } from "./ui-sound";
@@ -23,6 +25,7 @@ import { Sheet, SheetContent, SheetTitle, SheetDescription, SheetClose } from "@
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import type { ReactElement, ReactNode } from "react";
 import { profile } from "@/content/profile";
+import { HeroActions } from "./hero-actions";
 import { HeroSeedling } from "./hero-seedling";
 import { SocialLinks } from "./social-links";
 import { Playground } from "./playground";
@@ -33,7 +36,7 @@ import { MoreProjectsSlide } from "./more-projects-slide";
 import { AboutSlide, ExperienceSlide, ContactSlide } from "./content-slides";
 import { usePager } from "./use-pager";
 import { motionTokens } from "@/lib/motion";
-import { portfolioSlideIds, projectSlides, sectionTitles, projectDestination } from "@/content/project-slides";
+import { portfolioSlideIds, projectSlides, sectionTitles, projectDestination, moreProjectsEnabled } from "@/content/project-slides";
 
 // More galleries are sidebar-only destinations; counts derive from the content inventory.
 const moreCount = (group: "Mobile" | "Web") => projectSlides.filter(project => project.group === group && project.placement === "more").length;
@@ -69,20 +72,20 @@ function SidebarItem({ label, icon: ItemIcon, slug, panel, compact, active, open
 
 type GroupMore = { slug: string; count: number; active: string; onJump: (slug: string) => void };
 
-/** Rail: "+3" takes the group divider's place and opens that group's More gallery. */
+/** Rail: a count beneath the active group opens its More gallery. */
 function MoreCount({ label, compact, more }: { label: string; compact: boolean; more: GroupMore }) {
   const name = `${more.count} more ${label.toLowerCase()} project${more.count === 1 ? "" : "s"}`;
   const current = more.active === more.slug;
   const interaction = useSidebarMotionItem(more.slug, current);
   return <ControlHint side={compact ? "right" : "top"} label={name}>
-    <a href={`#${more.slug}`} {...interaction.events} className={`${compact ? "rail-more-count" : "nav-more-count"}${current ? " is-current" : ""}`} aria-label={name} aria-current={current ? "page" : undefined} onClick={event => { event.preventDefault(); more.onJump(more.slug); }}><SidebarMotionHighlight visible={interaction.highlighted} /><span className="nav-more-label">+{more.count}</span></a>
+    <a href={`#${more.slug}`} {...interaction.events} className={`${compact ? "rail-more-count" : "nav-more-count"}${current ? " is-current" : ""}`} aria-label={name} aria-current={current ? "page" : undefined} onClick={event => { event.preventDefault(); more.onJump(more.slug); }}><span className="nav-more-label">+{more.count}</span></a>
   </ControlHint>;
 }
 
 /** Reveal More only while browsing a case or gallery belonging to its group. */
-function MoreReveal({ label, more }: { label: string; more: GroupMore }) {
+function MoreReveal({ label, more, hovered }: { label: string; more: GroupMore; hovered: boolean }) {
   const current = more.active === more.slug;
-  const visible = current || projectSlides.some(project => project.slug === more.active && project.group === label);
+  const visible = hovered || current || projectSlides.some(project => project.slug === more.active && project.group === label);
   const interaction = useSidebarMotionItem(more.slug, current);
   const name = `${more.count} more ${label.toLowerCase()} project${more.count === 1 ? "" : "s"}`;
   return <div className={`nav-more-reveal${visible ? " is-pinned" : ""}`} inert={!visible} aria-hidden={!visible}><div>
@@ -91,8 +94,16 @@ function MoreReveal({ label, more }: { label: string; more: GroupMore }) {
 }
 
 function NavigationGroup({ label, compact, more, children }: { label: string; compact: boolean; more?: GroupMore; children: ReactNode }) {
-  if (compact) return <div className="rail-nav-group" role="group" aria-label={label}>{more ? <MoreCount label={label} compact more={more} /> : <div className="rail-divider" role="separator" />}<div className="home-group-items">{children}</div></div>;
-  return <details className="home-nav-group" open><summary>{label}<CaretDownIcon size={14} aria-hidden /></summary><div className="home-group-items">{children}</div>{more && <MoreReveal label={label} more={more} />}</details>;
+  const [hovered, setHovered] = useState(false);
+  if (compact) {
+    const showMore = more && more.count > 0 && (hovered || more.active === more.slug || projectSlides.some(project => project.slug === more.active && project.group === label));
+    return <div className="rail-nav-group" role="group" aria-label={label} onPointerLeave={() => setHovered(false)}>
+      <div className="rail-divider" role="separator" />
+      <div className="home-group-items" onPointerEnter={event => { if (event.pointerType !== "touch") setHovered(true); }}>{children}</div>
+      {showMore && <MoreCount label={label} compact more={more} />}
+    </div>;
+  }
+  return <details className="home-nav-group" open onPointerLeave={() => setHovered(false)}><summary>{label}<CaretDownIcon size={14} aria-hidden /></summary><div className="home-group-items" onPointerEnter={event => { if (event.pointerType !== "touch") setHovered(true); }}>{children}</div>{more && <MoreReveal label={label} more={more} hovered={hovered} />}</details>;
 }
 
 function SidebarContent({ onJump, onOpen, active, openPanel, compact = false, assistantOpen, onAsk, soundEnabled, onSound, onProfileOpenChange }: { onOpen: (panel: Panel) => void; onJump: (slug: string) => void; active: string; openPanel: Panel; compact?: boolean; assistantOpen: boolean; onAsk: () => void; soundEnabled: boolean; onSound: () => void; onProfileOpenChange: (open: boolean) => void }) {
@@ -105,7 +116,7 @@ function SidebarContent({ onJump, onOpen, active, openPanel, compact = false, as
         <SidebarItem {...shared} label="Home" slug="home" icon={HouseSimpleIcon} />
         <SidebarItem {...shared} label="Playground" panel="playground" icon={DiamondsFourIcon} />
       </div>
-      {groups.map(group => <NavigationGroup key={group.label} label={group.label} compact={compact} more={{ slug: group.more, count: moreCount(group.label), active: navigationActive, onJump }}>{group.items.map(({ slug, label, icon }) => <SidebarItem {...shared} key={slug} slug={slug} label={label} icon={icon} />)}</NavigationGroup>)}
+      {groups.map(group => <NavigationGroup key={group.label} label={group.label} compact={compact} more={moreProjectsEnabled ? { slug: group.more, count: moreCount(group.label), active: navigationActive, onJump } : undefined}>{group.items.map(({ slug, label, icon }) => <SidebarItem {...shared} key={slug} slug={slug} label={label} icon={icon} />)}</NavigationGroup>)}
       <NavigationGroup label="About me" compact={compact}>{[
         { slug: "about", label: "About me", icon: UserIcon },
         { slug: "experience", label: "Experience", icon: GraduationCapIcon },
@@ -153,18 +164,33 @@ export function PortfolioHome({ layout = "default" }: { layout?: "default" | "ca
     setPanel(next);
   };
   const syncedHash = useRef(false);
-  const { index, go, viewportRef, trackRef } = usePager(scrollingSlideIds.length, layout === "card-shell" ? "scroll" : "flip", panel !== null || morePage !== null || projectPreviewOpen || profileMenuOpen);
+  const { index, direction, go, viewportRef, trackRef } = usePager(scrollingSlideIds.length, layout === "card-shell" ? "scroll" : "flip", panel !== null || morePage !== null || projectPreviewOpen || profileMenuOpen);
   const active = morePage ?? scrollingSlideIds[index];
+
+  const focusTarget = useRef<number | null>(null);
+  const focusSection = useCallback((target: number) => {
+    focusTarget.current = target;
+    requestAnimationFrame(() => {
+      const heading = viewportRef.current?.querySelector<HTMLElement>(`.portfolio-page[data-page="${scrollingSlideIds[target]}"][data-state="active"] [data-slide-heading]`);
+      if (heading) { heading.focus({ preventScroll: true }); focusTarget.current = null; }
+    });
+  }, [viewportRef]);
+  useEffect(() => {
+    if (focusTarget.current === index) focusSection(index);
+  }, [index, focusSection]);
 
   const jump = useCallback((slug: string) => {
     const destination = projectDestination(slug);
     const target = scrollingSlideIds.indexOf(destination);
     if (target < 0 && !isMorePage(destination)) return;
-    setMorePage(isMorePage(destination) ? destination : null);
-    if (target >= 0) go(target);
+    flushSync(() => {
+      setMorePage(isMorePage(destination) ? destination : null);
+      setPanel(null);
+    });
+    if (target >= 0) { go(target); focusSection(target); }
     if (location.hash !== `#${destination}`) history.pushState(null, "", `#${destination}`);
     setPanel(null);
-  }, [go]);
+  }, [go, focusSection]);
 
   useEffect(() => {
     const followHash = () => {
@@ -175,6 +201,7 @@ export function PortfolioHome({ layout = "default" }: { layout?: "default" | "ca
         setPanelKind(raw); setPanel(raw); history.replaceState(null, "", "#home"); go(0, true); return;
       }
       const slug = projectDestination(raw);
+      if (!moreProjectsEnabled && slug === "home" && raw !== "home") history.replaceState(null, "", "#home");
       setMorePage(isMorePage(slug) ? slug : null);
       const target = scrollingSlideIds.indexOf(slug);
       if (target >= 0) go(target, true);
@@ -196,13 +223,13 @@ export function PortfolioHome({ layout = "default" }: { layout?: "default" | "ca
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.defaultPrevented || panel || morePage || projectPreviewOpen || profileMenuOpen || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-      if (event.target instanceof Element && event.target.closest("a,button,input,textarea,select,summary,[contenteditable=true]")) return;
+      if (event.target instanceof Element && event.target.closest("a,button,input,textarea,select,summary,[contenteditable=true]") && !event.target.closest('.home-sidebar a.home-nav-item[href]')) return;
       const direction = event.key === "ArrowDown" || event.key === "PageDown" ? 1 : event.key === "ArrowUp" || event.key === "PageUp" ? -1 : 0;
-      if (direction) { event.preventDefault(); go(index + direction); }
+      if (direction) { event.preventDefault(); const target = Math.max(0, Math.min(scrollingSlideIds.length - 1, index + direction)); go(target); focusSection(target); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [go, index, panel, morePage, projectPreviewOpen, profileMenuOpen]);
+  }, [go, focusSection, index, panel, morePage, projectPreviewOpen, profileMenuOpen]);
 
   // During a drag only the sidebar and the slide viewport are written to, so the rest of the tree is not restyled per frame.
   const resizeSidebar = useCallback((width: number | null) => {
@@ -231,14 +258,13 @@ export function PortfolioHome({ layout = "default" }: { layout?: "default" | "ca
     pager.animate([{ transform: `translateX(${delta}px)` }, { transform: "none" }], { duration: motionTokens.duration.panel * 1000, easing: `cubic-bezier(${motionTokens.easeOut.join(",")})` });
   }, [sidebarFlipTick, viewportRef]);
 
-  const openAssistant = () => { setPanel(null); setAssistantOpen(true); };
+  const openAssistant = () => { setPanel(current => current === "playground" ? current : null); setAssistantOpen(true); };
   const toggleSound = () => { setSoundEnabled(!soundEnabled); if (!soundEnabled) playUiSound(); };
   const sidebarControls = { openPanel: panel, assistantOpen, onAsk: () => { if (assistantOpen) closeAssistant(); else openAssistant(); }, soundEnabled, onSound: toggleSound, onProfileOpenChange: setProfileMenuOpen };
   const close = () => setPanel(null);
-  const openFacts = () => { setFactIndex(0); openPanel("facts"); };
 
   return (
-    <div className="home-screen" data-layout={layout} id="home" data-sidebar-resizing={sidebarResizing} data-section={active} data-sidebar={sidebarVisible ? "open" : "closed"} data-assistant={assistantOpen ? "open" : "closed"} onClickCapture={(event) => {
+    <div className="home-screen" data-layout={layout} id="home" data-sidebar-resizing={sidebarResizing} data-section={active} data-navigation-direction={direction} data-sidebar={sidebarVisible ? "open" : "closed"} data-assistant={assistantOpen ? "open" : "closed"} onClickCapture={(event) => {
       if (!soundEnabled || !(event.target instanceof Element) || event.target.closest("[data-sound-toggle], button:disabled, input, select, textarea")) return;
       const interactive = event.target.closest("button:not(:disabled), a, summary");
       const heroTap = event.target.closest(".home-slide");
@@ -260,7 +286,7 @@ export function PortfolioHome({ layout = "default" }: { layout?: "default" | "ca
         </div>
         {active === "home" && panel !== "playground" && <div className="portfolio-home-controls">
           {layout === "card-shell" && <ControlHint label={soundEnabled ? "Turn sound off" : "Turn sound on"}><Button data-sound-toggle variant="quiet" size="icon" aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"} aria-pressed={soundEnabled} onClick={toggleSound}>{soundEnabled ? <SoundWaveform /> : <WaveformSlashIcon aria-hidden />}</Button></ControlHint>}
-          <Button hidden={assistantOpen} data-ai-trigger variant="quiet" aria-label="Ask AI" aria-expanded={assistantOpen} aria-controls="portfolio-assistant" onClick={openAssistant}><SparkleIcon data-icon="inline-start" aria-hidden />Ask AI</Button>
+          <Button hidden={assistantOpen} data-ai-trigger className="ask-ai-trigger" variant="quiet" aria-label="Ask AI" aria-expanded={assistantOpen} aria-controls="portfolio-assistant" onClick={openAssistant}><AskAiIcon />Ask AI</Button>
         </div>}
       </header>
       <AssistantPanel open={assistantOpen} onClose={closeAssistant} />
@@ -271,7 +297,7 @@ export function PortfolioHome({ layout = "default" }: { layout?: "default" | "ca
             const ProjectIcon = groups.flatMap((group) => group.items).find((item) => item.slug === id)?.icon;
             return (
               <div key={id} className="portfolio-page" data-page={id} data-state={i === index ? "active" : i < index ? "before" : "after"} inert={i !== index} aria-hidden={i !== index}>
-                {id === "home" ? <HomeSlide onOpen={openPanel} onFacts={openFacts} active={index === 0 && panel !== "playground" && morePage === null} /> : id === "mobile-more" || id === "web-more" ? <MoreProjectsSlide group={id === "mobile-more" ? "Mobile" : "Web"} onPreviewChange={setProjectPreviewOpen} /> : id === "about" ? <AboutSlide /> : id === "experience" ? <ExperienceSlide /> : id === "contact" ? <ContactSlide /> : id === "process" ? <ProcessSlide onContact={() => openPanel("contact")} /> : project && ProjectIcon ? <ProjectSlide project={project} icon={ProjectIcon} overviewHidden={assistantOpen} /> : null}
+                {id === "home" ? <HomeSlide active={index === 0 && panel !== "playground" && morePage === null} /> : id === "mobile-more" || id === "web-more" ? <MoreProjectsSlide group={id === "mobile-more" ? "Mobile" : "Web"} onPreviewChange={setProjectPreviewOpen} /> : id === "about" ? <AboutSlide /> : id === "experience" ? <ExperienceSlide /> : id === "contact" ? <ContactSlide /> : id === "process" ? <ProcessSlide onContact={() => openPanel("contact")} /> : project && ProjectIcon ? <ProjectSlide project={project} icon={ProjectIcon} overviewHidden={assistantOpen} /> : null}
               </div>
             );
           })}
@@ -310,7 +336,7 @@ export function PortfolioHome({ layout = "default" }: { layout?: "default" | "ca
   );
 }
 
-function HomeSlide({ onOpen, onFacts, active }: { onOpen: (panel: Panel) => void; onFacts: () => void; active: boolean }) {
+function HomeSlide({ active }: { active: boolean }) {
   return (
       <section className="home-slide" aria-label="Introduction">
         <HeroSeedling active={active} />
@@ -323,10 +349,7 @@ function HomeSlide({ onOpen, onFacts, active }: { onOpen: (panel: Panel) => void
               <p>UX/UI Designer &amp; Engineer from <span className="home-ukraine" role="img" aria-label="Ukraine">🇺🇦</span> Ukraine based in Warsaw.{" "}<span className="home-subtitle-followup">I design how products look, move and feel, and I build them that way.</span></p>
             </div>
           </div>
-          <div className="home-actions">
-            <Button variant="ink" onClick={() => onOpen("contact")}><PaperPlaneTiltIcon data-icon="inline-start" weight="fill" aria-hidden />Contact</Button>
-            <Button variant="secondary" onClick={onFacts}><ShuffleIcon data-icon="inline-start" aria-hidden />Random fact</Button>
-          </div>
+          <HeroActions facts={facts} active={active} />
         </section>
         <SocialLinks />
       </section>
@@ -338,5 +361,5 @@ function ControlHint({ label, children, side = "bottom" }: { label: string; chil
 }
 
 function NavigationAskAI({ compact, open, onAsk }: { compact: boolean; open: boolean; onAsk: () => void }) {
-  return <ControlHint side={compact ? "right" : "top"} label="Ask AI"><Button variant="quiet" size="icon" className="sidebar-ask-ai" data-ai-trigger aria-label="Ask AI" aria-expanded={open} aria-controls="portfolio-assistant" onClick={onAsk}><SparkleIcon weight={open ? "fill" : "regular"} aria-hidden /></Button></ControlHint>;
+  return <ControlHint side={compact ? "right" : "top"} label="Ask AI"><Button variant="quiet" size="icon" className="sidebar-ask-ai ask-ai-trigger" data-ai-trigger aria-label={open ? "Close Ask AI" : "Ask AI"} aria-expanded={open} aria-controls="portfolio-assistant" onClick={onAsk}><AskAiIcon size={18} /></Button></ControlHint>;
 }

@@ -19,6 +19,7 @@ const GESTURE_GAP = 220;
  */
 export function usePager(count: number, paging: Paging, blocked: boolean, elasticSections = false) {
   const [index, setIndex] = useState(0);
+  const [direction, setDirection] = useState<"forward" | "backward">("forward");
   const indexRef = useRef(0);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -54,6 +55,7 @@ export function usePager(count: number, paging: Paging, blocked: boolean, elasti
       if (!instant) lockUntil.current = performance.now() + FLIP_MS;
       place(i, 0, !instant && !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
       if (i !== indexRef.current) {
+        setDirection(i > indexRef.current ? "forward" : "backward");
         indexRef.current = i;
         setIndex(i);
       }
@@ -81,6 +83,7 @@ export function usePager(count: number, paging: Paging, blocked: boolean, elasti
     const onScroll = () => {
       const i = Math.round(viewport.scrollTop / viewport.clientHeight);
       if (i !== indexRef.current) {
+        setDirection(i > indexRef.current ? "forward" : "backward");
         indexRef.current = i;
         setIndex(i);
       }
@@ -252,7 +255,7 @@ export function usePager(count: number, paging: Paging, blocked: boolean, elasti
     };
   }, [paging, count, go, place, elasticSections]);
 
-  return { index, go, viewportRef, trackRef };
+  return { index, direction, go, viewportRef, trackRef };
 }
 
 /** Detects a renewed push after the prior gesture has slowed almost to rest. */

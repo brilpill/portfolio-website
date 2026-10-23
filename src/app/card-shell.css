@@ -30,6 +30,8 @@
 }
 .home-screen[data-layout="card-shell"] .home-slide { min-height: 100%; height: 100%; }
 .home-screen[data-layout="card-shell"] .project-info .project-badge { background: rgb(255 255 255 / .55); }
+/* On the grey canvas a grey highlight disappears; the hovered link lifts as a small white card instead. */
+.home-screen[data-layout="card-shell"] .case-link-highlight { background: #fff; box-shadow: var(--shell-shadow); }
 .home-screen[data-layout="card-shell"] .assistant-composer-box { background: rgb(255 255 255 / .6); }
 @media (max-width: 767px) {
   /* The phone header stays fixed above the cards: case details start below it, and the Home status
@@ -53,12 +55,12 @@
 .home-screen[data-layout="card-shell"] :is(.assistant-intro, .assistant-suggestions) {
   animation: card-shell-sidebar-in 900ms cubic-bezier(0, 0, .2, 1) 330ms both;
 }
-.home-screen[data-layout="card-shell"] .portfolio-page[data-state="active"] .project-resource-links,
+.home-screen[data-layout="card-shell"] .portfolio-page[data-state="active"] .case-links,
 .home-screen[data-layout="card-shell"] .assistant-composer {
   animation: card-shell-sidebar-in 900ms cubic-bezier(0, 0, .2, 1) 510ms both;
 }
 @media (prefers-reduced-motion: reduce) {
-  .home-screen[data-layout="card-shell"] :is(.project-badge, .project-draft-label, .project-overview, .project-facts, .project-resource-links, .assistant-header, .assistant-intro, .assistant-suggestions, .assistant-composer) { animation: none !important; }
+  .home-screen[data-layout="card-shell"] :is(.project-badge, .project-draft-label, .project-overview, .project-facts, .case-links, .assistant-header, .assistant-intro, .assistant-suggestions, .assistant-composer) { animation: none !important; }
 }
 
 /* Reference desktop rails: 240px navigation, 280px details, 24px gutter. */
@@ -96,7 +98,9 @@
 
 /* The original overview inset is the shared spacing reference. */
 @media (min-width: 768px) {
-  .home-screen[data-layout="card-shell"] .project-info { padding-left: 0; padding-right: 16px; }
+  /* 8px of room on the left (pulled back by the margin) so the link highlight, which reaches 8px past
+     the text, is not clipped by the scrolling column. */
+  .home-screen[data-layout="card-shell"] .project-info { padding-left: 8px; margin-left: -8px; padding-right: 16px; }
   .home-screen[data-layout="card-shell"] .assistant-header { padding-left: 0; padding-right: 8px; }
   .home-screen[data-layout="card-shell"] .assistant-transcript { padding-left: 0; padding-right: 16px; }
   .home-screen[data-layout="card-shell"] .assistant-bottom { padding-left: 0; padding-right: 16px; }
@@ -159,4 +163,13 @@
 .home-screen[data-layout="card-shell"] .playground-view,
 .home-screen[data-layout="card-shell"] .playground-board {
   background-color: #fff;
+}
+
+/* Previous sections reveal their overview immediately; only forward entry rises in. */
+.home-screen[data-layout="card-shell"][data-navigation-direction="backward"] .portfolio-page[data-state="active"] .project-info :is(.project-badge, .project-draft-label, .project-overview, .project-facts, .project-resource-links) {
+  animation: none;
+}
+
+.home-screen[data-layout="card-shell"] .portfolio-pager > .more-slide {
+  height: calc(100% - 16px); border-radius: 18px; background: #fff; box-shadow: var(--shell-shadow);
 }

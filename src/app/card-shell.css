@@ -7,9 +7,11 @@
   background: linear-gradient(180deg, #f8f8f8 0%, #f7f7f8 42%, #f5f5f7 100%);
 }
 .home-screen[data-layout="card-shell"] .home-sidebar { background: transparent; border: 0; }
+/* The scrolling viewport reaches the window edges; each section pads its card by the gutter instead.
+   An inset viewport would clip the cards' soft shadows into hard grey lines at its edges. */
 .home-screen[data-layout="card-shell"] .portfolio-pager {
-  top: var(--shell-gutter); bottom: var(--shell-gutter);
-  right: calc(var(--portfolio-assistant-width) + var(--shell-gutter));
+  top: 0; bottom: 0;
+  right: var(--portfolio-assistant-width);
   border: 0; border-radius: 0; background: transparent; box-shadow: none;
 }
 .home-screen[data-layout="card-shell"] .portfolio-topbar { border: 0; box-shadow: none; background: transparent; }
@@ -34,7 +36,6 @@
      lines up with the menu button even though the card begins 8px down. */
   .home-screen[data-layout="card-shell"] .project-info { padding-top: calc(var(--portfolio-header-height) + 8px); }
   .home-screen[data-layout="card-shell"] .home-work-status { top: calc(10px - var(--shell-gutter)); }
-  .home-screen[data-layout="card-shell"] .portfolio-pager { left: 8px; border-radius: 0; }
   .home-screen[data-layout="card-shell"] .portfolio-assistant { top: 0; background: #f8f8f8; }
   .home-screen[data-layout="card-shell"] .project-info { height: auto; max-height: none; }
 }
@@ -122,11 +123,13 @@
   .home-screen[data-layout="card-shell"] .portfolio-page > section:not(.project-slide) { border-radius: 14px; }
 }
 
-/* Keep the original 16px separation between cards at section boundaries. */
+/* The same 8px gutter above, below and to the right of every card; two cards meet 16px apart while scrolling. */
 .home-screen[data-layout="card-shell"] .portfolio-page {
   box-sizing: border-box;
-  padding-bottom: 16px;
+  padding: var(--shell-gutter) var(--shell-gutter) var(--shell-gutter) 0;
 }
+/* Phones have no sidebar beside the card, so the gutter goes on the left too. */
+@media (max-width: 767px) { .home-screen[data-layout="card-shell"] .portfolio-page { padding-left: var(--shell-gutter); } }
 
 @media (min-width: 768px) {
   .home-screen[data-layout="card-shell"] .home-slide {

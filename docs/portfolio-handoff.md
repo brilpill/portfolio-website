@@ -1084,3 +1084,10 @@ Set the experiment playground view and board background color to white, matching
 
 ### Full-width Home and shared left boundary — 23 October 2026
 User reversed the equal-hero/case-width decision: Home now fills the available pager width, without a reserved empty overview column. Removed extra 8px horizontal case-media padding so case cards align with the sidebar drag boundary, as do other sections. Hero controls follow its full width; outer right inset remains 8px (including the AI panel). Browser verified full-width Home, matching Home/case left edge and stable case media width on AI swap.
+
+### Case entry resets position — 23 October 2026
+Both pager modes reset the destination project's vertical scroll to zero on entry. Returning Home then scrolling into LuminAsset, or selecting a case again through navigation, now starts at the first example instead of retaining the previous position. Browser reproduced and verified the current original route with scroll entry and sidebar re-entry; TypeScript/lint pass. The separate experiment route is no longer present in the current checkout, so it was not tested.
+
+
+### Case-position reset reverted — 23 October 2026
+User rejected the reset-on-entry behavior. Removed the reset helper and both calls; cases retain their previous scroll position again.

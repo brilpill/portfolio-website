@@ -128,6 +128,12 @@
   box-sizing: border-box;
   padding: var(--shell-gutter) var(--shell-gutter) var(--shell-gutter) 0;
 }
+/* Case pages scroll inside their slide. The slide spans the full height so the case cards scroll under
+   the window edges rather than being cut 8px short of them (which left grey bars); the 8px gutter moves
+   inside the scroll, and the details column sticks 8px from the top. */
+.home-screen[data-layout="card-shell"] .portfolio-page:has(> .project-slide) { padding-top: 0; padding-bottom: 0; }
+.home-screen[data-layout="card-shell"] .project-slide .project-media { padding-top: var(--shell-gutter); padding-bottom: var(--shell-gutter); }
+@media (min-width: 768px) { .home-screen[data-layout="card-shell"] .project-slide .project-info { top: var(--shell-gutter); } }
 /* Phones have no sidebar beside the card, so the gutter goes on the left too. */
 @media (max-width: 767px) { .home-screen[data-layout="card-shell"] .portfolio-page { padding-left: var(--shell-gutter); } }
 

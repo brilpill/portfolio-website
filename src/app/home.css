@@ -213,9 +213,11 @@
 .project-image { position: relative; width: 100%; aspect-ratio: 4 / 3; }
 .project-image img { object-fit: contain; }
 .project-media video { display: block; width: 100%; height: auto; border-radius: var(--radius-preview); outline: var(--media-outline); outline-offset: -1px; }
-/* Case media (Figma 1001:2835, 1026:1567): one stage per block, 943 × 882, controls along the bottom. */
+/* Case media (Figma 1001:2835, 1026:1567): one stage per block, 943 × 882, controls along the bottom.
+   Stages are white like the hero card, so PNG screens and future elements sit on the same paper;
+   full-screen images and backgrounds cover the stage edge to edge. */
 .case-media { margin: 0 0 24px; }
-.case-stage { position: relative; isolation: isolate; display: grid; place-items: center; width: 100%; aspect-ratio: 943 / 882; overflow: hidden; container-type: inline-size; border-radius: var(--radius-preview); background: var(--surface); }
+.case-stage { position: relative; isolation: isolate; display: grid; place-items: center; width: 100%; aspect-ratio: 943 / 882; overflow: hidden; container-type: inline-size; border-radius: var(--radius-preview); background: var(--background); }
 .case-stage-bleed img { object-fit: cover; }
 .case-stage-background { z-index: -1; }
 .case-stage-body { display: grid; place-items: center; width: 100%; height: 100%; padding: 6% 0 11%; }

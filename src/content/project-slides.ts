@@ -34,7 +34,8 @@ const loanScreens: CaseScreen[] = [
 const sampleMedia: ProjectSlideMedia[] = [
   { kind: "device", screens: loanScreens, caption: "Device with step tabs. Sample screens from the Figma file." },
   { kind: "image", src: "/cases/samples/promptly-fullscreen.png", alt: "Promptly library in a browser window over a landscape painting", caption: "Full-screen image: a finished composition, not a mockup." },
-  { kind: "video", poster: "/cases/samples/promptly-library.png", posterAlt: "Promptly prompt library", url: "promptly.com", caption: "Video in a browser window. A recording goes here." },
+  // The clip is a generated zoom over the Promptly screen, standing in for a real screen recording.
+  { kind: "video", src: "/cases/samples/promptly-library.mp4", poster: "/cases/samples/promptly-library.png", posterAlt: "Promptly prompt library", url: "promptly.com", caption: "Video in a browser window: plays muted on loop, with pause and seek." },
   { kind: "device", screens: loanScreens, control: "player", caption: "Device with the auto-playing step player." },
   { kind: "browser", screens: [{ src: "/cases/samples/promptly-library.png", alt: "Promptly prompt library", label: "Library" }], url: "promptly.com", caption: "A single web screen in a browser window." },
 ];

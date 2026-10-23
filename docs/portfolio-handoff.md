@@ -1101,3 +1101,7 @@ Increased horizontal and vertical pin gaps by 20%: desktop 64px to 76.8px; mobil
 
 ### More-project link hover — 23 October 2026
 Removed the shared background highlight from expanded sidebar “x more projects” links. Hover/focus now darkens and underlines the label with a small arrow nudge; active row remains background-free. Rail count interaction unchanged. Browser verified transparent hover and no highlight span; TypeScript/lint pass.
+
+
+### More galleries are navigation-only — 23 October 2026
+Removed Mobile More and Web More from the scrolling track. They now render as separate sidebar-accessed galleries, with direct hashes retained. Wheel/touch/arrow navigation skips them, so the final featured mobile case leads straight to the first featured web case, and the final web case leads to About. Gallery browsing does not advance the pager; selecting a regular sidebar item restores the slide track. Browser verified scroll handoff, sidebar opening, wheel isolation, Home exit, and direct More links. TypeScript/lint pass.

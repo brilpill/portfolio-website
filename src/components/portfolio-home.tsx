@@ -35,8 +35,7 @@ import { usePager } from "./use-pager";
 import { motionTokens } from "@/lib/motion";
 import { portfolioSlideIds, projectSlides, sectionTitles, projectDestination } from "@/content/project-slides";
 
-// Each project group ends in a More gallery. The sidebar shows it as a count in the group header
-// ("+3"), not as its own row; the gallery stays in the scroll sequence after the group's cases.
+// More galleries are sidebar-only destinations; counts derive from the content inventory.
 const moreCount = (group: "Mobile" | "Web") => projectSlides.filter(project => project.group === group && project.placement === "more").length;
 const groups: { label: "Mobile" | "Web"; more: string; items: { slug: string; label: string; icon: Icon }[] }[] = [
   { label: "Mobile", more: "mobile-more", items: [
@@ -80,16 +79,13 @@ function MoreCount({ label, compact, more }: { label: string; compact: boolean; 
   </ControlHint>;
 }
 
-/**
- * Expanded sidebar: "3 more projects →" opens under a group while it is hovered or focused, stays while
- * its gallery is the current slide, and is always shown on touch screens (CSS). Collapsing waits a
- * moment, so moving between groups doesn't make rows flicker.
- */
+/** Reveal More only while browsing a case or gallery belonging to its group. */
 function MoreReveal({ label, more }: { label: string; more: GroupMore }) {
   const current = more.active === more.slug;
+  const visible = current || projectSlides.some(project => project.slug === more.active && project.group === label);
   const interaction = useSidebarMotionItem(more.slug, current);
   const name = `${more.count} more ${label.toLowerCase()} project${more.count === 1 ? "" : "s"}`;
-  return <div className={`nav-more-reveal${current ? " is-pinned" : ""}`}><div>
+  return <div className={`nav-more-reveal${visible ? " is-pinned" : ""}`} inert={!visible} aria-hidden={!visible}><div>
     <a href={`#${more.slug}`} {...interaction.events} className={`nav-more-link${current ? " is-current" : ""}`} aria-label={name} aria-current={current ? "page" : undefined} onClick={event => { event.preventDefault(); more.onJump(more.slug); }}><span className="nav-more-label">{more.count} more project{more.count === 1 ? "" : "s"}</span><ArrowRightIcon size={14} aria-hidden /></a>
   </div></div>;
 }
@@ -125,7 +121,12 @@ function SidebarContent({ onJump, onOpen, active, openPanel, compact = false, as
   </>;
 }
 
-export function PortfolioHome({ layout = "default", caseSidebar = "classic" }: { layout?: "default" | "card-shell"; caseSidebar?: "classic" | "facts" }) {
+const scrollingSlideIds = portfolioSlideIds.filter(id => id !== "mobile-more" && id !== "web-more");
+type MorePage = "mobile-more" | "web-more";
+const isMorePage = (id: string): id is MorePage => id === "mobile-more" || id === "web-more";
+
+export function PortfolioHome({ layout = "default" }: { layout?: "default" | "card-shell" }) {
+  const [morePage, setMorePage] = useState<MorePage | null>(null);
   const [panel, setPanel] = useState<Panel>(null);
   const [factIndex, setFactIndex] = useState(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -152,14 +153,15 @@ export function PortfolioHome({ layout = "default", caseSidebar = "classic" }: {
     setPanel(next);
   };
   const syncedHash = useRef(false);
-  const { index, go, viewportRef, trackRef } = usePager(portfolioSlideIds.length, layout === "card-shell" ? "scroll" : "flip", panel !== null || projectPreviewOpen || profileMenuOpen);
-  const active = portfolioSlideIds[index];
+  const { index, go, viewportRef, trackRef } = usePager(scrollingSlideIds.length, layout === "card-shell" ? "scroll" : "flip", panel !== null || morePage !== null || projectPreviewOpen || profileMenuOpen);
+  const active = morePage ?? scrollingSlideIds[index];
 
   const jump = useCallback((slug: string) => {
     const destination = projectDestination(slug);
-    const target = portfolioSlideIds.indexOf(destination);
-    if (target < 0) return;
-    go(target);
+    const target = scrollingSlideIds.indexOf(destination);
+    if (target < 0 && !isMorePage(destination)) return;
+    setMorePage(isMorePage(destination) ? destination : null);
+    if (target >= 0) go(target);
     if (location.hash !== `#${destination}`) history.pushState(null, "", `#${destination}`);
     setPanel(null);
   }, [go]);
@@ -167,12 +169,14 @@ export function PortfolioHome({ layout = "default", caseSidebar = "classic" }: {
   useEffect(() => {
     const followHash = () => {
       const raw = location.hash.slice(1) || "home";
-      if (raw === "search") { history.replaceState(null, "", "#home"); go(0, true); return; }
+      if (raw === "search") { setMorePage(null); history.replaceState(null, "", "#home"); go(0, true); return; }
       if (raw === "playground") {
+        setMorePage(null);
         setPanelKind(raw); setPanel(raw); history.replaceState(null, "", "#home"); go(0, true); return;
       }
       const slug = projectDestination(raw);
-      const target = portfolioSlideIds.indexOf(slug);
+      setMorePage(isMorePage(slug) ? slug : null);
+      const target = scrollingSlideIds.indexOf(slug);
       if (target >= 0) go(target, true);
     };
     followHash();
@@ -191,14 +195,14 @@ export function PortfolioHome({ layout = "default", caseSidebar = "classic" }: {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || panel || projectPreviewOpen || profileMenuOpen || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      if (event.defaultPrevented || panel || morePage || projectPreviewOpen || profileMenuOpen || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
       if (event.target instanceof Element && event.target.closest("a,button,input,textarea,select,summary,[contenteditable=true]")) return;
       const direction = event.key === "ArrowDown" || event.key === "PageDown" ? 1 : event.key === "ArrowUp" || event.key === "PageUp" ? -1 : 0;
       if (direction) { event.preventDefault(); go(index + direction); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [go, index, panel, projectPreviewOpen, profileMenuOpen]);
+  }, [go, index, panel, morePage, projectPreviewOpen, profileMenuOpen]);
 
   // During a drag only the sidebar and the slide viewport are written to, so the rest of the tree is not restyled per frame.
   const resizeSidebar = useCallback((width: number | null) => {
@@ -261,17 +265,18 @@ export function PortfolioHome({ layout = "default", caseSidebar = "classic" }: {
       </header>
       <AssistantPanel open={assistantOpen} onClose={closeAssistant} />
       <main ref={viewportRef} className="portfolio-pager" data-pager aria-label="Portfolio slides">
-        <div ref={trackRef} className="portfolio-track" hidden={panel === "playground"}>
-          {portfolioSlideIds.map((id, i) => {
+        <div ref={trackRef} className="portfolio-track" hidden={panel === "playground" || morePage !== null}>
+          {scrollingSlideIds.map((id, i) => {
             const project = projectSlides.find((item) => item.slug === id);
             const ProjectIcon = groups.flatMap((group) => group.items).find((item) => item.slug === id)?.icon;
             return (
               <div key={id} className="portfolio-page" data-page={id} data-state={i === index ? "active" : i < index ? "before" : "after"} inert={i !== index} aria-hidden={i !== index}>
-                {id === "home" ? <HomeSlide onOpen={openPanel} onFacts={openFacts} active={index === 0 && panel !== "playground"} /> : id === "mobile-more" || id === "web-more" ? <MoreProjectsSlide group={id === "mobile-more" ? "Mobile" : "Web"} onPreviewChange={setProjectPreviewOpen} /> : id === "about" ? <AboutSlide /> : id === "experience" ? <ExperienceSlide /> : id === "contact" ? <ContactSlide /> : id === "process" ? <ProcessSlide onContact={() => openPanel("contact")} /> : project && ProjectIcon ? <ProjectSlide sidebar={caseSidebar} project={project} icon={ProjectIcon} overviewHidden={assistantOpen} /> : null}
+                {id === "home" ? <HomeSlide onOpen={openPanel} onFacts={openFacts} active={index === 0 && panel !== "playground" && morePage === null} /> : id === "mobile-more" || id === "web-more" ? <MoreProjectsSlide group={id === "mobile-more" ? "Mobile" : "Web"} onPreviewChange={setProjectPreviewOpen} /> : id === "about" ? <AboutSlide /> : id === "experience" ? <ExperienceSlide /> : id === "contact" ? <ContactSlide /> : id === "process" ? <ProcessSlide onContact={() => openPanel("contact")} /> : project && ProjectIcon ? <ProjectSlide project={project} icon={ProjectIcon} overviewHidden={assistantOpen} /> : null}
               </div>
             );
           })}
         </div>
+        {morePage && panel !== "playground" && <MoreProjectsSlide key={morePage} group={morePage === "mobile-more" ? "Mobile" : "Web"} onPreviewChange={setProjectPreviewOpen} />}
         {panel === "playground" && <Playground onClose={() => { setPanel(null); requestAnimationFrame(() => returnFocus.current?.focus()); }} />}
       </main>
       <span className="home-sr-only" role="status" aria-live="polite">{sectionTitles[active] ?? projectSlides.find((project) => project.slug === active)?.title}</span>

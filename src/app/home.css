@@ -78,12 +78,10 @@
 .home-nav-group summary svg { transition: transform var(--motion-popover) var(--motion-ease-out); }
 .home-nav-group:not([open]) summary svg { transform: rotate(-90deg); }
 .home-group-items { display: flex; flex-direction: column; gap: 0; }
-/* "3 more projects →" opens under a hovered or focused group (0fr → 1fr rows, so only this row grows).
-   It opens at once and closes after a short delay, so moving between groups doesn't flicker. */
+/* More projects is revealed only for the active case group. */
 .nav-more-reveal { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows var(--motion-panel) var(--motion-ease-out) 250ms, opacity var(--motion-fast) ease 250ms; }
 .nav-more-reveal > div { min-height: 0; overflow: hidden; }
-.home-nav-group:hover .nav-more-reveal, .home-nav-group:focus-within .nav-more-reveal, .nav-more-reveal.is-pinned { grid-template-rows: 1fr; opacity: 1; transition-delay: 0ms; }
-@media (hover: none) { .nav-more-reveal { grid-template-rows: 1fr; opacity: 1; } }
+.nav-more-reveal.is-pinned { grid-template-rows: 1fr; opacity: 1; transition-delay: 0ms; }
 /* Indented to the item labels: 12px padding + 18px icon + 12px gap. */
 .nav-more-link { display: flex; align-items: center; gap: 6px; min-height: 32px; padding: 6px 12px 6px 42px; border-radius: var(--radius); color: var(--home-muted); font-size: var(--text-label); letter-spacing: var(--tracking-ui); }
 .nav-more-link svg { transition: transform var(--motion-fast) var(--motion-ease-out); }
@@ -268,14 +266,17 @@
 .project-info { position: sticky; top: 0; align-self: start; display: flex; flex-direction: column; gap: 16px; min-width: 0; height: 100dvh; max-height: 100dvh; padding: 16px 16px 16px 0; overflow-y: auto; scrollbar-width: none; }
 .project-info::-webkit-scrollbar { display: none; }
 .project-badge { display: flex; align-items: center; gap: 8px; align-self: flex-start; min-width: 180px; min-height: 56px; padding: 8px 16px 8px 12px; border-radius: var(--radius-preview); background: var(--home-sidebar); }
-.project-badge-icon { display: grid; place-items: center; width: 24px; height: 24px; flex-shrink: 0; border-radius: 4px; color: var(--home-ink); }
+/* Icons sit on a soft tinted tile (peach by default, or the project's own tint); logos keep their own colours. */
+.project-badge-icon { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px; background: #fde6dc; color: #3a2a24; }
+.project-badge-icon svg { width: 18px; height: 18px; }
 .project-badge-icon.has-logo { background: #000; }
-.project-badge-icon img { display: block; width: 16px; height: 16px; }
+.project-badge-icon img { display: block; width: 20px; height: 20px; }
 .project-badge-text { display: flex; flex-direction: column; }
 .project-badge-text > span:first-child { font-size: var(--text-label); line-height: 20px; font-weight: 500; color: var(--home-ink); }
 .project-badge-text > span:last-child { font-size: var(--text-caption); line-height: 18px; color: var(--home-muted); }
 .project-draft-label { display: block; margin-bottom: 8px; color: var(--muted-foreground); font-size: var(--text-caption); line-height: 18px; }
-.project-overview h1 { margin: 0 0 8px; font: 400 var(--text-ui)/22px var(--font-ronzino), sans-serif; color: var(--home-muted); }
+/* The one title of the case details. */
+.project-overview h1 { margin: 0 0 12px; font: 400 24px/1.2 var(--font-radley), serif; letter-spacing: var(--tracking-section); color: var(--foreground); text-wrap: balance; }
 .project-overview p { margin: 0; font-size: var(--text-ui); line-height: 22px; color: var(--home-text); white-space: pre-line; text-wrap: pretty; }
 .project-overview-space { min-height: 112px; }
 .project-facts { display: flex; flex-direction: column; gap: 16px; margin: 24px 0; }

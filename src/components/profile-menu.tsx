@@ -5,6 +5,8 @@ import { EnvelopeSimpleIcon, MoonIcon, PaletteIcon, SunIcon, WaveformIcon, Wavef
 import { UserMenu } from "./arc/user-menu";
 
 const user = { name: "Oleh Bril", detail: "UX/UI Designer & Engineer", avatarSrc: "/figma/avatar.png" };
+/** The sidebar footer is 240px with Ask AI beside the profile, so it shows the short role; the menu header keeps the full one. */
+const sidebarRole = "Designer & Engineer";
 
 /**
  * The profile menu (Arc UI User menu, adapted): Contact, then Appearance and Sound as inline switches that keep
@@ -17,7 +19,7 @@ export function ProfileMenu({ compact, soundEnabled, onSound, onContact, onOpenC
     triggerClassName={compact ? "rail-avatar" : "home-profile"}
     trigger={<>
       <Image src={user.avatarSrc} width={compact ? 28 : 36} height={compact ? 28 : 36} alt="" />
-      {!compact && <span><span className="home-profile-name">{user.name}</span><span className="home-profile-role">{user.detail}</span></span>}
+      {!compact && <span><span className="home-profile-name">{user.name}</span><span className="home-profile-role" title={user.detail}>{sidebarRole}</span></span>}
     </>}
     items={[{ label: "Contact", icon: <EnvelopeSimpleIcon />, onSelect: onContact }]}
     switches={[

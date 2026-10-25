@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { UIProvider } from "@/components/ui-provider";
 import { SiteSoundEffects } from "@/components/site-sound-effects";
 import { SiteAnalytics } from "@/components/site-analytics";
+import { MobileBlocker } from "@/components/mobile-blocker";
 import { profile } from "@/content/profile";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
@@ -51,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${ronzino.variable} ${radley.variable} antialiased`}>
       <body>
         {person && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person).replace(/</g, "\\u003c") }} />}
-        <UIProvider>{children}</UIProvider><SiteSoundEffects /><SiteAnalytics scriptUrl={origin ? process.env.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL ?? null : null} />
+        <UIProvider>{children}</UIProvider><MobileBlocker /><SiteSoundEffects /><SiteAnalytics scriptUrl={origin ? process.env.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL ?? null : null} />
       </body>
     </html>
   );

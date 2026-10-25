@@ -1155,6 +1155,27 @@ img.media-viewer-media[data-tall="web"] { width: min(1120px, 100cqw); }
 @media (max-width: 360px) { .mobile-blocker-actions { flex-direction: column; width: 100%; } .mobile-blocker-button { width: 100%; } }
 @media (prefers-reduced-motion: reduce) { .mobile-blocker-card { animation: none; } .mobile-blocker-button, .mobile-blocker-socials :is(a, button) { transition: none; } }
 
+/* ——— Password gate (access-gate.tsx): the mobile blocker's card on desktop, with a password field ——— */
+.access-gate { position: fixed; inset: 0; display: grid; place-items: center; padding: 24px 16px; overflow-y: auto; background: var(--background); color: var(--foreground); }
+.access-gate h1 { margin: 0 0 8px; font: 400 28px/1.15 var(--font-radley), serif; letter-spacing: var(--tracking-case); text-wrap: balance; }
+.access-gate p { max-width: 360px; margin: 0 0 24px; color: var(--muted-foreground); font-size: var(--text-prose); line-height: 24px; text-wrap: pretty; }
+.access-gate .mobile-blocker-socials { margin-top: 20px; }
+.access-gate :is(a, button, input):focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+/* The field and its button share one 44px pill, like the blocker's buttons. */
+.access-gate-form { display: flex; align-items: center; gap: 6px; width: 100%; max-width: 360px; padding: 4px 4px 4px 18px; border: 1px solid var(--border); border-radius: 999px; background: var(--background); transition: border-color 150ms ease, box-shadow 150ms ease; }
+.access-gate-form:focus-within { border-color: var(--muted-foreground); box-shadow: 0 0 0 4px color-mix(in oklab, var(--foreground) 6%, transparent); }
+.access-gate-form[data-state="wrong"] { border-color: var(--destructive); animation: access-gate-shake 360ms var(--motion-ease-out); }
+.access-gate-form input { flex: 1; min-width: 0; height: 36px; border: 0; background: transparent; color: var(--foreground); font: 400 var(--text-prose)/24px var(--font-ronzino), sans-serif; outline: none; }
+.access-gate-form input::placeholder { color: var(--muted-foreground); }
+.access-gate-form input:focus-visible { outline: none; }
+.access-gate-form .mobile-blocker-button { flex-shrink: 0; height: 38px; padding: 0 16px; }
+.access-gate-form .mobile-blocker-button:disabled { opacity: .45; cursor: default; scale: 1; }
+.access-gate-spinner { animation: access-gate-spin 800ms linear infinite; }
+.access-gate .access-gate-status { min-height: 20px; margin: 10px 0 0; color: var(--destructive); font-size: var(--text-label); line-height: 20px; }
+@keyframes access-gate-shake { 20%, 60% { translate: -6px 0; } 40%, 80% { translate: 6px 0; } }
+@keyframes access-gate-spin { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .access-gate-form[data-state="wrong"], .access-gate-spinner { animation: none; } }
+
 /* ——— Live component (case-media.tsx ComponentStage; demos in src/cases) ———
    The demo scales from its own box (container), a badge says it's live, Preview / Code switch at the top right,
    state tabs along the bottom. The Code tab fills the frame with the source on white. */

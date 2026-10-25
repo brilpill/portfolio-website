@@ -78,6 +78,14 @@
 .home-nav-group summary svg { transition: transform var(--motion-popover) var(--motion-ease-out); }
 .home-nav-group:not([open]) summary svg { transform: rotate(-90deg); }
 .home-group-items { display: flex; flex-direction: column; gap: 0; }
+/* Opening and closing a group (Mobile, Web): its items fold away, shrinking to nothing while they fade and lift a few
+   px; opening plays it back. Browsers without ::details-content keep the instant toggle. */
+.home-nav-group { interpolate-size: allow-keywords; }
+.home-nav-group::details-content { block-size: 0; overflow: clip; opacity: 0; transition: block-size 220ms var(--motion-ease-out), opacity 160ms ease, content-visibility 220ms allow-discrete; }
+.home-nav-group[open]::details-content { block-size: auto; opacity: 1; }
+.home-nav-group .home-group-items { transition: translate 220ms var(--motion-ease-out); }
+.home-nav-group:not([open]) .home-group-items { translate: 0 -4px; }
+@media (prefers-reduced-motion: reduce) { .home-nav-group::details-content, .home-nav-group .home-group-items { transition: none; } }
 /* More projects is revealed only for the active case group. */
 .nav-more-reveal { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows var(--motion-panel) var(--motion-ease-out) 250ms, opacity var(--motion-fast) ease 250ms; }
 .nav-more-reveal > div { min-height: 0; overflow: hidden; }
@@ -102,6 +110,10 @@
 .rail-avatar { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: var(--radius); color: var(--muted-foreground); }
 .rail-avatar img { border-radius: 50%; }
 /* Ask AI sits beside the profile (expanded, sheet) or above the avatar (rail). */
+/* Profile menu dropdown (portalled to the body): the width of the expanded sidebar's rows, 240px less its 8px insets,
+   in the rail as well. Same surface as the content cards: their soft two-layer shadow
+   (card-shell's --shell-shadow, written out because the panel sits outside .home-screen) and no border. */
+:root .profile-menu-panel { width: 224px; border: 0; box-shadow: 0 1.4px 5.6px rgb(25 25 25 / .0385), 0 11.2px 33.6px rgb(25 25 25 / .0175); }
 .sidebar-footer { display: flex; flex-shrink: 0; align-items: center; gap: 0; margin-top: 16px; }
 .sidebar-footer .home-profile { flex: 1; min-width: 0; margin-top: 0; gap: 10px; }
 .home-profile > span { min-width: 0; }
@@ -189,10 +201,10 @@
 .home-social:nth-child(4) { --i: 3; }
 .home-social:nth-child(5) { --i: 4; }
 .home-social { position: relative; display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 8px 12px; border-radius: var(--radius); color: var(--home-muted); font-weight: 500; line-height: 20px; letter-spacing: var(--tracking-ui); }
-.home-social[data-active] { color: var(--home-ink); }
+.home-social { transition: color var(--motion-fast) ease; }
+.home-social[data-active] { color: var(--accent-foreground); }
 .home-social:active { transform: scale(.97); }
 /* One highlight shared by all links; Motion slides it between them (layoutId). */
-.home-social-highlight { position: absolute; inset: 0; z-index: -1; border-radius: var(--radius); background: var(--home-fill); }
 /* The icon slot stacks the outgoing and incoming icons in one cell so they crossfade in place. */
 .home-social-icon { display: inline-grid; place-items: center; }
 .home-social-icon > * { grid-area: 1 / 1; display: inline-flex; }
@@ -228,39 +240,178 @@
 .project-media video { display: block; width: 100%; height: auto; border-radius: var(--radius-preview); outline: var(--media-outline); outline-offset: -1px; }
 /* Case media (Figma 1001:2835, 1026:1567): one stage per block, 943 × 882, controls along the bottom.
    Stages are white like the hero card, so PNG screens and future elements sit on the same paper;
-   full-screen images and backgrounds cover the stage edge to edge. */
+   full-screen images and backgrounds cover the stage edge to edge.
+   --stage-unit is 1cqw at the Figma ratio; when a stage is held shorter than that ratio (the viewport cap
+   below), it follows the height instead, so the phone and browser frames keep fitting. */
 .case-media { margin: 0 0 24px; }
-.case-stage { position: relative; isolation: isolate; display: grid; place-items: center; width: 100%; aspect-ratio: 943 / 882; overflow: hidden; container-type: inline-size; border-radius: var(--radius-preview); background: var(--background); }
+.case-stage { --stage-unit: min(1cqw, 1.0692cqh); position: relative; isolation: isolate; display: grid; place-items: center; width: 100%; aspect-ratio: 943 / 882; overflow: hidden; container-type: size; border-radius: var(--radius-preview); background: var(--background); }
+/* On the case slides a plain image keeps its own proportions (4:3 until it loads), however tall, and a
+   framed stage never grows past the window, so big screens show each mockup whole. */
+.project-media .case-stage-image { aspect-ratio: var(--media-ratio, 4 / 3); }
+.project-media .case-stage:not(.case-stage-image) { max-height: calc(100dvh - 2 * var(--shell-gutter, 8px)); }
+.project-media .case-stage[data-layout="single-phone"] { width: 94%; margin-inline: auto; }
 .case-stage-bleed img { object-fit: cover; }
 .case-stage-background { z-index: -1; }
-.case-stage-body { display: grid; place-items: center; width: 100%; height: 100%; padding: 6% 0 11%; }
+.case-stage-body { display: grid; place-items: center; width: 100%; height: 100%; padding: calc(6 * var(--stage-unit)) 0 calc(11 * var(--stage-unit)); }
 .case-screen { position: absolute; inset: 0; }
 .case-screen img { object-fit: cover; object-position: top; }
-/* Drawn phone: concentric radii (frame = screen + bezel), with a faint reflection on WebKit. */
-.case-phone { width: 36cqw; padding: 1.1cqw; border-radius: 6.2cqw; background: #111; box-shadow: inset 0 0 0 .35cqw #3a3a3a, 0 24px 48px -24px rgb(25 25 25 / .45); -webkit-box-reflect: below 2px linear-gradient(transparent 82%, rgb(0 0 0 / .18)); }
-.case-phone-screen { position: relative; aspect-ratio: 563 / 1214; overflow: hidden; border-radius: 5.1cqw; background: #f6f5f2; }
-.case-browser { width: 78cqw; overflow: hidden; border-radius: var(--radius); background: var(--background); box-shadow: 0 0 0 1px rgb(25 25 25 / .08), 0 24px 48px -24px rgb(25 25 25 / .35); }
-.case-stage-bleed .case-browser { width: 90cqw; }
-.case-browser-bar { position: relative; display: flex; align-items: center; height: 3cqw; min-height: 18px; padding: 0 1.4cqw; background: #2c2c2c; }
-.case-browser-lights { display: flex; gap: .7cqw; }
-.case-browser-lights i { width: 1cqw; height: 1cqw; min-width: 6px; min-height: 6px; border-radius: 50%; background: #ff5f57; }
+/* A long screen in a phone (ScrollableScreen): the full-length page inside the screen, scrolled in place. */
+.case-screen-scroll { position: absolute; inset: 0; overflow: hidden; }
+.case-screen-long { position: absolute; top: 0; left: 0; width: 100%; }
+.case-screen-long img { object-fit: cover; object-position: top; }
+/* Images frame: the picture fitted whole between the top and the tabs. */
+.case-images-body { position: absolute; inset: calc(4 * var(--stage-unit)) calc(4 * var(--stage-unit)) calc(10 * var(--stage-unit)); }
+.case-images-picture { position: absolute; inset: 0; }
+.case-images-picture img { object-fit: contain; }
+/* Scrollable inside the phone: no bar, the page takes over at either end. */
+.case-screen-scrollable { overflow-y: auto; overscroll-behavior-y: auto; scrollbar-width: none; }
+/* A tall presentation's preview: a pill over the bottom of the stage opens the whole thing in the viewer. */
+.case-view-full { position: absolute; bottom: 20px; left: 50%; z-index: 2; display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px 0 16px; border-radius: 999px; background: rgb(255 255 255 / .92); box-shadow: 0 1px 2px rgb(0 0 0 / .08), 0 6px 18px -8px rgb(0 0 0 / .35); color: var(--home-ink, #191919); font-size: var(--text-ui); font-weight: 500; translate: -50% 0; backdrop-filter: blur(8px); transition: background-color var(--motion-fast) ease, transform var(--motion-press) var(--motion-ease-out); }
+.case-view-full:hover { background: #fff; }
+.case-view-full:active { transform: scale(.97); }
+.case-view-full:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+/* Posters in a sideways strip: about three in view and a hint of the next, snapping to each; no device frame. */
+.case-stage-posters { display: grid; align-items: center; }
+.case-posters { display: flex; gap: 16px; height: 100%; padding: 6% 56px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: 56px; scrollbar-width: none; }
+.case-posters::-webkit-scrollbar { display: none; }
+.case-posters:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
+.case-poster { position: relative; flex: 0 0 auto; height: 100%; aspect-ratio: 1290 / 2796; overflow: hidden; border-radius: 14px; scroll-snap-align: start; box-shadow: 0 1px 2px rgb(25 25 25 / .06), 0 8px 20px -12px rgb(25 25 25 / .3); cursor: zoom-in; transition: transform 200ms cubic-bezier(.22, 1, .36, 1); }
+.case-poster img { object-fit: contain; }
+.case-poster:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .case-poster:hover { transform: translateY(-3px); } }
+@media (pointer: fine) { .case-screen-scrollable { cursor: grab; user-select: none; } .case-screen-scrollable[data-dragging] { cursor: grabbing; } }
+.case-screen-scrollable::-webkit-scrollbar { display: none; }
+.case-screen-scrollable .case-screen-long { position: relative; }
+.case-screen-scrollable:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
+/* Drawn phone with iPhone proportions: every measure follows --phone-w (set it, not width, to resize a phone),
+   so the corners stay the same shape at any size. Frame radius = screen radius + bezel, like an iPhone 15. */
+.case-phone { --phone-w: calc(36 * var(--stage-unit)); width: var(--phone-w); padding: calc(var(--phone-w) * .028); border-radius: calc(var(--phone-w) * .158); background: #111; box-shadow: inset 0 0 0 calc(var(--phone-w) * .009) #3a3a3a, 0 24px 48px -24px rgb(25 25 25 / .45); -webkit-box-reflect: below 2px linear-gradient(transparent 82%, rgb(0 0 0 / .18)); }
+/* "Scrollable": a small grey note centred above the phone. */
+.case-phone { position: relative; }
+.case-phone-hint { position: absolute; bottom: calc(100% + 10px); left: 50%; display: flex; align-items: center; gap: 4px; color: var(--muted-foreground); font-size: var(--text-caption); font-weight: 500; line-height: 16px; white-space: nowrap; translate: -50% 0; pointer-events: none; animation: case-phone-hint-in var(--motion-fast) ease; }
+.case-phone-hint svg { width: 12px; height: 12px; }
+@keyframes case-phone-hint-in { from { opacity: 0; } }
+/* The labels show on the frame in the middle of the window only (useCentred in case-media.tsx), fading in and out. */
+.case-media-centre { position: absolute; top: 50%; left: 0; width: 1px; height: 1px; pointer-events: none; }
+.case-media .case-phone-hint, .case-media .case-demo-hint, .case-media .case-demo-grid-hint { opacity: 0; transition: opacity 240ms ease; }
+.case-media[data-centred] .case-phone-hint, .case-media[data-centred] .case-demo-hint, .case-media[data-centred] .case-demo-grid-hint { opacity: 1; }
+.case-phone-screen { position: relative; aspect-ratio: 563 / 1214; overflow: hidden; border-radius: calc(var(--phone-w) * .13); background: #000; }
+/* Web mockups: no outline, a short soft shadow. */
+.case-browser { width: calc(78 * var(--stage-unit)); overflow: hidden; border-radius: calc(.9 * var(--stage-unit)); background: var(--background); box-shadow: 0 10px 24px -14px rgb(25 25 25 / .35); }
+.case-stage-bleed .case-browser { width: calc(90 * var(--stage-unit)); }
+.case-browser-bar { position: relative; display: flex; align-items: center; height: calc(3 * var(--stage-unit)); min-height: 18px; padding: 0 calc(1.4 * var(--stage-unit)); background: #2c2c2c; }
+.case-browser-lights { display: flex; gap: calc(.7 * var(--stage-unit)); }
+.case-browser-lights i { width: calc(1 * var(--stage-unit)); height: calc(1 * var(--stage-unit)); min-width: 6px; min-height: 6px; border-radius: 50%; background: #ff5f57; }
 .case-browser-lights i:nth-child(2) { background: #febc2e; }
 .case-browser-lights i:nth-child(3) { background: #28c840; }
-.case-browser-url { position: absolute; left: 50%; display: flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 6px; background: #3a3a3a; color: #d9d9d9; font-size: clamp(9px, 1.2cqw, 12px); transform: translateX(-50%); }
-.case-browser-view { position: relative; aspect-ratio: 1728 / 1064; }
+
+/* ——— Mockup frames (master templates, case-media.tsx; documented in docs/case-template.md) ——— */
+/* Phone: silver frame with the Dynamic Island, for screens that read better on a light outline. */
+.case-phone-silver { background: linear-gradient(145deg, #f4f4f6, #c9c9ce 45%, #ececef 70%, #b9b9be); box-shadow: inset 0 0 0 calc(var(--phone-w) * .008) rgb(255 255 255 / .7), 0 24px 48px -24px rgb(25 25 25 / .4); }
+.case-phone-island { position: absolute; z-index: 2; top: calc(var(--phone-w) * .03); left: 50%; width: 32%; height: calc(var(--phone-w) * .088); border-radius: 999px; background: #000; translate: -50% 0; }
+/* Pair: the next screen behind, smaller and turned, at full strength. */
+.case-phone-pair { position: relative; display: grid; place-items: center; width: calc(64 * var(--stage-unit)); }
+.case-phone-pair .case-phone { --phone-w: calc(32 * var(--stage-unit)); -webkit-box-reflect: unset; }
+.case-phone-pair-back { position: absolute; left: 0; scale: .86; rotate: -7deg; }
+.case-phone-pair-front { position: relative; left: calc(9 * var(--stage-unit)); rotate: 3deg; }
+/* Row: three phones of a flow, filling the frame. */
+.case-phone-row { display: flex; align-items: center; justify-content: center; gap: calc(6 * var(--stage-unit)); }
+.case-phone-row .case-phone { --phone-w: calc(27 * var(--stage-unit)); }
+/* Keep single-phone case overviews readable without letting the phone fill the stage. */
+.project-media .case-stage[data-layout="single-phone"] .case-phone { --phone-w: calc(32 * var(--stage-unit)); }
+/* The single-phone stage is inset to keep its frame compact; align its chevrons with full-width stages. */
+.project-media .case-stage[data-layout="single-phone"] .case-arrow-previous { left: 0; }
+.project-media .case-stage[data-layout="single-phone"] .case-arrow-next { right: 0; }
+/* Safari (macOS), after the Apple iOS Browser Mockup community file: 1268 wide, a 52 tall bar. Everything in the
+   bar is sized from --bar (the bar's height), so it scales with the window. */
+.case-safari { --bar: calc(3.2 * var(--stage-unit)); gap: calc(var(--bar) * .5); height: var(--bar); min-height: 20px; padding: 0 calc(var(--bar) * .38); background: #1f2022; color: #b8b8bd; }
+.case-safari svg { flex-shrink: 0; width: calc(var(--bar) * .36); height: calc(var(--bar) * .36); min-width: 9px; min-height: 9px; }
+.case-safari .case-browser-lights { gap: calc(var(--bar) * .15); margin-right: calc(var(--bar) * .3); }
+.case-safari .case-browser-lights i { width: calc(var(--bar) * .23); height: calc(var(--bar) * .23); min-width: 6px; min-height: 6px; }
+.case-safari-sidebar { margin-right: calc(var(--bar) * .3); }
+.case-safari-muted { opacity: .45; }
+.case-safari-field { display: flex; flex: 1; align-items: center; justify-content: center; gap: calc(var(--bar) * .45); min-width: 0; }
+.case-safari-shield { opacity: .9; }
+.case-safari-address { position: relative; display: flex; align-items: center; justify-content: center; width: min(100%, 76%); height: calc(var(--bar) * .54); min-height: 13px; border-radius: calc(var(--bar) * .12); background: #0c0e10; }
+.case-safari-url { display: flex; align-items: center; gap: calc(var(--bar) * .1); overflow: hidden; color: #e8e8ea; font-size: clamp(7px, calc(var(--bar) * .26), 13px); line-height: 1; white-space: nowrap; }
+.case-safari-url svg { width: calc(var(--bar) * .22); height: calc(var(--bar) * .22); min-width: 6px; min-height: 6px; }
+.case-safari .case-safari-reload { position: absolute; right: calc(var(--bar) * .2); width: calc(var(--bar) * .26); height: calc(var(--bar) * .26); min-width: 7px; min-height: 7px; }
+.case-safari-tools { display: flex; align-items: center; gap: calc(var(--bar) * .5); }
+.case-browser-bare { border-radius: calc(1 * var(--stage-unit)); }
+/* Laptop: a MacBook. Black glass in a thin aluminium rim; a silver base a touch wider than the lid,
+   darker at its front edge, with the thumb cut-out. Measures follow --laptop-w. */
+.case-laptop { --laptop-w: calc(86 * var(--stage-unit)); display: flex; flex-direction: column; align-items: center; width: var(--laptop-w); filter: drop-shadow(0 10px 14px rgb(25 25 25 / .16)); }
+.case-laptop-lid { position: relative; width: 87%; padding: calc(var(--laptop-w) * .022) calc(var(--laptop-w) * .014) calc(var(--laptop-w) * .016); border-radius: calc(var(--laptop-w) * .026) calc(var(--laptop-w) * .026) 0 0; background: #050505; box-shadow: 0 0 0 calc(var(--laptop-w) * .0025) #a9aab0, inset 0 0 0 calc(var(--laptop-w) * .002) #2b2b2e; }
+.case-laptop-lid .case-browser-view { overflow: hidden; border-radius: calc(var(--laptop-w) * .006) calc(var(--laptop-w) * .006) 0 0; }
+.case-laptop-base { position: relative; width: 100%; height: calc(var(--laptop-w) * .024); border-radius: 2px 2px calc(var(--laptop-w) * .03) calc(var(--laptop-w) * .03) / 2px 2px calc(var(--laptop-w) * .018) calc(var(--laptop-w) * .018); background: linear-gradient(#f2f2f4, #d4d5d9 35%, #b9babf 70%, #8e8f94); box-shadow: inset 0 1px rgb(255 255 255 / .9); }
+.case-laptop-base::before { content: ""; position: absolute; top: 0; left: 50%; width: 15%; height: 42%; border-radius: 0 0 calc(var(--laptop-w) * .008) calc(var(--laptop-w) * .008); background: linear-gradient(#a7a8ad, #c9cacf); translate: -50% 0; }
+/* Website and mobile: Safari with the phone over its bottom-right corner. */
+.case-responsive { position: relative; display: grid; width: calc(86 * var(--stage-unit)); padding-right: calc(8 * var(--stage-unit)); }
+.case-responsive .case-browser { width: 100%; }
+.case-responsive-phone { position: absolute; right: 0; bottom: calc(-6 * var(--stage-unit)); --phone-w: calc(20 * var(--stage-unit)); -webkit-box-reflect: unset; }
+/* Figma "Portfolio mockups" window: a light grey ground, a minimal light window bar with three grey dots. */
+.case-stage[data-ground] { background: #eceef2; }
+.case-browser-window .case-browser-bar { height: calc(2.2 * var(--stage-unit)); min-height: 12px; background: #f6f7f9; }
+.case-browser-window .case-browser-lights i { background: #d8dbe1 !important; }
+.case-browser-view { position: relative; aspect-ratio: 1728 / 1064; background: var(--background); }
 .case-browser-view img { object-fit: cover; object-position: top; }
 .case-video, .case-video-plain { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .case-arrow { position: absolute; top: calc(50% - 18px); display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--secondary); color: var(--body-text); }
+/* With a mouse the arrows appear only while the pointer is over the stage (or a key has focus inside it), so
+   the screen sits clean; touch screens have no hover and keep them. */
+@media (hover: hover) and (pointer: fine) {
+  .case-arrow { opacity: 0; transition: opacity var(--motion-fast) ease; }
+  /* Keyboard focus keeps them; a mouse click doesn't, so they fade once the pointer leaves. */
+  .case-stage:hover .case-arrow, .case-stage:has(:focus-visible) .case-arrow { opacity: 1; }
+  /* On the tabs, the arrows step aside: the tabs are what is being used. */
+  .case-stage:has(> .case-control:hover) .case-arrow { opacity: 0; pointer-events: none; }
+}
 .case-arrow-previous { left: 24px; }
 .case-arrow-next { right: 24px; }
 .case-arrow:active, .case-tabs button:active, .case-player-toggle:active { transform: scale(.97); }
-.case-control { position: absolute; bottom: 3.4cqw; left: 50%; display: flex; align-items: center; gap: 4px; padding: 3px; border-radius: 10px; background: var(--secondary); transform: translateX(-50%); font-size: var(--text-caption); line-height: 18px; white-space: nowrap; }
+.case-control { position: absolute; bottom: max(calc(3.4 * var(--stage-unit)), 24px); /* the same height off the ground in short frames too */ left: 50%; display: flex; align-items: center; gap: 4px; padding: 3px; border-radius: 10px; background: var(--secondary); transform: translateX(-50%); font-size: var(--text-caption); line-height: 18px; white-space: nowrap; }
 /* Concentric: 10px control = 7px tab + 3px padding. The white thumb slides to the active step (layoutId). */
 .case-tabs button { position: relative; display: flex; gap: 6px; height: 26px; align-items: center; padding: 0 10px; border-radius: 7px; color: var(--muted-foreground); }
 .case-tabs button[aria-current] { color: var(--foreground); font-weight: 500; }
+/* An inactive tab, hovered: a faint fill grows in behind it and its label darkens. */
+.case-tabs button:not([aria-current])::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 7px; background: rgb(25 25 25 / .05); opacity: 0; scale: .9; transition: opacity 160ms ease, scale 200ms cubic-bezier(.22, 1, .36, 1); }
+.case-tabs button:not([aria-current]) { transition: color 160ms ease; }
+@media (hover: hover) and (pointer: fine) {
+  .case-tabs button:not([aria-current]):hover { color: var(--foreground); }
+  .case-tabs button:not([aria-current]):hover::before { opacity: 1; scale: 1; }
+}
 .case-tabs-thumb { position: absolute; inset: 0; z-index: -1; border-radius: 7px; background: var(--background); box-shadow: 0 1px 1.5px rgb(25 25 25 / .08), 0 0 0 .5px rgb(25 25 25 / .06); }
 .case-tabs { isolation: isolate; }
+.case-tabs-label { display: inline-flex; align-items: center; gap: 6px; max-width: 220px; overflow: hidden; white-space: nowrap; }
+/* With a mouse, a frame's tabs rest as dots (TabDots: one per step, the current one darker, no pill) and the two
+   crossfade through a soft blur, the same way in and out, while the pointer is over the frame or a tab has keyboard
+   focus. Touch screens show the tabs and no dots. */
+.case-tabs-dots { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .case-tabs-dots { position: absolute; bottom: max(calc(3.4 * var(--stage-unit)), 24px); left: 50%; display: flex; align-items: center; gap: 6px; height: 32px; translate: -50% 0; pointer-events: none; transition: opacity 360ms cubic-bezier(.4, 0, .2, 1), filter 360ms cubic-bezier(.4, 0, .2, 1), scale 360ms cubic-bezier(.4, 0, .2, 1); }
+  .case-tabs-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgb(25 25 25 / .2); }
+  .case-tabs-dots i[data-current] { background: rgb(25 25 25 / .65); }
+  .case-stage > .case-tabs { transition: opacity 360ms cubic-bezier(.4, 0, .2, 1), filter 360ms cubic-bezier(.4, 0, .2, 1), scale 360ms cubic-bezier(.4, 0, .2, 1); }
+  .case-stage:not(:hover):not(:has(:focus-visible)) > .case-tabs { opacity: 0; filter: blur(6px); scale: .94; pointer-events: none; }
+  .case-stage:is(:hover, :has(:focus-visible)) > .case-tabs-dots { opacity: 0; filter: blur(6px); scale: 1.4; }
+}
+@media (prefers-reduced-motion: reduce) { .case-stage > .case-tabs, .case-tabs-dots { transition: none !important; } }
 .case-tabs-number { font-variant-numeric: tabular-nums; }
+/* Tab icons (live component tabs): each plays its own small move when its tab is picked, and again on hover. */
+.case-tabs-icon { display: grid; place-items: center; width: 14px; height: 14px; }
+.case-tabs-icon svg { width: 14px; height: 14px; }
+.case-tabs button[aria-current] .case-tabs-icon, .case-tabs button:hover .case-tabs-icon { animation: var(--tab-anim) 560ms cubic-bezier(.34, 1.4, .64, 1); }
+.case-tabs-icon[data-anim="drop"] { --tab-anim: tab-drop; }
+.case-tabs-icon[data-anim="pulse"] { --tab-anim: tab-pulse; }
+.case-tabs-icon[data-anim="tilt"] { --tab-anim: tab-tilt; }
+.case-tabs-icon[data-anim="spin"] { --tab-anim: tab-spin; }
+.case-tabs-icon[data-anim="bounce"] { --tab-anim: tab-bounce; }
+@keyframes tab-drop { 0% { translate: 0 -5px; scale: .9 1.1; opacity: .4; } 60% { translate: 0 1px; scale: 1.12 .88; opacity: 1; } 100% { translate: 0; scale: 1; } }
+@keyframes tab-pulse { 0%, 100% { scale: 1; } 30% { scale: 1.25; } 55% { scale: .92; } 75% { scale: 1.08; } }
+@keyframes tab-tilt { 0%, 100% { rotate: 0deg; } 25% { rotate: -14deg; } 60% { rotate: 9deg; } }
+@keyframes tab-spin { from { rotate: -120deg; scale: .8; } to { rotate: 0deg; scale: 1; } }
+@keyframes tab-bounce { 0% { scale: .6; } 50% { scale: 1.2 .85; } 75% { scale: .95 1.08; } 100% { scale: 1; } }
+@media (prefers-reduced-motion: reduce) { .case-tabs-icon { animation: none !important; } }
 .case-player { gap: 6px; padding: 4px 4px 4px 10px; border-radius: 999px; background: var(--background); box-shadow: 0 0 0 1px var(--border); }
 .case-player-steps { display: flex; align-items: center; gap: 6px; }
 .case-player-step { position: relative; width: 6px; height: 6px; overflow: hidden; border-radius: 999px; background: var(--border); transition: width var(--motion-panel) var(--motion-ease-out); }
@@ -274,24 +425,16 @@
 .case-video-pending { padding: 4px 10px; color: var(--muted-foreground); }
 @media (prefers-reduced-motion: reduce) { .case-player-step { transition: none; } .case-player-fill { animation: none; } }
 /* Narrow stages (phones, a narrow case column): a smaller phone and more room above the step controls. */
-@container (max-width: 560px) { .case-phone { width: 29cqw; } .case-stage-body { padding-bottom: 18%; } }
+@container (max-width: 560px) { .case-phone { --phone-w: calc(29 * var(--stage-unit)); } .case-stage-body { padding-bottom: calc(18 * var(--stage-unit)); } }
 @media (max-width: 767px) { .case-arrow { width: 44px; height: 44px; top: calc(50% - 22px); left: 8px; } .case-arrow-next { left: auto; right: 8px; } }
 .project-media figcaption { margin-top: 12px; color: var(--home-muted); font-size: var(--text-caption); line-height: 18px; }
 /* The right sidebar fits the viewport; internal scroll is only a fallback for unusually long copy. */
 .project-info { position: sticky; top: 0; align-self: start; display: flex; flex-direction: column; gap: 16px; min-width: 0; height: 100dvh; max-height: 100dvh; padding: 16px 16px 16px 0; overflow-y: auto; scrollbar-width: none; }
 .project-info::-webkit-scrollbar { display: none; }
-.project-badge { display: flex; align-items: center; gap: 8px; align-self: flex-start; min-width: 180px; min-height: 56px; padding: 8px 16px 8px 12px; border-radius: var(--radius-preview); background: var(--home-sidebar); }
 /* Icons sit on a soft tinted tile (peach by default, or the project's own tint); logos keep their own colours. */
-.project-badge-icon { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px; background: #fde6dc; color: #3a2a24; }
-.project-badge-icon svg { width: 18px; height: 18px; }
-.project-badge-icon.has-logo { background: #000; }
-.project-badge-icon img { display: block; width: 20px; height: 20px; }
-.project-badge-text { display: flex; flex-direction: column; }
-.project-badge-text > span:first-child { font-size: var(--text-label); line-height: 20px; font-weight: 500; color: var(--home-ink); }
-.project-badge-text > span:last-child { font-size: var(--text-caption); line-height: 18px; color: var(--home-muted); }
 .project-draft-label { display: block; margin-bottom: 8px; color: var(--muted-foreground); font-size: var(--text-caption); line-height: 18px; }
 /* The one title of the case details. */
-.project-overview h1 { margin: 0 0 12px; font: 400 24px/1.2 var(--font-radley), serif; letter-spacing: var(--tracking-section); color: var(--foreground); text-wrap: balance; }
+.project-overview h2 { margin: 0 0 12px; font: 400 24px/1.2 var(--font-radley), serif; letter-spacing: var(--tracking-section); color: var(--foreground); text-wrap: balance; }
 .project-overview p { margin: 0; font-size: var(--text-ui); line-height: 22px; color: var(--home-text); white-space: pre-line; text-wrap: pretty; }
 .project-overview-space { min-height: 112px; }
 .project-facts { display: flex; flex-direction: column; gap: 16px; margin: 24px 0; }
@@ -300,16 +443,24 @@
 .project-info .project-story { display: flex; flex: 1; flex-direction: column; }
 /* Case links: quiet rows sharing one sliding highlight (as the hero socials), then the case study as the one filled button. */
 .case-links { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: auto; padding-top: 8px; }
-.case-link-list { position: relative; isolation: isolate; display: flex; flex-direction: column; gap: 2px; margin: 0 -8px; padding: 0; list-style: none; }
-.case-link { position: relative; display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 8px; border-radius: var(--radius); color: var(--home-muted); font-size: var(--text-ui); line-height: 20px; letter-spacing: var(--tracking-ui); transition: color var(--motion-fast) ease; }
-.case-link[data-active] { color: var(--home-ink); }
+.case-link-list { display: flex; flex-direction: column; margin: 0 -8px; padding: 0; list-style: none; }
+/* Rows like the assistant's suggested questions: a grey fill on hover, thin dividers between rows inset to the text.
+   The dividers either side of the highlighted row fade out, so the fill never looks cut. */
+.case-link-list > li { position: relative; }
+.case-link-list > li + li::before { content: ""; position: absolute; top: 0; right: 8px; left: 8px; height: 1px; background: var(--home-line); transition: opacity var(--motion-fast) ease; pointer-events: none; }
+.case-link { position: relative; display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 8px; border-radius: var(--radius); color: var(--home-muted); font-size: var(--text-ui); line-height: 20px; letter-spacing: var(--tracking-ui); transition: color var(--motion-fast) ease, background-color var(--motion-fast) ease; }
 .case-link:active { transform: scale(.98); }
 .case-link:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
-.case-link-highlight { position: absolute; inset: 0; z-index: -1; border-radius: var(--radius); background: var(--home-fill); }
+.case-link:focus-visible { color: var(--home-ink); background: var(--secondary); }
+.case-link-list > li:has(> .case-link:focus-visible)::before, .case-link-list > li:has(> .case-link:focus-visible) + li::before { opacity: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .case-link:hover { color: var(--home-ink); background: var(--secondary); }
+  .case-link-list > li:hover::before, .case-link-list > li:hover + li::before { opacity: 0; }
+  .case-link:hover .case-link-arrow { transform: translate(1px, -1px); }
+}
 .case-link-icon { flex-shrink: 0; }
 .case-link-label { flex: 1; min-width: 0; }
 .case-link-arrow { flex-shrink: 0; transition: transform var(--motion-fast) var(--motion-ease-out); }
-.case-link[data-active] .case-link-arrow { transform: translate(1px, -1px); }
 .case-study-link { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; padding: 8px 12px 8px 14px; border-radius: var(--radius); background: var(--action); color: var(--action-foreground); font-size: var(--text-ui); font-weight: 500; line-height: 20px; letter-spacing: var(--tracking-ui); transition: background-color var(--motion-fast) ease; }
 .case-study-arrow { display: inline-flex; flex-shrink: 0; }
 @media (hover: hover) and (pointer: fine) {
@@ -432,9 +583,22 @@
 /* ——— Ask AI: a layout column that reserves room instead of covering slides ——— */
 .portfolio-assistant { position: fixed; z-index: 25; top: 0; right: 0; bottom: 0; width: var(--portfolio-right-panel-width); display: flex; flex-direction: column; background: var(--home-paper); border-left: 1px solid var(--home-line); }
 .portfolio-assistant[hidden] { display: none; }
+/* The assistant slides like the sidebar collapsing: the panel moves out by the right panel's width while the page's
+   right edge follows by the same distance, on one 260ms ease-out started by the same data-assistant change, so they
+   travel as one. Closed, the panel waits off screen and hidden (visibility flips after the slide). Phones, where
+   the panel covers the page, cross-fade instead. */
+.portfolio-assistant { transition: transform var(--motion-panel) var(--motion-ease-out), opacity var(--motion-panel) var(--motion-ease-out), visibility 0s linear var(--motion-panel); }
+/* Every shell that hosts the panel (the portfolio, case study pages, the editions experiment) sets data-assistant. */
+:is(.home-screen, .case-study-shell, .editions-shell)[data-assistant="open"] .portfolio-assistant { transition-delay: 0s; }
+:is(.home-screen, .case-study-shell, .editions-shell)[data-assistant="closed"] .portfolio-assistant { visibility: hidden; transform: translateX(var(--portfolio-right-panel-width)); }
+@media (min-width: 768px) { .portfolio-pager, .portfolio-topbar { transition: right var(--motion-panel) var(--motion-ease-out); } }
+@media (max-width: 767px) { :is(.home-screen, .case-study-shell, .editions-shell)[data-assistant="closed"] .portfolio-assistant { transform: none; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .portfolio-assistant, .portfolio-pager, .portfolio-topbar { transition: none; } }
 .assistant-header { display: flex; flex-shrink: 0; align-items: center; justify-content: flex-start; gap: 4px; height: var(--portfolio-header-height); padding: 16px 12px; }
-.assistant-header > span { display: flex; flex: 1; align-items: center; gap: 8px; }
+.assistant-header > #assistant-title { display: flex; flex: 1; align-items: center; gap: 8px; }
 .assistant-header > span svg { color: var(--home-accent); }
+.assistant-header [aria-label="About this assistant"] { margin-left: auto; }
+.assistant-info-tooltip { max-width: 260px; line-height: 1.45; }
 .assistant-transcript { flex: 1; min-height: 0; padding: 20px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 .assistant-intro { padding: 0 8px 16px; }
 .assistant-intro h2 { margin: 16px 0 12px; font: 400 var(--text-section)/var(--leading-section) var(--font-radley), serif; letter-spacing: var(--tracking-section); text-wrap: balance; }
@@ -451,12 +615,13 @@
 .assistant-suggestions { display: flex; flex-shrink: 0; flex-direction: column; gap: 0; padding: 0 0 16px; }
 .assistant-suggestions > .ui-button { height: auto; min-height: 36px; gap: 8px; padding: 8px; font-size: var(--text-ui); font-weight: 400; line-height: 20px; }
 .assistant-suggestions img { flex-shrink: 0; }
-/* Concentric: 12px box radius = 8px control radius + 4px padding. */
+.assistant-composer { position: relative; }
 .assistant-composer-box { padding: 4px; border-radius: var(--radius-preview); background: var(--secondary); }
-.assistant-composer input { height: 40px; padding: 8px 12px; border: 0; border-radius: var(--radius); background: transparent; box-shadow: none; font-size: var(--text-prose); }
+.assistant-composer .assistant-input-preview { height: 40px; padding: 8px 12px; border: 0; border-radius: var(--radius); background: transparent; box-shadow: none; font-size: var(--text-prose); cursor: help; }
 .assistant-composer-tools { display: flex; gap: 4px; }
 .assistant-composer-tools .ui-button { width: 36px; height: 36px; }
 .assistant-composer-tools .ui-button:last-child { margin-left: auto; }
+.assistant-suggestions [aria-disabled="true"], .assistant-composer-tools [aria-disabled="true"] { cursor: help; }
 .assistant-composer p { margin: 8px 0 0; color: var(--home-muted); font-size: var(--text-caption); text-align: center; }
 
 /* ——— Sitemap destinations ——— */
@@ -471,21 +636,7 @@
 .content-empty { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-height: 280px; padding: 32px 0; border-top: 1px solid var(--border); color: var(--muted-foreground); }
 .content-empty h2 { margin: 24px 0 8px; }
 .content-empty p { margin: 0; }
-.about-copy { max-width: 640px; }
-.about-copy p { margin: 0 0 24px; color: var(--body-text); }
-.content-section { max-width: 880px; margin-top: 64px; }
-.principle-list article { display: flex; gap: 24px; padding: 24px 0; border-top: 1px solid var(--border); }
-.principle-list article > span { padding-top: 4px; color: var(--muted-foreground); font-size: var(--text-caption); font-variant-numeric: tabular-nums; }
-.principle-list p { margin: 0; }
-.content-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.content-chips [data-slot="badge"] { height: auto; padding: 8px 12px; white-space: normal; }
-.content-text-link, .content-footer a { display: inline-flex; align-items: center; gap: 8px; font-size: var(--text-ui); color: var(--body-text); }
-.experience-list { max-width: 900px; }
-.experience-list article { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 32px; padding: 24px 0; border-top: 1px solid var(--border); }
-.experience-dates { padding-top: 4px; font-size: var(--text-caption); line-height: 20px; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
-.experience-list h2 { margin: 0 0 8px; }
-.experience-role { font-size: var(--text-ui); line-height: 20px; color: var(--body-text); }
-.experience-list p { margin-bottom: 0; }
+.content-footer a { display: inline-flex; align-items: center; gap: 8px; font-size: var(--text-ui); color: var(--body-text); }
 .playground-filters { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 24px; }
 .contact-doors { max-width: 800px; }
 .contact-doors > a { display: flex; align-items: center; gap: 24px; padding: 24px 0; border-top: 1px solid var(--border); color: var(--body-text); }
@@ -541,8 +692,7 @@
 /* Short desktop screens: the case sidebar tightens so the facts stay visible without scrolling. */
 @media (min-width: 768px) and (max-height: 740px) {
   .project-info { gap: 12px; padding-bottom: 12px; }
-  .project-info .project-badge { min-height: 44px; padding-block: 4px; }
-  .project-info .project-facts { gap: 12px; margin: 16px 0; }
+  .project-info   .project-info .project-facts { gap: 12px; margin: 16px 0; }
   .project-info .project-draft-label { margin-bottom: 4px; }
 }
 @container (max-width: 900px) {
@@ -558,7 +708,6 @@
   .process-slide { padding-inline: 20px; }
   .process-scene { --plane-width: 210px; --plane-height: 180px; }
   .more-grid, .service-list { grid-template-columns: minmax(0, 1fr); }
-  .experience-list article { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .project-preview-dialog .project-layout { display: flex; flex-direction: column; }
 }
 @media (max-width: 767px) {
@@ -683,7 +832,7 @@
 /* Click-only Playground: a contained canvas, separate from the slide track. */
 .portfolio-track[hidden] { display: none; }
 .playground-view { display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden; background: var(--background); }
-.playground-board { position: relative; flex: 1; min-height: 0; overflow: hidden; touch-action: none; background-color: var(--surface); background-image: radial-gradient(var(--border) .8px, transparent .8px); background-size: 20px 20px; }
+.playground-board { position: relative; isolation: isolate; flex: 1; min-height: 0; overflow: hidden; touch-action: none; background-color: var(--surface); }
 .playground-board:focus-visible { outline-offset: -3px !important; }
 .playground-grid { --pin-size: 260px; --pin-gap: 76.8px; position: absolute; top: 0; left: 0; display: flex; align-items: flex-start; gap: var(--pin-gap); width: max-content; padding: 40px; cursor: grab; touch-action: none; }
 .playground-column { display: flex; flex-direction: column; gap: var(--pin-gap); }
@@ -740,8 +889,17 @@
 }
 
 
-.project-layout[data-overview-hidden="true"] { grid-template-columns: minmax(0, 1fr); }
-.project-info[hidden] { display: none; }
+/* Ask AI on a case slide: the page narrows by the panel's width while the details column (its width plus the gap is
+   exactly the panel's width) slides shut on the same timing, so the media column never changes width and nothing
+   reflows. The details keep their own width and slide out under the panel, fading as they go. */
+@media (min-width: 768px) {
+  .project-layout { transition: grid-template-columns var(--motion-panel) var(--motion-ease-out), column-gap var(--motion-panel) var(--motion-ease-out); }
+  .project-layout[data-overview-hidden="true"] { grid-template-columns: minmax(0, 1fr) 0px; column-gap: 0px; }
+  .project-info { width: calc(var(--portfolio-right-panel-width) - var(--project-column-gap)); transition: opacity var(--motion-fast) ease; }
+  .project-layout[data-overview-hidden="true"] .project-info { opacity: 0; visibility: hidden; transition: opacity var(--motion-fast) ease, visibility 0s linear var(--motion-panel); }
+}
+@media (max-width: 767px) { .project-layout[data-overview-hidden="true"] .project-info { display: none; } }
+@media (prefers-reduced-motion: reduce) { .project-layout, .project-info { transition: none !important; } }
 
 @media (min-width: 768px) {
   .home-screen[data-assistant="open"] .project-layout[data-overview-hidden="true"] .project-media { padding-top: 16px; }
@@ -749,6 +907,11 @@
 
 
 .portfolio-home-controls { display: flex; align-items: center; gap: 4px; pointer-events: auto; }
+/* Desktop: the copy in the hero card, top right, on the same 36px row as the availability status. */
+.portfolio-home-controls-hero { position: absolute; top: 16px; right: 24px; z-index: 1; }
+.portfolio-home-controls-hero .ui-button { font-size: var(--text-label); }
+@media (min-width: 768px) { .portfolio-home-controls-topbar { display: none; } }
+@media (max-width: 767px) { .portfolio-home-controls-hero { display: none; } }
 
 /* Round the artwork itself, including letterboxed images and tilted layers. */
 .playground-stack-cover, .playground-stack-layer {
@@ -811,10 +974,10 @@
    bottom pill that steps through the set. It zooms out of the thing that opened it. */
 /* Base UI wraps the popup, so the overlay finds it among its later siblings' descendants. */
 [data-slot="dialog-overlay"]:is(:has(~ .media-viewer), :has(~ * .media-viewer)) { background: rgb(12 12 12 / .9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-.media-viewer { --viewer-width: min(1200px, 86vw); --viewer-gap: 32px; display: block; width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; padding: 0; overflow: hidden; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: #fff; animation: media-viewer-in var(--motion-panel) var(--motion-ease-out) both; }
+.media-viewer { --viewer-width: min(1400px, 90vw); --viewer-gap: 32px; display: block; width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; padding: 0; overflow: hidden; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: #fff; animation: media-viewer-in var(--motion-panel) var(--motion-ease-out) both; }
 .media-viewer[data-size="narrow"] { --viewer-width: min(820px, 78vw); }
 .media-viewer[data-ending-style] { animation: media-viewer-out var(--motion-popover) var(--motion-ease-out) both; }
-.media-viewer-stage { position: absolute; top: 50%; left: 0; width: 100%; height: calc(100dvh - 176px); translate: 0 calc(-50% - 8px); touch-action: none; }
+.media-viewer-stage { position: absolute; top: 50%; left: 0; width: 100%; height: calc(100dvh - 140px); translate: 0 calc(-50% - 8px); touch-action: none; }
 .media-viewer-track { display: flex; gap: var(--viewer-gap); width: max-content; height: 100%; margin-left: calc((100vw - var(--viewer-width)) / 2); transform: translateX(calc(var(--viewer-index) * (var(--viewer-width) + var(--viewer-gap)) * -1)); translate: var(--swipe-x, 0px) 0; transition: transform var(--motion-slide) var(--motion-ease-out), translate var(--motion-slide) var(--motion-ease-out); }
 .media-viewer-track[data-swiping="true"] { transition: none; }
 .media-viewer-slide { display: flex; align-items: center; justify-content: center; flex: 0 0 var(--viewer-width); width: var(--viewer-width); height: 100%; opacity: .35; transform: scale(.92); transition: opacity var(--motion-panel) ease, transform var(--motion-slide) var(--motion-ease-out); }
@@ -825,12 +988,26 @@
 /* Flex, not grid: percentage max sizes only resolve against a definite flex container.
    The media keeps its own shape, rounded, so the corners belong to the picture rather than to a box. */
 .media-viewer-media { display: block; width: auto; height: auto; max-width: 100%; max-height: 100%; border-radius: 12px; box-shadow: 0 24px 64px -24px rgb(0 0 0 / .6); user-select: none; pointer-events: none; }
+/* Images fill the slide by their own proportions (--ratio, set on load), not their file's pixel size, so small 1x
+   screens open as large as the space allows. Zoom moves them with a transform. */
+.media-viewer-pick { container-type: size; }
+img.media-viewer-media { width: min(100cqw, calc(100cqh * var(--ratio, 1.5))); height: auto; max-width: none; max-height: none; aspect-ratio: var(--ratio, 1.5); transform-origin: center; transition: transform var(--motion-panel) var(--motion-ease-out); }
+.media-viewer-stage[data-zoomed] { cursor: grab; }
+.media-viewer-stage[data-zoomed]:active { cursor: grabbing; }
+.media-viewer-stage[data-zoomed] .media-viewer-slide:not([data-current="true"]) { opacity: 0; }
 video.media-viewer-media { pointer-events: auto; background: #000; }
+/* A long image (a full-length screen, a tall page or sheet): from its top, running off the bottom of the window,
+   dragged and zoomed freely. Phone-shaped ones at phone width, the rest wider. */
+img.media-viewer-media[data-tall="phone"] { width: min(320px, 100cqw); }
+img.media-viewer-media[data-tall="page"] { width: min(760px, 100cqw); }
+img.media-viewer-media[data-tall="web"] { width: min(1120px, 100cqw); }
+.media-viewer-slide[data-current="true"]:has(img[data-tall]) { cursor: grab; }
 .media-viewer-pick:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 14px; }
 .media-viewer-stage, .media-viewer-slide { cursor: zoom-out; }
-.media-viewer-close { position: absolute; top: 20px; right: 20px; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 999px; background: rgb(255 255 255 / .1); color: rgb(255 255 255 / .8); transition: background-color var(--motion-fast) ease, color var(--motion-fast) ease, transform var(--motion-press) var(--motion-ease-out); }
+.media-viewer-close { position: absolute; z-index: 2; top: 20px; right: 20px; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 999px; background: rgb(28 28 28 / .72); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .1); color: rgb(255 255 255 / .8); transition: background-color var(--motion-fast) ease, color var(--motion-fast) ease, transform var(--motion-press) var(--motion-ease-out); }
 /* Bottom bar (ktz.dk): a 40px pill; 32px round buttons; the count quieter than the arrows; a hairline before Translate. */
-.media-viewer-bar { position: absolute; bottom: 28px; left: 50%; display: flex; align-items: center; gap: 2px; height: 40px; padding: 0 4px; border-radius: 999px; background: rgb(255 255 255 / .1); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: rgb(255 255 255 / .8); font-size: 13px; font-weight: 500; line-height: 19.5px; letter-spacing: var(--tracking-ui); transform: translateX(-50%); }
+/* Close and the bar float above the picture (long images run under them), on dark glass so they read on white too. */
+.media-viewer-bar { position: absolute; z-index: 2; bottom: 28px; left: 50%; display: flex; align-items: center; gap: 2px; height: 40px; padding: 0 4px; border-radius: 999px; background: rgb(28 28 28 / .72); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .1), 0 8px 24px -8px rgb(0 0 0 / .4); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: rgb(255 255 255 / .8); font-size: 13px; font-weight: 500; line-height: 19.5px; letter-spacing: var(--tracking-ui); transform: translateX(-50%); }
 .media-viewer-bar button { display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 32px; height: 32px; padding: 0; border-radius: 999px; color: inherit; transition: background-color var(--motion-fast) ease, color var(--motion-fast) ease, opacity var(--motion-fast) ease, transform var(--motion-press) var(--motion-ease-out); }
 .media-viewer-bar button:disabled { opacity: .35; cursor: default; }
 .media-viewer-count { min-width: 36px; color: rgb(255 255 255 / .6); font-variant-numeric: tabular-nums; text-align: center; }
@@ -898,3 +1075,117 @@ video.media-viewer-media { pointer-events: auto; background: #000; }
 .contact-detail-value > span { grid-area: 1 / 1; }
 .contact-detail-icon { position: relative; width: 16px; height: 16px; flex-shrink: 0; }
 .contact-detail-icon > span { position: absolute; inset: 0; display: flex; }
+
+/* ——— Case numbers (case-numbers.tsx; layouts documented in docs/case-template.md) ———
+   Each figure rises in once the row scrolls into view, one after another; plain numbers count up. */
+.case-numbers { display: grid; grid-template-columns: repeat(var(--count, 4), minmax(0, 1fr)); gap: 0 24px; margin: 0; }
+.case-numbers > div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 6px; opacity: 0; translate: 0 8px; transition: opacity 500ms ease, translate 600ms var(--motion-ease-out); transition-delay: calc(var(--i) * 80ms); }
+.case-numbers[data-seen] > div { opacity: 1; translate: 0 0; }
+.case-numbers dd { display: flex; align-items: baseline; gap: 10px; margin: 0; color: var(--foreground); font: 400 clamp(36px, 4vw, 52px)/1 var(--font-ronzino), sans-serif; letter-spacing: -.04em; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.case-numbers dt { color: var(--muted-foreground); font-size: var(--text-ui); line-height: 20px; text-wrap: balance; }
+/* On hairlines; before-after adds from → value. */
+.case-numbers > div { padding-top: 20px; border-top: 1px solid var(--border); }
+.case-numbers-from { color: var(--muted-foreground); text-decoration: line-through; text-decoration-thickness: 1.5px; text-decoration-color: rgb(25 25 25 / .3); }
+.case-numbers-arrow { width: .5em; height: .5em; color: var(--primary); translate: 0 -.08em; }
+@media (max-width: 767px) {
+  .case-numbers { grid-template-columns: repeat(min(var(--count, 4), 2), minmax(0, 1fr)); gap: 20px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .case-numbers > div { opacity: 1; translate: none; transition: none; } }
+
+/* ——— Compare (case-media.tsx): one mockup, a round handle on a divider across the whole frame ——— */
+.case-compare { position: absolute; inset: 0; overflow: hidden; touch-action: pan-y; cursor: ew-resize; user-select: none; }
+.case-compare img { object-fit: cover; object-position: top; pointer-events: none; }
+.case-compare .case-stage-body { pointer-events: none; }
+/* The after screen, clipped at the frame-wide split mapped onto the screen (--local, set from case-media.tsx). */
+.case-compare-after { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--local)); transition: clip-path 600ms var(--motion-ease-out); }
+.case-compare[data-dragging] .case-compare-after, .case-compare[data-dragging] .case-compare-handle { transition: none; }
+.case-compare-handle { position: absolute; top: 0; bottom: 0; left: var(--split); width: 2px; margin-left: -1px; background: #fff; box-shadow: 0 0 0 1px rgb(25 25 25 / .1), 0 0 12px rgb(25 25 25 / .25); transition: left 600ms var(--motion-ease-out); }
+.case-compare-handle > span { position: absolute; top: 50%; left: 50%; display: flex; align-items: center; gap: 2px; padding: 8px; border-radius: 999px; background: #fff; color: var(--foreground); box-shadow: 0 2px 8px rgb(25 25 25 / .2); translate: -50% -50%; transition: scale var(--motion-press) var(--motion-ease-out); }
+.case-compare[data-dragging] .case-compare-handle > span { scale: .92; }
+.case-compare-handle:focus-visible { outline: none; }
+.case-compare-handle:focus-visible > span { outline: 2px solid var(--ring); outline-offset: 2px; }
+.case-compare-tag { position: absolute; top: 12px; padding: 3px 9px; border-radius: 999px; background: rgb(25 25 25 / .6); color: #fff; font-size: var(--text-caption); line-height: 18px; backdrop-filter: blur(8px); pointer-events: none; }
+.case-compare-tag-before { left: 12px; }
+.case-compare-tag-after { right: 12px; }
+@media (prefers-reduced-motion: reduce) { .case-compare-after, .case-compare-handle { transition: none; } }
+
+/* ——— Highlight (case-highlight.tsx): the text stays still; the key phrase's box draws in from left to right ——— */
+.case-mark { margin: 0 -2px; padding: 1px 3px; border-radius: 4px; background: linear-gradient(color-mix(in oklab, var(--primary) 13%, transparent), color-mix(in oklab, var(--primary) 13%, transparent)) no-repeat 0 0 / 0% 100%; color: inherit; -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: background-size 700ms cubic-bezier(.22, 1, .36, 1) 150ms; }
+.case-blur[data-on] .case-mark { background-size: 100% 100%; }
+/* A highlighted phrase is marked by the box alone, in the paragraph's own weight and colour. */
+.case-mark, .case-study-copy strong.case-mark { color: inherit; font-weight: inherit; }
+@media (prefers-reduced-motion: reduce) { .case-mark { background-size: 100% 100%; transition: none; } }
+
+/* ——— Annotation (case-annotation.tsx): a collaborator cursor over a figure ——— */
+.case-media { position: relative; }
+.case-annotation { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.case-annotation-cursor { position: absolute; display: flex; align-items: flex-start; gap: 2px; }
+.case-annotation-cursor svg { flex-shrink: 0; fill: var(--primary); stroke: #fff; stroke-width: 1.2; filter: drop-shadow(0 1px 2px rgb(25 25 25 / .3)); }
+.case-annotation-name { margin-top: 12px; padding: 2px 8px; border-radius: 6px 999px 999px 999px; background: var(--primary); color: #fff; font-size: 11px; font-weight: 500; line-height: 16px; white-space: nowrap; }
+.case-annotation-note { position: absolute; top: 34px; left: 16px; width: max-content; max-width: 200px; padding: 6px 10px; border-radius: 10px; background: #fff; color: var(--foreground); font-size: 12px; line-height: 16px; box-shadow: 0 6px 18px -8px rgb(25 25 25 / .35), 0 0 0 1px rgb(25 25 25 / .06); }
+.case-annotation-cursor[data-flip] .case-annotation-note { right: 8px; left: auto; }
+.case-annotation-box { position: absolute; border: 1.5px solid var(--primary); border-radius: 2px; background: color-mix(in oklab, var(--primary) 8%, transparent); }
+
+/* ——— Mobile blocker (mobile-blocker.tsx): phones see this until the mobile layout is ready ——— */
+.mobile-blocker { display: none; }
+@media (max-width: 767px), (pointer: coarse) and (max-height: 500px) {
+  .mobile-blocker { position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center; padding: 24px 16px; overflow-y: auto; background: var(--background); }
+}
+.mobile-blocker-card { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 420px; text-align: center; animation: mobile-blocker-in 500ms var(--motion-ease-out); }
+.mobile-blocker-flames { position: absolute; inset: auto 0 0; height: min(42dvh, 340px); overflow: hidden; pointer-events: none; opacity: .72; }
+.mobile-blocker-flames .about-footer-embers { width: 100%; height: 100%; margin: 0; }
+@keyframes mobile-blocker-in { from { opacity: 0; translate: 0 8px; } }
+.mobile-blocker-icon { position: relative; margin-bottom: 20px; }
+.mobile-blocker-icon img { display: block; border-radius: 999px; }
+.mobile-blocker-icon svg { position: absolute; right: -6px; bottom: -4px; box-sizing: content-box; padding: 4px; border-radius: 999px; background: var(--primary); color: #fff; box-shadow: 0 0 0 3px var(--background); }
+.mobile-blocker h1 { margin: 0 0 8px; font: 400 28px/1.15 var(--font-radley), serif; letter-spacing: var(--tracking-case); text-wrap: balance; }
+.mobile-blocker p { margin: 0 0 24px; color: var(--muted-foreground); font-size: var(--text-prose); line-height: 24px; text-wrap: pretty; }
+.mobile-blocker-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+.mobile-blocker-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border: 1px solid var(--action); border-radius: 999px; background: var(--action); color: var(--action-foreground); font: 500 var(--text-ui)/20px var(--font-ronzino), sans-serif; cursor: pointer; transition: scale 150ms var(--motion-ease-out), background-color 150ms ease, border-color 150ms ease; }
+.mobile-blocker-button-share { background: var(--background); color: var(--foreground); border-color: var(--border); }
+.mobile-blocker-button:hover { background: color-mix(in oklab, var(--action) 86%, white); }
+.mobile-blocker-button-share:hover { background: var(--muted); border-color: var(--muted-foreground); }
+.mobile-blocker-button:active { scale: .97; }
+.mobile-blocker-socials { display: flex; justify-content: center; gap: 12px; margin-top: 28px; }
+.mobile-blocker-socials :is(a, button) { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 10px; background: transparent; color: var(--foreground); cursor: pointer; transition: background-color 150ms ease, transform 100ms ease; }
+.mobile-blocker-socials :is(a, button):hover { background: var(--muted); }
+.mobile-blocker-socials :is(a, button):active { transform: scale(.94); }
+.mobile-blocker-feedback { margin-top: 12px; color: var(--muted-foreground); font-size: var(--text-label); }
+.mobile-blocker :is(a, button):focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+@media (max-width: 360px) { .mobile-blocker-actions { flex-direction: column; width: 100%; } .mobile-blocker-button { width: 100%; } }
+@media (prefers-reduced-motion: reduce) { .mobile-blocker-card { animation: none; } .mobile-blocker-button, .mobile-blocker-socials :is(a, button) { transition: none; } }
+
+/* ——— Live component (case-media.tsx ComponentStage; demos in src/cases) ———
+   The demo scales from its own box (container), a badge says it's live, Preview / Code switch at the top right,
+   state tabs along the bottom. The Code tab fills the frame with the source on white. */
+.case-demo-screen { position: absolute; inset: 0; container-type: inline-size; }
+/* Stage demos: the component fills the frame (its own container), centred unless it lays itself out. */
+.case-demo-stage { position: absolute; inset: 0; container-type: size; }
+/* "Interactive" on a stage frame: the same small grey note as above a phone, centred at the top. */
+.case-demo-hint { position: absolute; top: 16px; left: 50%; display: flex; align-items: center; gap: 4px; color: var(--muted-foreground); font-size: var(--text-caption); font-weight: 500; line-height: 16px; translate: -50% 0; pointer-events: none; }
+.case-demo-hint svg { width: 12px; height: 12px; }
+.case-demo-views { position: absolute; top: 16px; right: 16px; isolation: isolate; display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--secondary); font-size: var(--text-caption); line-height: 18px; }
+.case-demo-views button { position: relative; height: 24px; padding: 0 10px; border-radius: 7px; color: var(--muted-foreground); }
+.case-demo-views button[aria-selected="true"] { color: var(--foreground); font-weight: 500; }
+.case-demo-views button:active { scale: .97; }
+.case-code { position: absolute; inset: 60px 16px 16px; display: flex; flex-direction: column; overflow: hidden; border-radius: 12px; background: var(--background); box-shadow: 0 0 0 1px var(--border); }
+.case-code-bar { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--border); color: var(--muted-foreground); font: 500 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.case-code-bar button { display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 8px; color: var(--foreground); font: 500 var(--text-caption)/1 var(--font-ronzino), sans-serif; }
+.case-code-bar button:hover { background: var(--secondary); }
+.case-code pre { flex: 1; margin: 0; padding: 16px 20px 24px; overflow: auto; color: #2b2b2b; font: 12.5px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace; tab-size: 2; }
+.case-code pre:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
+.case-code-comment { color: #8a8f98; font-style: italic; }
+.case-code-string { color: #0a7d3c; }
+.case-code-keyword { color: #a3238e; }
+.case-code-tag { color: #0b57d0; }
+.case-code-number { color: #b45309; }
+
+/* Contextual selection shortcut, matching the compact dark Ask AI reference. */
+.selection-ask-ai { position: fixed; z-index: 100; display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 32px; padding: 0 12px; border-radius: 8px; background: var(--foreground); color: var(--background); box-shadow: 0 4px 16px rgb(25 25 25 / .18); font: 500 12px/1 var(--font-ronzino), sans-serif; white-space: nowrap; cursor: pointer; user-select: none; }
+.selection-ask-ai:hover { background: #333; }
+.selection-ask-ai:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+/* Source links for imported Dribbble shots. */
+.media-viewer-source { display: flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; border-radius: 999px; color: inherit; text-decoration: none; white-space: nowrap; }
+.media-viewer-source:hover { background: rgb(255 255 255 / .1); color: #fff; }
+.media-viewer-source:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }

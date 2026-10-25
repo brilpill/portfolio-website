@@ -10,19 +10,30 @@ html:has(.case-study-shell) { overflow-y: auto; scroll-behavior: smooth; }
   --portfolio-right-panel-width: 360px;
   --case-panel: 0px;
   min-height: 100dvh;
+  overflow-x: clip;
   background: var(--background);
   color: var(--foreground);
 }
 .case-study-shell[data-assistant="open"] { --case-panel: var(--portfolio-right-panel-width); }
 
-/* Top bar (ktz.dk/work/nm-skills): part of the page, not fixed. Back's arrow lines up with the copy column
-   and Ask AI's label ends the same distance in from the right; the avatar and divider sit in the margin. */
-.case-study-topbar { box-sizing: content-box; display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 1152px; height: 40px; margin: 0 auto; padding: 16px 56px 0; }
-.case-study-topbar-start { display: flex; align-items: center; gap: 12px; margin-left: calc(var(--case-inset) - 28px - 12px - 1px - 12px - 12px); }
+/* Top bar (ktz.dk/work/nm-skills): sticky, on the copy column. At the top the avatar starts where the chips and
+   title start and the group is bare; once scrolled, the avatar, divider and Back slide 6px right into a grey
+   pill. Ask AI stays bare, its label ending where the copy column ends. The bar itself lets clicks through. */
+.case-study-topbar { position: sticky; top: 0; z-index: 20; box-sizing: content-box; display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 1152px; height: 40px; margin: 0 auto; padding: 16px 56px 0; pointer-events: none; }
+.case-study-topbar > * { pointer-events: auto; }
+.case-study-topbar-start { display: flex; align-items: center; gap: 12px; margin-left: var(--case-inset); padding: 2px 2px 2px 6px; border-radius: 10px; transform: translateX(-6px); transition: transform 400ms cubic-bezier(.4, 0, .2, 1), background-color 300ms ease-out; }
+.case-study-topbar[data-scrolled] .case-study-topbar-start { background: var(--home-fill); transform: none; }
 /* Ask AI (ktz.dk): quiet until hovered; the two-star icon (AskAiIcon, styled in home.css) springs apart on
    hover and folds into a cross while the panel is open, as the label slides to Close. */
 .case-study-ask { display: inline-flex; align-items: center; gap: 8px; height: 32px; margin-right: calc(var(--case-inset) - 12px); padding: 0 12px; border-radius: var(--radius); color: var(--home-muted); font-size: var(--text-ui); font-weight: 500; line-height: 1; letter-spacing: var(--tracking-ui); white-space: nowrap; cursor: pointer; transition: background-color 200ms ease, color 200ms ease, transform var(--motion-press) var(--motion-ease-out); }
 .case-study-ask:active { transform: scale(.97); }
+/* Sound, left of Ask AI: the hero's switch, an icon button in the same quiet style. */
+.case-study-topbar-end { display: flex; align-items: center; gap: 4px; }
+.case-study-sound { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--radius); color: var(--home-muted); cursor: pointer; transition: background-color 200ms ease, color 200ms ease, transform var(--motion-press) var(--motion-ease-out); }
+.case-study-sound:active { transform: scale(.97); }
+.case-study-sound:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.case-study-sound[aria-pressed="true"] { color: var(--home-ink); }
+@media (hover: hover) and (pointer: fine) { .case-study-sound:hover { background: var(--home-fill); color: var(--home-ink); } }
 .case-study-ask:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 .case-study-ask[data-open], .case-study-ask:focus-visible { background: var(--home-fill); color: var(--home-ink); }
 .case-study-ask-label { display: grid; }
@@ -56,12 +67,13 @@ html:has(.case-study-shell) { overflow-y: auto; scroll-behavior: smooth; }
 
 @media (hover: hover) and (pointer: fine) {
   .case-study-back:hover { background: var(--home-fill); color: var(--home-ink); }
+  .case-study-topbar[data-scrolled] .case-study-back:hover { background: color-mix(in oklab, var(--home-ink) 6%, var(--home-fill)); }
   .case-study-back:hover svg { transform: translateX(-2px); }
   .case-study-ask:hover { background: var(--home-fill); color: var(--home-ink); }
   .case-study-chip-link:hover { background: color-mix(in oklch, var(--home-fill), var(--foreground) 6%); color: var(--home-ink); }
   .case-study-chip-link:hover .case-study-chip-icon { transform: scale(1.15) rotate(-8deg); }
 }
-.case-study-back:focus-visible, .case-study-avatar:focus-visible, .case-study-ticks a:focus-visible, .case-study-chip-link:focus-visible, .case-study-next a:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.case-study-back:focus-visible, .case-study-avatar:focus-visible, .case-study-ticks a:focus-visible, .case-study-chip-link:focus-visible, .case-study-navigation a:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 
 /* The page, centred in the space left of the assistant panel when it is open. */
 .case-study-main { margin-right: var(--case-panel); transition: margin-right var(--motion-panel) var(--motion-ease-out); }
@@ -81,6 +93,32 @@ html:has(.case-study-shell) { overflow-y: auto; scroll-behavior: smooth; }
 .case-study-intro { max-width: 560px; margin: 8px 0 0; color: var(--home-text); font-size: 1rem; line-height: 24.8px; text-wrap: pretty; }
 .case-study-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0; padding: 24px 0 0; list-style: none; }
 .case-study-meta li { display: flex; align-items: center; gap: 6px; color: var(--home-muted); font-size: var(--text-ui); font-weight: 500; line-height: 21px; }
+/* Like (ktz.dk): a quiet heart and the live count. Liked, the heart turns red and pops; a ring and six sparks
+   burst from it (like-button.tsx). */
+.like-button { --like: #e5484d; display: inline-flex; align-items: center; gap: 6px; margin: -4px -6px; padding: 4px 6px; border-radius: var(--radius); color: var(--home-muted); font: inherit; cursor: pointer; transition: color var(--motion-fast) ease; }
+.like-button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.like-button-heart { position: relative; display: inline-grid; place-items: center; }
+.like-button-heart svg { display: block; color: var(--home-ink); opacity: .3; transition: scale 200ms var(--motion-ease-out), color 200ms ease, opacity 200ms ease; }
+.like-button:active .like-button-heart svg { scale: .88; }
+.like-button[aria-pressed="true"] { color: var(--home-ink); }
+.like-button[aria-pressed="true"] .like-button-heart svg { color: var(--like); opacity: 1; animation: like-pop 420ms cubic-bezier(.34, 1.56, .64, 1); }
+.like-button-count { font-variant-numeric: tabular-nums; animation: like-count 260ms var(--motion-ease-out); }
+.like-button-burst { position: absolute; inset: 0; pointer-events: none; }
+.like-button-ring { position: absolute; inset: -4px; border: 1.5px solid var(--like); border-radius: 50%; opacity: 0; animation: like-ring 500ms var(--motion-ease-out); }
+.like-button-spark { position: absolute; top: 50%; left: 50%; width: 4px; height: 4px; margin: -2px; border-radius: 50%; background: var(--like); opacity: 0; animation: like-spark 560ms var(--motion-ease-out); }
+@keyframes like-pop { 0% { scale: .6; } 60% { scale: 1.22; } 100% { scale: 1; } }
+@keyframes like-count { from { opacity: 0; translate: 0 4px; } }
+@keyframes like-ring { 0% { opacity: .9; scale: .4; } 100% { opacity: 0; scale: 1.5; } }
+@keyframes like-spark { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-15px) scale(.4); } }
+@media (hover: hover) and (pointer: fine) {
+  .like-button:hover { color: var(--home-ink); }
+  .like-button:hover .like-button-heart svg { scale: 1.1; opacity: .5; }
+  .like-button[aria-pressed="true"]:hover .like-button-heart svg { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .like-button-heart svg, .like-button-count { animation: none !important; transition: none; }
+  .like-button-burst { display: none; }
+}
 
 /* Figures: a grey frame around the media, which keeps its own controls. */
 .case-study-hero { padding-top: 64px; }
@@ -91,18 +129,45 @@ html:has(.case-study-shell) { overflow-y: auto; scroll-behavior: smooth; }
 .case-study-figure .case-media { margin: 0; }
 .case-study-figure .case-stage { aspect-ratio: 1152 / 670; border-radius: 0; background: transparent; }
 .case-study-figure[data-framed] .case-stage { aspect-ratio: 1032 / 600; border-radius: 6px; }
+/* A framed image keeps its own proportions (ImageStage reports them), so tall sheets show whole, not cropped. */
+.case-study-figure[data-framed] .case-stage-image { aspect-ratio: var(--media-ratio, 1032 / 600); }
 .case-study-figure .case-stage-body { padding: 4% 0 7%; }
-.case-study-figure .case-phone { width: 20cqw; }
+.case-study-figure .case-phone { --phone-w: 20cqw; }
 .case-study-figure .case-browser { width: 64cqw; }
+/* Frames in the wide case study figures: a row fills the frame, the composite frames take their slide size. */
+.case-study-figure .case-phone-row { gap: 6cqw; }
+.case-study-figure .case-phone-row .case-phone { --phone-w: 19cqw; }
+.case-study-figure .case-phone-pair { width: 46cqw; }
+.case-study-figure .case-phone-pair .case-phone { --phone-w: 20cqw; }
+.case-study-figure .case-phone-pair-front { left: 7cqw; }
+.case-study-figure .case-responsive-phone { --phone-w: 16cqw; }
+.case-study-figure .case-responsive { width: 70cqw; }
+.case-study-figure .case-laptop { --laptop-w: 70cqw; }
+.case-study-figure .case-responsive .case-browser { width: 100%; }
+/* A live component sits in the same frame as the images; a demo can ask for other proportions (--demo-ratio). */
+.case-study-figure .case-demo { aspect-ratio: var(--demo-ratio, 1152 / 670); }
+/* A grid of components (kind "components"): no grey behind the grid; each component gets its own grey frame, and
+   an open menu may run over the frame below it. One Interactive note sits above the grid. */
+.case-study-figure[data-grid] { overflow: visible; background: none; }
+.case-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.case-demo-grid-hint { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: -4px; color: var(--muted-foreground); font-size: var(--text-caption); font-weight: 500; line-height: 16px; }
+.case-demo-grid-hint svg { width: 12px; height: 12px; }
+.case-demo-tile { position: relative; border-radius: var(--radius); background: var(--home-fill); }
+.case-demo-tile[data-wide] { grid-column: 1 / -1; }
+.case-demo-tile:has(.la-menu) { z-index: 2; }
+.case-demo-tile .case-demo { overflow: visible; border-radius: inherit; }
+@media (max-width: 767px) { .case-demo-grid { grid-template-columns: minmax(0, 1fr); } }
 .case-study-figure .case-arrow { background: var(--background); }
 .case-study-figure .case-control:not(.case-player) { background: var(--background); }
-/* Expand: a small white button in the bottom-right corner, clear of the controls in the middle. */
-.case-study-expand { position: absolute; z-index: 2; right: 16px; bottom: 16px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--radius); background: var(--background); color: var(--home-muted); box-shadow: 0 1px 2px rgb(25 25 25 / .08), 0 0 0 .5px rgb(25 25 25 / .06); transition: color var(--motion-fast) ease, transform var(--motion-press) var(--motion-ease-out); }
+/* On the white control the selected tab is a grey pill rather than a white one. */
+.case-study-figure .case-tabs-thumb { background: var(--secondary); box-shadow: none; }
+/* Expand (ktz.dk): a quiet corners-out icon in the bottom-right corner, no button surface; it darkens on hover. */
+.case-study-expand { position: absolute; z-index: 2; right: 6px; bottom: 6px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; background: transparent; color: rgb(0 0 0 / .3); transition: color var(--motion-fast) ease, transform var(--motion-press) var(--motion-ease-out); }
 .case-study-expand svg { transition: transform var(--motion-fast) var(--motion-ease-out); }
 .case-study-expand:active { transform: scale(.94); }
 .case-study-expand:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 @media (hover: hover) and (pointer: fine) {
-  .case-study-expand:hover { color: var(--home-ink); }
+  .case-study-expand:hover { color: var(--home-muted); }
   .case-study-expand:hover svg { transform: scale(1.12); }
 }
 
@@ -114,20 +179,33 @@ html:has(.case-study-shell) { overflow-y: auto; scroll-behavior: smooth; }
 .case-study-copy h2, .case-study-copy h3 { margin: 4px 0 0; color: var(--home-ink); font-size: 1rem; font-weight: 500; line-height: 22.4px; letter-spacing: var(--tracking-ui); }
 .case-study-copy p:not(.case-study-label) { margin: 8px 0 0; color: var(--home-text); font-size: 1rem; line-height: 24.8px; text-wrap: pretty; }
 .case-study-copy strong { color: var(--home-ink); font-weight: 500; }
+/* The two halves share rows (subgrid), so the figures start level even when one half's copy wraps longer. */
 .case-study-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+.case-study-pair > div { display: grid; grid-row: span 2; grid-template-rows: subgrid; }
 .case-study-pair .case-study-copy { padding-bottom: 40px; }
+/* Numbers row (case-numbers.tsx): in the content width, under the chapter's copy. */
+/* A chapter's lesson: one quieter line under the text, with a small label. */
+/* The chapter's lesson: an aside under the text, set off by a rule on the left, its label on a line of its own. */
+.case-study-lesson { display: grid; gap: 4px; margin-top: 24px !important; padding: 2px 0 2px 16px; border-left: 2px solid var(--home-line); color: var(--body-text, var(--foreground)); font-size: var(--text-ui) !important; line-height: 22px !important; text-wrap: pretty; }
+.case-study-lesson span { color: var(--home-muted); font-size: var(--text-caption); font-weight: 500; line-height: 16px; }
+.case-study-numbers { margin: 16px 0 64px; padding: 0 var(--case-inset); }
 .case-study-pair .case-study-figure .case-stage { aspect-ratio: 4 / 3; }
-.case-study-pair .case-study-figure .case-phone { width: 27cqw; }
+.case-study-pair .case-study-figure .case-phone { --phone-w: 27cqw; }
 
-/* Next project */
-.case-study-next { padding: 128px var(--case-inset) 56px; }
-.case-study-next a { display: inline-flex; flex-direction: column; margin: -8px -12px; padding: 8px 12px; border-radius: var(--radius); transition: background-color var(--motion-fast) ease; }
-.case-study-next-title { display: inline-flex; align-items: center; gap: 6px; color: var(--home-ink); font-size: 1rem; font-weight: 500; line-height: 24px; letter-spacing: var(--tracking-ui); }
-.case-study-next-title svg { color: var(--home-muted); transition: transform var(--motion-fast) var(--motion-ease-out), color var(--motion-fast) ease; }
-.case-study-next-summary { color: var(--home-text); font-size: 1rem; line-height: 24px; }
+/* Previous and next published studies, following the sidebar order. */
+.case-study-navigation { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: 128px var(--case-inset) 56px; }
+.case-study-navigation-link { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 104px; padding: 20px 24px; border: 1px solid var(--home-line); border-radius: var(--radius-panel); background: var(--home-fill); color: var(--home-ink); transition: background-color var(--motion-fast) ease, border-color var(--motion-fast) ease; }
+.case-study-navigation-link span { display: grid; gap: 6px; min-width: 0; }
+.case-study-navigation-link small { color: var(--home-muted); font-size: var(--text-caption); font-weight: 500; line-height: 18px; }
+.case-study-navigation-link strong { font-size: clamp(18px, 2cqw, 24px); font-weight: 500; line-height: 1.2; letter-spacing: var(--tracking-ui); text-wrap: balance; }
+.case-study-navigation-link svg { flex: none; color: var(--home-muted); transition: transform var(--motion-fast) var(--motion-ease-out), color var(--motion-fast) ease; }
+.case-study-navigation-previous { text-align: right; }
+.case-study-navigation-next { grid-column: 2; text-align: left; }
 @media (hover: hover) and (pointer: fine) {
-  .case-study-next a:hover { background: var(--home-fill); }
-  .case-study-next a:hover .case-study-next-title svg { color: var(--home-ink); transform: translateX(3px); }
+  .case-study-navigation-link:hover { background: color-mix(in oklab, var(--home-fill) 90%, var(--home-ink)); border-color: var(--home-muted); }
+  .case-study-navigation-link:hover svg { color: var(--home-ink); }
+  .case-study-navigation-previous:hover svg { transform: translateX(-4px); }
+  .case-study-navigation-next:hover svg { transform: translateX(4px); }
 }
 
 /* Phones: ticks hide, the assistant covers the page, and pairs stack. */
@@ -135,30 +213,31 @@ html:has(.case-study-shell) { overflow-y: auto; scroll-behavior: smooth; }
   .case-study-shell[data-assistant="open"] { --case-panel: 0px; }
   .case-study-shell[data-assistant="open"] .case-study-contact { display: none; }
   .case-study-topbar { padding: 8px 8px 0; }
-  .case-study-topbar-start { margin-left: 0; gap: 8px; }
+  .case-study-topbar-start { margin-left: 12px; gap: 8px; }
   .case-study-ask { margin-right: 0; }
   .case-study-ticks { display: none; }
   .case-study { padding: 0 8px 104px; }
   .case-study-header { padding: 32px 12px 0; }
   .case-study-hero { padding-top: 40px; }
   .case-study-copy { padding: 48px 12px 16px; }
+  .case-study-numbers { padding: 0 12px; }
   .case-study-figure .case-stage { aspect-ratio: 4 / 3; }
   /* Phone mockups need a taller stage on a narrow screen, so the frame and its controls both fit. */
   .case-study-figure .case-stage:has(.case-phone) { aspect-ratio: 4 / 5; }
-  .case-study-figure .case-phone { width: 40cqw; }
+  .case-study-figure .case-phone { --phone-w: 40cqw; }
   .case-study-figure .case-browser { width: 76cqw; }
   .case-study-pair { grid-template-columns: 1fr; }
   .case-study-pair .case-study-copy { padding-bottom: 16px; }
   .case-study-pair .case-study-figure .case-stage { aspect-ratio: 4 / 5; }
-  .case-study-pair .case-study-figure .case-phone { width: 40cqw; }
-  .case-study-next { padding: 80px 12px 32px; }
-  .case-study-next a { margin: -8px; padding: 8px; }
+  .case-study-pair .case-study-figure .case-phone { --phone-w: 40cqw; }
+  .case-study-navigation { grid-template-columns: minmax(0, 1fr); padding: 80px 12px 32px; }
+  .case-study-navigation-next { grid-column: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .case-study-ask:active, .case-study-expand:active, .case-study-expand:hover svg, .case-study-back:active, .case-study-back:hover svg, .case-study-next a:hover .case-study-next-title svg { transform: none !important; }
+  .case-study-ask:active, .case-study-expand:active, .case-study-expand:hover svg, .case-study-back:active, .case-study-back:hover svg, .case-study-navigation-link:hover svg { transform: none !important; }
   .case-study-avatar:active, .case-study-chip-link:active, .case-study-chip-link:hover .case-study-chip-icon { transform: none !important; }
-  .case-study-main, .case-study-contact, .case-study-tick-card { transition: none; animation: none; }
+  .case-study-main, .case-study-contact, .case-study-tick-card, .case-study-topbar-start { transition: none; animation: none; }
   .case-study-ask-label > span { transition: none; translate: none !important; }
 }
 

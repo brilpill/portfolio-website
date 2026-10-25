@@ -36,6 +36,10 @@ export interface UserMenuProps {
   onOpenChange?: (open: boolean) => void;
   /** Where the phone sheet is portalled. Defaults to the body. */
   getSheetContainer?: () => HTMLElement | null;
+  /** Show the avatar, name and detail at the top of the menu. */
+  showHeader?: boolean;
+  /** Extra class for the dropdown panel (not the phone sheet), e.g. to set its width. */
+  panelClassName?: string;
   ref?: Ref<HTMLButtonElement>;
 }
 
@@ -83,7 +87,7 @@ function focusStop(stop: HTMLElement | undefined) {
   target?.focus({ preventScroll: true });
 }
 
-export function UserMenu({ user, trigger, triggerClassName, triggerLabel, items = [], switches = [], align = "start", onOpenChange, getSheetContainer, ref }: UserMenuProps) {
+export function UserMenu({ user, trigger, triggerClassName, triggerLabel, items = [], switches = [], align = "start", onOpenChange, getSheetContainer, showHeader = true, panelClassName, ref }: UserMenuProps) {
   const id = useId();
   const menuId = `${id}-menu`;
   const triggerId = `${id}-trigger`;
@@ -142,7 +146,8 @@ export function UserMenu({ user, trigger, triggerClassName, triggerLabel, items 
       const rect = anchor.getBoundingClientRect();
       const width = panel.offsetWidth, height = panel.offsetHeight;
       const wanted = align === "start" ? rect.left : align === "center" ? rect.left + rect.width / 2 - width / 2 : rect.right - width;
-      const left = Math.min(Math.max(12, wanted), window.innerWidth - width - 12);
+      // 8px from the window edge, so a menu under the sidebar profile lines up with the sidebar rows.
+      const left = Math.min(Math.max(8, wanted), window.innerWidth - width - 8);
       const below = rect.bottom + 8;
       const top = below + height > window.innerHeight - 12 && rect.top - 8 - height > 12 ? rect.top - 8 - height : below;
       panel.style.left = `${left}px`;
@@ -251,17 +256,17 @@ export function UserMenu({ user, trigger, triggerClassName, triggerLabel, items 
   const menuProps = { id: menuId, role: "menu", "aria-labelledby": triggerId, tabIndex: -1, onKeyDown };
 
   const content = <>
-    <motion.div className={styles.header} variants={row}>
+    {showHeader && <motion.div className={styles.header} variants={row}>
       {/* eslint-disable-next-line @next/next/no-img-element -- a 34px avatar already served as a small static file */}
       {user.avatarSrc && <img className={styles.portrait} src={user.avatarSrc} alt="" decoding="async" draggable={false} />}
       <div className={styles.identity}><span className={styles.name}>{user.name}</span>{user.detail && <span className={styles.detail} title={user.detail}>{user.detail}</span>}</div>
-    </motion.div>
+    </motion.div>}
     <div ref={listRef} className={styles.list} onFocus={onListFocus} onPointerMove={onListPointerMove} onPointerLeave={onListPointerLeave}>
       <motion.span className={styles.highlight} aria-hidden="true" initial={false}
         animate={highlight ? { y: highlight.top, height: highlight.height, opacity: 1 } : { opacity: 0 }}
         transition={{ default: glide, opacity: { duration: reduced ? 0 : motionTokens.duration.fast } }} />
       {items.length > 0 && <>
-        <div className={styles.separator} role="separator" />
+        {showHeader && <div className={styles.separator} role="separator" />}
         {items.map(item => <motion.button key={item.label} type="button" role="menuitem" tabIndex={-1} className={styles.item} data-stop="item" data-label={item.label} variants={row}
           onPointerMove={onItemPointerMove} onClick={() => { close(true); item.onSelect?.(); }}>
           <span className={styles.icon} aria-hidden="true">{item.icon}</span>
@@ -269,14 +274,14 @@ export function UserMenu({ user, trigger, triggerClassName, triggerLabel, items 
         </motion.button>)}
       </>}
       {switches.length > 0 && <>
-        <div className={styles.separator} role="separator" />
+        {(showHeader || items.length > 0) && <div className={styles.separator} role="separator" />}
         {switches.map(control => <Segmented key={control.label} control={control} variants={row} />)}
       </>}
     </div>
   </>;
 
   const panel = <AnimatePresence>
-    {open && !sheet && <motion.div key="panel" ref={surfaceRef} {...menuProps} className={styles.panel} data-align={align}
+    {open && !sheet && <motion.div key="panel" ref={surfaceRef} {...menuProps} className={panelClassName ? `${styles.panel} ${panelClassName}` : styles.panel} data-align={align}
       variants={reduced ? stillMotion : panelMotion} initial="closed" animate="open" exit="exit">
       {content}
     </motion.div>}

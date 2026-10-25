@@ -14,6 +14,9 @@ import { useEffect, useRef } from "react";
  * it, moving over the soil lifts dust, and a click or tap sends a ping, with the site's UI sound
  * when Sound is on in the profile menu. Touch screens have no cursor, so
  * a gust of wind sweeps through the crown every few seconds instead.
+ *
+ * With `plant={false}` (the playground board) only the field is drawn: no plant, soil, dust or gusts. A click on
+ * empty space or a card that does not drag the board sends the sonar ring; at rest the board stays clear.
  */
 
 type LeafShape = { at: number; angle: number; length: number; width: number; arch: number; droop: number; delay: number };
@@ -65,7 +68,7 @@ const strokeGlyph = (dx: number, dy: number) => {
   return STROKE_INDEX[Math.round(angle / (Math.PI / 4)) % 4];
 };
 
-export function HeroSeedling({ active }: { active: boolean }) {
+export function HeroSeedling({ active, plant = true }: { active: boolean; plant?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const state = useRef({ active });
   useEffect(() => { state.current = { active }; }, [active]);
@@ -74,7 +77,7 @@ export function HeroSeedling({ active }: { active: boolean }) {
     const canvas = ref.current;
     const context = canvas?.getContext("2d");
     if (!canvas || !context) return;
-    const hero = canvas.closest(".home-slide") as HTMLElement;
+    const hero = (canvas.closest(plant ? ".home-slide" : ".playground-board") ?? canvas.parentElement!) as HTMLElement;
     const motion = matchMedia("(prefers-reduced-motion: reduce)");
     const touchOnly = matchMedia("(hover: none)");
     const ink = getComputedStyle(canvas).getPropertyValue("--primary").trim() || "#004bfe";
@@ -126,7 +129,7 @@ export function HeroSeedling({ active }: { active: boolean }) {
 
     // The plant is almost hidden behind the heading and buttons, so the text sits on clear ground.
     function measureText() {
-      const intro = hero.querySelector(".home-introduction");
+      const intro = plant ? hero.querySelector(".home-introduction") : null;
       if (!intro || !canvas) return;
       const box = intro.getBoundingClientRect(), frameBox = canvas.getBoundingClientRect();
       text = { cx: box.left + box.width / 2 - frameBox.left, cy: box.top + box.height / 2 - frameBox.top, rx: box.width * .62, ry: box.height * .78 };
@@ -146,7 +149,7 @@ export function HeroSeedling({ active }: { active: boolean }) {
     // Touch screens: with no cursor, a gust sweeps across the crown every few seconds, alternating
     // direction. It drives the same cursor state, so leaves flutter and glyphs part as it passes.
     function blow(stemLength: number, baseY: number) {
-      if (!touchOnly.matches || performance.now() - cursor.lastMove < 3000) { gust.active = false; return; }
+      if (!plant || !touchOnly.matches || performance.now() - cursor.lastMove < 3000) { gust.active = false; return; }
       if (!gust.active) {
         if (time < gust.next || growth < 1) return;
         const crown = baseY - stemLength * .8;
@@ -197,7 +200,7 @@ export function HeroSeedling({ active }: { active: boolean }) {
 
       // Moving across the soil lifts a little dust that falls back.
       const soilTop = baseY - scale * .07;
-      if (cursor.inside && !gust.active && Math.abs(cursor.vx) > 120 && cursor.sy > soilTop - 24 && cursor.sy < baseY + scale * .15 && dust.length < 140) {
+      if (plant && cursor.inside && !gust.active && Math.abs(cursor.vx) > 120 && cursor.sy > soilTop - 24 && cursor.sy < baseY + scale * .15 && dust.length < 140) {
         const count = Math.min(4, Math.floor(Math.abs(cursor.vx) / 260) + 1);
         for (let k = 0; k < count; k++) dust.push({ x: cursor.sx + (Math.random() - .5) * 30, y: cursor.sy + (Math.random() - .5) * 10, vx: cursor.vx * .18 + (Math.random() - .5) * 50, vy: -50 - Math.random() * 90, life: 1, glyph: SPECK_INDEX[Math.floor(Math.random() * SPECK_INDEX.length)] });
       }
@@ -258,7 +261,7 @@ export function HeroSeedling({ active }: { active: boolean }) {
 
           // Soil: dome on top, half-ellipse underneath; glyphs thin out toward the rim so the outline reads round.
           const px = (x - baseX) / scale, py = (baseY - y) / scale;
-          if (py < .09 && py > soilBottom && Math.abs(px) < SOIL.side) {
+          if (plant && py < .09 && py > soilBottom && Math.abs(px) < SOIL.side) {
             const nx = px / SOIL.side;
             const top = SOIL.peak * Math.exp(-((px / SOIL.peakWidth) ** 2)) + SOIL.range * (1 - nx * nx);
             const under = soilBottom * Math.sqrt(Math.max(0, 1 - nx * nx));
@@ -273,7 +276,7 @@ export function HeroSeedling({ active }: { active: boolean }) {
           }
 
           // Stem: distance to the sampled curve; the stroke glyph follows the curve's direction.
-          if (x > stemMinX - stemPad && x < stemMaxX + stemPad && y > stemMinY - stemPad && y < baseY + stemPad) {
+          if (plant && x > stemMinX - stemPad && x < stemMaxX + stemPad && y > stemMinY - stemPad && y < baseY + stemPad) {
             for (let k = 0; k < points.length - 1; k++) {
               const [x1, y1] = points[k], [x2, y2] = points[k + 1];
               const dx = x2 - x1, dy = y2 - y1, lengthSq = dx * dx + dy * dy || 1;
@@ -287,7 +290,7 @@ export function HeroSeedling({ active }: { active: boolean }) {
           }
 
           // Leaves: a lens shape around an arched midrib, with slanted secondary veins.
-          for (const leaf of shapes) {
+          for (const leaf of plant ? shapes : []) {
             if (x < leaf.minX || x > leaf.maxX || y < leaf.minY || y > leaf.maxY) continue;
             const dx = x - leaf.ax, dy = y - leaf.ay;
             const u = (dx * leaf.ex + dy * leaf.ey) / leaf.length;
@@ -343,8 +346,10 @@ export function HeroSeedling({ active }: { active: boolean }) {
               if (hash(col + bucket * 7, row) < falloff * .55) glyph = FILL_INDEX[Math.floor(clamp(density) * (FILL_INDEX.length - 1) * (.7 + hash(col, row + bucket) * .6)) % FILL_INDEX.length];
             }
           }
-          const m = ((x - text.cx) / text.rx) ** 2 + ((y - text.cy) / text.ry) ** 2;
-          density *= .14 + .86 * smooth(.75, 1.2, m);
+          if (plant) {
+            const m = ((x - text.cx) / text.rx) ** 2 + ((y - text.cy) / text.ry) ** 2;
+            density *= .14 + .86 * smooth(.75, 1.2, m);
+          }
           if (density < .04) continue;
 
           const level = Math.min(LEVELS - 1, Math.floor(clamp(density) * LEVELS));
@@ -397,12 +402,29 @@ export function HeroSeedling({ active }: { active: boolean }) {
       cursor.x = x; cursor.y = y; cursor.inside = true; cursor.lastMove = now;
     }
     function leave() { cursor.inside = false; if (!touchOnly.matches) cursor.lastMove = 0; }
-    function press(event: PointerEvent) {
-      if (motion.matches || !state.current.active || (event.target as HTMLElement).closest("a,button,select,label,input")) return;
+    // Controls never ping, except the hero's Sound and Ask AI, which send the ring from where they are pressed
+    // (on phones they sit in the top bar, outside the hero, so they are caught on the document). On the
+    // playground a click on a card pings too (it still opens the card).
+    const quiet = plant ? "a,button,select,label,input" : "a,button:not(.playground-card),select,label,input";
+    const loud = ":is(.portfolio-home-controls-hero, .portfolio-home-controls-topbar) button";
+    function ping(event: PointerEvent, force = false) {
+      if (motion.matches || !state.current.active || (!force && (event.target as HTMLElement).closest(quiet))) return;
       pointer(event);
       ripples.push({ x: cursor.x, y: cursor.y, start: time });
       if (ripples.length > 6) ripples.shift();
       // Click audio is handled by the shared shell so its waveform always stays in sync.
+    }
+    // The hero pings on press. The playground board drags, so it pings only on a release that barely moved.
+    const down = { x: 0, y: 0 };
+    function press(event: PointerEvent) {
+      if (plant) ping(event);
+      else { down.x = event.clientX; down.y = event.clientY; }
+    }
+    function control(event: PointerEvent) {
+      if (plant && event.target instanceof Element && event.target.closest(loud)) ping(event, true);
+    }
+    function release(event: PointerEvent) {
+      if (!plant && Math.hypot(event.clientX - down.x, event.clientY - down.y) < 6) ping(event);
     }
     function motionChange() { leave(); if (motion.matches) { leaves.forEach((leaf) => { leaf.phi = leaf.omega = 0; }); stem.bend = stem.velocity = 0; } draw(); }
 
@@ -412,6 +434,8 @@ export function HeroSeedling({ active }: { active: boolean }) {
     hero.addEventListener("pointermove", pointer, { passive: true });
     hero.addEventListener("pointerleave", leave);
     hero.addEventListener("pointerdown", press);
+    hero.addEventListener("pointerup", release);
+    document.addEventListener("pointerdown", control, true);
     motion.addEventListener("change", motionChange);
     void document.fonts.ready.then(() => { if (!disposed) resize(); });
     resize();
@@ -424,9 +448,11 @@ export function HeroSeedling({ active }: { active: boolean }) {
       hero.removeEventListener("pointermove", pointer);
       hero.removeEventListener("pointerleave", leave);
       hero.removeEventListener("pointerdown", press);
+      hero.removeEventListener("pointerup", release);
+      document.removeEventListener("pointerdown", control, true);
       motion.removeEventListener("change", motionChange);
     };
-  }, []);
+  }, [plant]);
 
   return <>
     <div className="home-ascii" aria-hidden="true"><canvas ref={ref} /></div>

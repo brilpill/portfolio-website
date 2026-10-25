@@ -3,10 +3,15 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUUpLeftIcon } from "@phosphor-icons/react";
+import { ArrowUUpLeftIcon, WaveformSlashIcon } from "@phosphor-icons/react";
+import { SelectionAskAI } from "./selection-ask-ai";
 import { AskAiIcon } from "./ask-ai-icon";
 import { AssistantPanel } from "./assistant-panel";
 import { HeroActions } from "./hero-actions";
+import { SoundWaveform } from "./sound-waveform";
+import { setSoundEnabled, useSoundEnabled } from "./settings-store";
+import { playUiSound } from "./ui-sound";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type Section = { id: string; label: string; title: string };
 type Props = { back: { href: string; label: string }; sections: Section[]; children: ReactNode };
@@ -87,23 +92,35 @@ function ChapterTicks({ sections, current }: { sections: Section[]; current?: st
 }
 
 /**
- * Case study frame, after ktz.dk/work/nm-skills: no sidebar. A top bar in line with the content (my avatar,
- * Back and Ask AI), chapter ticks along the left edge, and the hero's Contact button floating at the bottom.
+ * Case study frame, after ktz.dk/work/nm-skills: no sidebar. A sticky top bar in line with the content (my
+ * avatar, Back and Ask AI), chapter ticks along the left edge, and the hero's Contact button floating at the bottom.
  * Ask AI opens the same assistant panel as the portfolio.
  */
 export function CaseStudyFrame({ back, sections, children }: Props) {
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const [assistantSelectedText, setAssistantSelectedText] = useState<string | null>(null);
   const askButton = useRef<HTMLButtonElement>(null);
   // Closing from the panel hands focus back to Ask AI.
-  const closeAssistant = useCallback(() => { setAssistantOpen(false); requestAnimationFrame(() => askButton.current?.focus()); }, []);
+  const closeAssistant = useCallback(() => { setAssistantOpen(false); setAssistantSelectedText(null); requestAnimationFrame(() => askButton.current?.focus()); }, []);
   const current = useReadingSection(sections);
+  // The same sound switch as on the hero; turning it on plays a cue so the visitor hears what they enabled.
+  const soundEnabled = useSoundEnabled();
+  const toggleSound = () => { playUiSound(); setSoundEnabled(!soundEnabled); };
+  // ktz.dk: once the page leaves the top, the avatar, divider and Back gather into a grey pill.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 24);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
 
   return (
     <div className="case-study-shell" data-assistant={assistantOpen ? "open" : "closed"}>
-      <ChapterTicks sections={sections} current={current} />
+      {sections.length > 0 && <ChapterTicks sections={sections} current={current} />}
 
       <main className="case-study-main">
-        <header className="case-study-topbar">
+        <header className="case-study-topbar" data-scrolled={scrolled || undefined}>
           <div className="case-study-topbar-start">
             <Link className="case-study-avatar" href="/" aria-label="Home"><Image src="/figma/avatar.png" alt="" width={28} height={28} /></Link>
             <span className="case-study-topbar-divider" aria-hidden />
@@ -112,11 +129,17 @@ export function CaseStudyFrame({ back, sections, children }: Props) {
               <span>Back</span>
             </Link>
           </div>
-          <button ref={askButton} type="button" className="case-study-ask ask-ai-trigger" data-open={assistantOpen || undefined} aria-expanded={assistantOpen} aria-controls="portfolio-assistant"
+          <div className="case-study-topbar-end">
+          <button type="button" className="case-study-sound" data-sound-toggle aria-pressed={soundEnabled} aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"}
+            title={soundEnabled ? "Turn sound off" : "Turn sound on"} onClick={toggleSound}>
+            {soundEnabled ? <SoundWaveform /> : <WaveformSlashIcon size={20} aria-hidden />}
+          </button>
+          <Tooltip><TooltipTrigger render={<button ref={askButton} type="button" className="case-study-ask ask-ai-trigger" data-open={assistantOpen || undefined} aria-expanded={assistantOpen} aria-controls="portfolio-assistant"
             aria-label={assistantOpen ? "Close Ask AI" : "Ask AI"} onClick={() => setAssistantOpen(open => !open)}>
             <AskAiIcon />
             <span className="case-study-ask-label" aria-hidden><span>Ask AI</span><span>Close</span></span>
-          </button>
+          </button>} /><TooltipContent>Currently unavailable.</TooltipContent></Tooltip>
+          </div>
         </header>
         {children}
       </main>
@@ -126,7 +149,8 @@ export function CaseStudyFrame({ back, sections, children }: Props) {
         <HeroActions contactOnly direction="up" />
       </div>
 
-      <AssistantPanel open={assistantOpen} onClose={closeAssistant} />
+      <SelectionAskAI scope=".case-study-main" onAsk={text => { setAssistantSelectedText(text); setAssistantOpen(true); }} />
+      <AssistantPanel open={assistantOpen} onClose={closeAssistant} selectedText={assistantSelectedText} onClearSelectedText={() => setAssistantSelectedText(null)} />
     </div>
   );
 }

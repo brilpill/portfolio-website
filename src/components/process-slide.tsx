@@ -5,7 +5,7 @@ import { useState, type CSSProperties } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowCounterClockwiseIcon, ArrowRightIcon, BracketsCurlyIcon, CheckIcon, CodeIcon, DeviceMobileIcon, EnvelopeSimpleIcon, MonitorIcon, StackIcon } from "@phosphor-icons/react";
 
-const stages = [
+export const stages = [
   { name: "Understand", detail: "Brief, people & purpose", title: "Start with the right question.", description: "What are we helping someone do? I collect the context, map the important tasks, and decide what the product needs to make easier.", output: "A clear problem and a focused flow." },
   { name: "Structure", detail: "Flows & wireframes", title: "Give the idea a structure.", description: "I work through the flow before polishing the screens. Wireframes help me check the hierarchy, find missing states, and make the next step obvious.", output: "A flow that makes sense before the styling." },
   { name: "Explore", detail: "UI directions & experiments", title: "Try a few ways forward.", description: "I explore layout, type, color, and interaction together. Comparing a few directions helps me choose what fits the product and its audience.", output: "A visual direction with a reason behind it." },
@@ -13,7 +13,7 @@ const stages = [
   { name: "Build", detail: "Code, test & iterate", title: "Build it the way it was designed.", description: "I work with coding agents to turn the design into a working interface, then check it in the browser. I test the responsive behavior, interactions, and the details that can get lost in a handoff.", output: "A working experience, ready to test and improve." },
 ];
 
-function StageArtifact({ stage, mobile }: { stage: number; mobile: boolean }) {
+export function StageArtifact({ stage, mobile }: { stage: number; mobile: boolean }) {
   if (stage === 0) return <div className="process-artifact process-brief"><span className="process-artifact-kicker">THE STARTING POINT</span><strong>Make room for<br />what matters.</strong><div className="process-note-row"><span>Who is it for?</span><span>What gets in the way?</span></div><div className="process-flow"><span>Arrive</span><ArrowRightIcon size={12} /><span>Find</span><ArrowRightIcon size={12} /><span>Do</span></div></div>;
   if (stage === 1) return <div className="process-artifact process-wireframe"><div className="process-mini-header"><span>Product / Wireframe</span><span>01</span></div><div className="process-wire-title" /><div className="process-wire-line" /><div className="process-wire-layout"><div className="process-wire-box" /><div><div className="process-wire-box" /><div className="process-wire-line" /><div className="process-wire-line short" /></div></div><div className="process-wire-action" /></div>;
   if (stage === 2) return <div className="process-artifact process-explore"><span className="process-artifact-kicker">VISUAL EXPLORATION</span><div className="process-direction"><span>Aa</span><strong>A little more<br />clarity.</strong></div><div className="process-swatches"><span /><span /><span /><span /></div><div className="process-explore-caption">Type · Color · Rhythm</div></div>;

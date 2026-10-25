@@ -29,9 +29,6 @@
   padding-top: 8px; background: transparent;
 }
 .home-screen[data-layout="card-shell"] .home-slide { min-height: 100%; height: 100%; }
-.home-screen[data-layout="card-shell"] .project-info .project-badge { background: rgb(255 255 255 / .55); }
-/* On the grey canvas a grey highlight disappears; the hovered link lifts as a small white card instead. */
-.home-screen[data-layout="card-shell"] .case-link-highlight { background: #fff; box-shadow: var(--shell-shadow); }
 .home-screen[data-layout="card-shell"] .assistant-composer-box { background: rgb(255 255 255 / .6); }
 @media (max-width: 767px) {
   /* The phone header stays fixed above the cards: case details start below it, and the Home status
@@ -47,20 +44,19 @@
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.home-screen[data-layout="card-shell"] .portfolio-page[data-state="active"] .project-badge,
-.home-screen[data-layout="card-shell"] .assistant-header {
+.home-screen[data-layout="card-shell"][data-assistant="open"] .assistant-header {
   animation: card-shell-sidebar-in 900ms cubic-bezier(0, 0, .2, 1) 150ms both;
 }
 .home-screen[data-layout="card-shell"] .portfolio-page[data-state="active"] :is(.project-draft-label, .project-overview, .project-facts),
-.home-screen[data-layout="card-shell"] :is(.assistant-intro, .assistant-suggestions) {
+.home-screen[data-layout="card-shell"][data-assistant="open"] :is(.assistant-intro, .assistant-suggestions) {
   animation: card-shell-sidebar-in 900ms cubic-bezier(0, 0, .2, 1) 330ms both;
 }
 .home-screen[data-layout="card-shell"] .portfolio-page[data-state="active"] .case-links,
-.home-screen[data-layout="card-shell"] .assistant-composer {
+.home-screen[data-layout="card-shell"][data-assistant="open"] .assistant-composer {
   animation: card-shell-sidebar-in 900ms cubic-bezier(0, 0, .2, 1) 510ms both;
 }
 @media (prefers-reduced-motion: reduce) {
-  .home-screen[data-layout="card-shell"] :is(.project-badge, .project-draft-label, .project-overview, .project-facts, .case-links, .assistant-header, .assistant-intro, .assistant-suggestions, .assistant-composer) { animation: none !important; }
+  .home-screen[data-layout="card-shell"] :is(.project-draft-label, .project-overview, .project-facts, .case-links, .assistant-header, .assistant-intro, .assistant-suggestions, .assistant-composer) { animation: none !important; }
 }
 
 /* Reference desktop rails: 240px navigation, 280px details, 24px gutter. */
@@ -114,6 +110,19 @@
 .home-screen[data-layout="card-shell"] .portfolio-pager { overflow-y: auto; overflow-x: hidden; scroll-snap-type: y mandatory; overscroll-behavior-y: contain; scrollbar-width: none; }
 .home-screen[data-layout="card-shell"] .portfolio-pager::-webkit-scrollbar { display: none; }
 .home-screen[data-layout="card-shell"] .portfolio-page { scroll-snap-align: start; scroll-snap-stop: always; }
+/* Free scroll (profile menu → Scrolling): no settling on sections; the page moves exactly as far as the wheel or swipe.
+   It reads as one long page: a case grows to its full height instead of scrolling inside a window-tall box (which
+   showed only each case's first screen, the next one stacking under it), and its details column sticks to the
+   window. Other sections stay one window tall (100cqh of the pager). */
+.home-screen[data-layout="card-shell"][data-snap="off"] .portfolio-pager { scroll-snap-type: none; container-type: size; }
+.home-screen[data-layout="card-shell"][data-snap="off"] .portfolio-track { height: auto; }
+.home-screen[data-layout="card-shell"][data-snap="off"] .portfolio-page { height: 100cqh; }
+.home-screen[data-layout="card-shell"][data-snap="off"] .portfolio-page:has(> .project-slide) { height: auto; min-height: 100cqh; overflow: visible; }
+.home-screen[data-layout="card-shell"][data-snap="off"] .project-slide { height: auto; overflow: visible; }
+/* The details are already on screen as a case scrolls in, so they don't rise in again when it becomes current. */
+.home-screen[data-layout="card-shell"][data-snap="off"] .project-info * { animation: none !important; }
+/* The next case's details scroll up under the previous one's links; 14px more above them keeps the two apart (38px). */
+@media (min-width: 768px) { .home-screen[data-layout="card-shell"][data-snap="off"] .project-info { padding-top: 22px; } }
 .home-screen[data-layout="card-shell"] .project-slide { overscroll-behavior-y: auto; }
 .home-screen[data-layout="card-shell"]:has(.playground-view) .portfolio-pager { overflow: hidden; scroll-snap-type: none; }
 @media (max-width: 767px) { .home-screen[data-layout="card-shell"] .portfolio-page { overscroll-behavior-y: auto; } }
@@ -136,7 +145,8 @@
    the window edges rather than being cut 8px short of them (which left grey bars); the 8px gutter moves
    inside the scroll, and the details column sticks 8px from the top. */
 .home-screen[data-layout="card-shell"] .portfolio-page:has(> .project-slide) { padding-top: 0; padding-bottom: 0; }
-.home-screen[data-layout="card-shell"] .project-slide .project-media { padding-top: var(--shell-gutter); padding-bottom: var(--shell-gutter); }
+.home-screen[data-layout="card-shell"] .project-slide .project-media,
+.home-screen[data-layout="card-shell"][data-assistant="open"] .project-slide .project-layout[data-overview-hidden="true"] .project-media { padding-top: var(--shell-gutter); padding-bottom: var(--shell-gutter); }
 @media (min-width: 768px) { .home-screen[data-layout="card-shell"] .project-slide .project-info { top: var(--shell-gutter); } }
 /* Phones have no sidebar beside the card, so the gutter goes on the left too. */
 @media (max-width: 767px) { .home-screen[data-layout="card-shell"] .portfolio-page { padding-left: var(--shell-gutter); } }
@@ -160,13 +170,21 @@
   .home-screen[data-layout="card-shell"] .playground-view { border-radius: 14px; }
 }
 
+/* The playground board: a light surface with a fine grain, so it reads as material rather than flat white.
+   The grain is SVG fractal noise in black at low alpha, tiled under the sonar canvas (z-index -2 in the board's
+   stacking context), and stays put while the cards are dragged. */
 .home-screen[data-layout="card-shell"] .playground-view,
 .home-screen[data-layout="card-shell"] .playground-board {
-  background-color: #fff;
+  background-color: #f6f6f7;
+}
+.home-screen[data-layout="card-shell"] .playground-board::before {
+  content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none; opacity: .55;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
 }
 
 /* Previous sections reveal their overview immediately; only forward entry rises in. */
-.home-screen[data-layout="card-shell"][data-navigation-direction="backward"] .portfolio-page[data-state="active"] .project-info :is(.project-badge, .project-draft-label, .project-overview, .project-facts, .project-resource-links) {
+.home-screen[data-layout="card-shell"][data-navigation-direction="backward"] .portfolio-page[data-state="active"] .project-info :is(.project-draft-label, .project-overview, .project-facts, .case-links) {
   animation: none;
 }
 

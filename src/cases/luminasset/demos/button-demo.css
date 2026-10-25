@@ -1,0 +1,15 @@
+/* LuminAsset button demo (button-demo.tsx): the button centred on a light or dark surface, filling the frame. */
+.la-button-demo { position: absolute; inset: 0; border-radius: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: transparent; font-family: var(--la-font), system-ui, sans-serif; transition: background-color 240ms ease; }
+.la-button-demo[data-surface="dark"] { background: var(--la-base-100); }
+.la-button-demo-live { width: min(353px, 80%); }
+.la-button-demo-row { position: absolute; top: 16px; right: 20px; display: flex; align-items: center; gap: 16px; color: var(--la-base-600); font-size: 13px; letter-spacing: .2px; }
+.la-button-demo[data-surface="dark"] .la-button-demo-row { color: var(--la-base-500); }
+/* The switch is the system's toggle: green when on. */
+.la-button-demo-switch { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.la-button-demo-switch input { position: absolute; opacity: 0; pointer-events: none; }
+.la-button-demo-switch i { position: relative; width: 32px; height: 20px; border-radius: 999px; background: var(--la-base-800); transition: background-color 160ms ease; }
+.la-button-demo[data-surface="dark"] .la-button-demo-switch i { background: var(--la-base-400); }
+.la-button-demo-switch i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: var(--la-shadow-sm); transition: translate 200ms cubic-bezier(.22, 1, .36, 1); }
+.la-button-demo-switch input:checked + i { background: #34c77b; }
+.la-button-demo-switch input:checked + i::after { translate: 12px 0; }
+.la-button-demo-switch input:focus-visible + i { outline: 2px solid var(--la-accent-blue); outline-offset: 2px; }

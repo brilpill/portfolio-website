@@ -3,8 +3,9 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { animate, motion, useMotionValue } from "motion/react";
+import { HeroSeedling } from "./hero-seedling";
 import { MediaViewer, originOf } from "./media-viewer";
-import { playgroundItems, type PlaygroundItem } from "@/content/playground";
+import { playgroundItems, playgroundPoster, type PlaygroundItem } from "@/content/playground";
 import { motionTokens } from "@/lib/motion";
 
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
@@ -149,11 +150,13 @@ export function Playground({ onClose }: { onClose: () => void }) {
         const duration = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : motionTokens.duration.fast;
         animate(x, clamp(x.get() + dx, b.left, b.right), { duration }); animate(y, clamp(y.get() + dy, b.top, b.bottom), { duration });
       }}>
+      {/* The hero's sonar field without the plant: glyphs part around the cursor; a click on empty space pings. */}
+      <HeroSeedling active plant={false} />
       <motion.div ref={grid} className="playground-grid" style={{ x, y, scale: zoom, transformOrigin: "0 0" }} drag dragConstraints={bounds} dragElastic={.12}
         dragTransition={{ bounceStiffness: 300, bounceDamping: 32, power: .18 }}
         onDragStart={() => { dragging.current = true; }} onDragEnd={event => { dragging.current = false; suppressClickUntil.current = event.timeStamp + 180; }}>
         {Array.from({ length: 6 }, (_, column) => <div className="playground-column" key={column}>
-        {playgroundItems.filter((_, index) => index % 6 === column).map((item, index) => <button type="button" className="playground-card" data-stack={item.images.length > 1 ? "true" : undefined} key={item.id} style={{ "--pin-order": column + index * 2 } as CSSProperties} aria-label={`Preview ${item.title}${item.images.length > 1 ? `, ${item.images.length} images` : ""}`} onClick={event => preview(item, event.currentTarget, event.timeStamp)}
+        {playgroundItems.filter((_, index) => index % 6 === column).map((item, index) => <button type="button" className="playground-card" data-stack={item.media.length > 1 ? "true" : undefined} key={item.id} style={{ "--pin-order": column + index * 2 } as CSSProperties} aria-label={`Preview ${item.title}${item.media.length > 1 ? `, ${item.media.length} media items` : ""}${item.media.some(media => media.kind === "video") ? ", with video" : ""}`} onClick={event => preview(item, event.currentTarget, event.timeStamp)}
           onFocus={event => {
             if (!event.currentTarget.matches(":focus-visible")) return;
             const b = board.current?.getBoundingClientRect(), c = event.currentTarget.getBoundingClientRect();
@@ -163,17 +166,19 @@ export function Playground({ onClose }: { onClose: () => void }) {
             x.set(x.get() + dx); y.set(y.get() + dy);
           }}>
           <span className="playground-card-image">
-            {item.images.slice(1, 3).map((image, layer) => <span key={`${image.src}-${layer}`} className="playground-stack-layer" data-layer={layer + 1} aria-hidden="true">
-              <Image src={image.src} alt="" fill draggable={false} sizes="260px" />
+            {item.media.slice(1, 3).map((image, layer) => <span key={`${image.src}-${layer}`} className="playground-stack-layer" data-layer={layer + 1} aria-hidden="true">
+              <Image src={playgroundPoster(image)} alt="" fill draggable={false} sizes="260px" />
             </span>)}
-            <span className="playground-stack-cover"><Image src={item.image} alt={item.title} fill draggable={false} sizes="300px" priority={column < 3 && index === 2} /></span>
+            <span className="playground-stack-cover">
+              <Image src={item.image} alt={item.title} fill draggable={false} sizes="300px" priority={column < 3 && index === 2} />
+            </span>
           </span>
         </button>)}
         </div>)}
       </motion.div>
     </div>
-    <p id="playground-help" className="home-sr-only">Drag or scroll to pan; Shift-scroll moves horizontally. Pinch or press plus/minus to zoom; zero resets. Arrow keys pan when the board is focused; Home resets. Select an image to preview; Escape returns to the previous slide.</p>
-    {/* The shared full-screen viewer; a pin with several images keeps its own slider. */}
-    {selected && <MediaViewer open={open} onOpenChange={setOpen} title={selected.title} items={selected.images} index={imageIndex} onIndexChange={setImageIndex} trigger={trigger} origin={origin} size="narrow" />}
+    <p id="playground-help" className="home-sr-only">Drag or scroll to pan; Shift-scroll moves horizontally. Pinch or press plus/minus to zoom; zero resets. Arrow keys pan when the board is focused; Home resets. Select a shot to preview its images and videos; Escape returns to the previous slide.</p>
+    {/* A shot stays one pin, with all its images and videos in the shared viewer. */}
+    {selected && <MediaViewer open={open} onOpenChange={setOpen} title={selected.title} source={{ href: selected.sourceUrl, label: "Dribbble" }} items={selected.media} index={imageIndex} onIndexChange={setImageIndex} trigger={trigger} origin={origin} size="narrow" />}
   </section>;
 }

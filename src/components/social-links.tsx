@@ -43,9 +43,8 @@ async function copyText(text: string) {
 }
 
 /**
- * Hero social links. One shared highlight slides between items as the pointer moves along the row
- * (Motion layoutId on the physical spring) and fades out when the pointer leaves; keyboard focus
- * moves it too. Email copies the address instead of opening a mail app, and its @ turns into a check.
+ * Hero social links. The hovered (or keyboard-focused) item turns the accent colour and plays its icon
+ * gesture; there is no background highlight. Email copies the address instead of opening a mail app, and its @ turns into a check.
  */
 export function SocialLinks() {
   const [hovered, setHovered] = useState<string | null>(null);
@@ -74,9 +73,6 @@ export function SocialLinks() {
           onFocus: (event: React.FocusEvent<HTMLElement>) => { if (event.currentTarget.matches(":focus-visible")) setHovered(id); },
         };
         const content = <>
-          <AnimatePresence>
-            {active && <motion.span layoutId="home-social-highlight" className="home-social-highlight" aria-hidden initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: motionTokens.duration.fast } }} transition={motionTokens.spring} />}
-          </AnimatePresence>
           <motion.span className="home-social-icon" aria-hidden animate={active && !done ? gesture : rest} transition={motionTokens.spring}>
             <AnimatePresence initial={false}>
               {done ? <motion.span key="check" {...swap}><CheckIcon size={16} /></motion.span> : <motion.span key="icon" {...swap}><ItemIcon size={16} /></motion.span>}

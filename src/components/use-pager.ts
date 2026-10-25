@@ -32,6 +32,15 @@ export function usePager(count: number, paging: Paging, blocked: boolean, elasti
     pagingRef.current = paging;
   });
 
+  // Scroll mode: where page i starts inside the viewport. Pages are one viewport tall while sections snap,
+  // but in free scroll a case page grows to its full height, so positions come from the layout.
+  const pageTop = useCallback((i: number) => {
+    const viewport = viewportRef.current;
+    const page = trackRef.current?.children[i];
+    if (!viewport || !page) return 0;
+    return page.getBoundingClientRect().top - viewport.getBoundingClientRect().top + viewport.scrollTop;
+  }, []);
+
   const place = useCallback((i: number, offset = 0, animate = true) => {
     const track = trackRef.current;
     if (!track) return;
@@ -49,7 +58,7 @@ export function usePager(count: number, paging: Paging, blocked: boolean, elasti
       const i = Math.max(0, Math.min(count - 1, target));
       const viewport = viewportRef.current;
       if (pagingRef.current === "scroll") {
-        viewport?.scrollTo({ top: i * viewport.clientHeight, behavior: instant ? "instant" : "smooth" });
+        viewport?.scrollTo({ top: pageTop(i), behavior: instant ? "instant" : "smooth" });
         return;
       }
       if (!instant) lockUntil.current = performance.now() + FLIP_MS;
@@ -60,7 +69,7 @@ export function usePager(count: number, paging: Paging, blocked: boolean, elasti
         setIndex(i);
       }
     },
-    [count, place],
+    [count, place, pageTop],
   );
 
   // Switching between flip and free scroll keeps the current page in view.
@@ -69,19 +78,21 @@ export function usePager(count: number, paging: Paging, blocked: boolean, elasti
     if (!viewport) return;
     if (paging === "scroll") {
       place(0);
-      viewport.scrollTop = indexRef.current * viewport.clientHeight;
+      viewport.scrollTop = pageTop(indexRef.current);
     } else {
       viewport.scrollTop = 0;
       place(indexRef.current, 0, false);
     }
-  }, [paging, place]);
+  }, [paging, place, pageTop]);
 
-  // Free-scroll mode: the current page is whichever fills most of the screen.
+  // Scroll mode: the current page is the one under the middle of the screen.
   useEffect(() => {
     const viewport = viewportRef.current;
     if (!viewport || paging !== "scroll") return;
     const onScroll = () => {
-      const i = Math.round(viewport.scrollTop / viewport.clientHeight);
+      const middle = viewport.scrollTop + viewport.clientHeight / 2;
+      let i = 0;
+      while (i < count - 1 && pageTop(i + 1) <= middle) i++;
       if (i !== indexRef.current) {
         setDirection(i > indexRef.current ? "forward" : "backward");
         indexRef.current = i;
@@ -89,8 +100,10 @@ export function usePager(count: number, paging: Paging, blocked: boolean, elasti
       }
     };
     viewport.addEventListener("scroll", onScroll, { passive: true });
-    return () => viewport.removeEventListener("scroll", onScroll);
-  }, [paging]);
+    return () => {
+      viewport.removeEventListener("scroll", onScroll);
+    };
+  }, [paging, count, pageTop]);
 
   // Flip mode: wheel, touch and a guard against the browser scrolling the hidden overflow.
   useEffect(() => {

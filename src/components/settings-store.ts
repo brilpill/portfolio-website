@@ -52,3 +52,8 @@ export function useSoundEnabled() {
   return useSyncExternalStore(subscribe, () => read("portfolio-sound", switches, "off") === "on", () => false);
 }
 export function setSoundEnabled(enabled: boolean) { write("portfolio-sound", enabled ? "on" : "off"); }
+/** Section snapping on the card-shell page: on, each wheel or swipe settles on a whole section; off (the default), the page scrolls freely. */
+export function useSectionSnap() {
+  return useSyncExternalStore(subscribe, () => read("portfolio-snap", switches, "off") === "on", () => false);
+}
+export function setSectionSnap(enabled: boolean) { write("portfolio-snap", enabled ? "on" : "off"); }

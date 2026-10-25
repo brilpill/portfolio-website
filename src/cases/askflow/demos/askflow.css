@@ -1,0 +1,29 @@
+/* AskFlow demos (logic-jump.tsx, product-picker.tsx): the app's light canvas, white cards and blue actions, in Inter. */
+.af { --af-canvas: #f8f9fb; --af-card: #fff; --af-line: #e5e7eb; --af-line-strong: #d1d5db; --af-ink: #1f2937; --af-muted: #6b7280; --af-faint: #9ca3af; --af-blue: #2563eb; --af-blue-soft: #eaf1fe; --af-blue-ink: #1d4ed8;
+  position: absolute; inset: 0; overflow: hidden; border-radius: inherit; background: var(--af-canvas); color: var(--af-ink); font: 14px / 1.35 Inter, var(--font-sans, system-ui), system-ui, sans-serif; user-select: none; }
+.af button, .af input, .af select { font: inherit; color: inherit; }
+.af button { cursor: pointer; }
+.af :focus-visible { outline: 2px solid var(--af-blue); outline-offset: 2px; }
+.af-dots { background-image: radial-gradient(rgb(31 41 55 / .07) 1px, transparent 1px); background-size: 20px 20px; }
+
+/* Cards on the canvas */
+.af-card { position: absolute; width: 268px; overflow: visible; border-radius: 6px; background: var(--af-card); box-shadow: 0 0 0 1px var(--af-line), 0 1px 2px rgb(0 0 0 / .05); }
+.af-card-head { display: flex; align-items: center; gap: 12px; padding: 16px 14px; border-bottom: 1px solid var(--af-line); font-size: 15px; font-weight: 600; }
+.af-icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 6px; background: #f3f4f6; color: var(--af-muted); }
+.af-icon svg { width: 16px; height: 16px; }
+.af-row { position: relative; display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 14px; border-bottom: 1px solid var(--af-line); font-size: 14px; }
+.af-row svg { width: 16px; height: 16px; color: var(--af-faint); }
+.af-add { display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%; height: 38px; border: 0; background: none; color: var(--af-blue); font-size: 13px !important; }
+.af-add svg { width: 14px; height: 14px; }
+.af-port { position: absolute; right: -22px; top: 50%; width: 10px; height: 10px; margin-top: -5px; padding: 0; border: 1.5px solid var(--af-faint); border-radius: 50%; background: var(--af-canvas); }
+.af-port[data-live] { border-color: var(--af-blue); }
+.af-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 4px; background: var(--af-blue-soft); color: var(--af-blue-ink); font-size: 12px; white-space: nowrap; }
+.af-chip svg { width: 13px; height: 13px; color: inherit; }
+.af-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; padding: 0 14px; border: 0; border-radius: 6px; background: var(--af-blue); color: #fff !important; font-size: 13px !important; font-weight: 500; transition: background-color 120ms ease, scale 120ms ease; }
+.af-btn:active { scale: .97; }
+.af-btn[data-quiet] { background: #fff; box-shadow: inset 0 0 0 1px var(--af-line-strong); color: var(--af-ink) !important; }
+.af-hint { position: absolute; left: 50%; bottom: 18px; display: flex; align-items: center; gap: 10px; color: var(--af-muted); font-size: 12px; translate: -50% 0; white-space: nowrap; }
+.af-toast { position: absolute; top: 16px; left: 50%; z-index: 4; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; background: var(--af-ink); color: #fff; font-size: 13px; translate: -50% 0; animation: af-in 220ms cubic-bezier(.22, 1, .36, 1); }
+.af-toast svg { width: 16px; height: 16px; color: #4ade80; }
+@keyframes af-in { from { opacity: 0; translate: -50% -6px; } }
+@media (prefers-reduced-motion: reduce) { .af *, .af *::before { animation: none !important; transition: none !important; } }

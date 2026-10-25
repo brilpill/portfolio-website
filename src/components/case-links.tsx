@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 import { ArrowRightIcon, ArrowUpRightIcon, FigmaLogoIcon, GlobeSimpleIcon, LinkSimpleIcon, type Icon } from "@phosphor-icons/react";
 import type { ProjectSlideContent } from "@/content/project-slides";
 import { motionTokens } from "@/lib/motion";
@@ -9,12 +8,11 @@ import { motionTokens } from "@/lib/motion";
 type Props = { project: ProjectSlideContent };
 
 /**
- * Case links at the foot of the details column. Outside links share one highlight that slides
- * between rows, as the hero social links do; the full case study, when there is one, is the
- * single filled button underneath. Only links that have been added are shown; with none, nothing is.
+ * Case links at the foot of the details column. Outside links are rows like the assistant's suggested
+ * questions: a grey fill on hover and thin dividers between them; the full case study, when there is one,
+ * is the single filled button underneath. Only links that have been added are shown; with none, nothing is.
  */
 export function CaseLinks({ project }: Props) {
-  const [hovered, setHovered] = useState<string | null>(null);
   const links: { label: string; href?: string; icon: Icon }[] = [
     { label: "Figma", href: project.figmaUrl, icon: FigmaLogoIcon },
     { label: "Website", href: project.webUrl, icon: GlobeSimpleIcon },
@@ -26,26 +24,17 @@ export function CaseLinks({ project }: Props) {
   return (
     <div className="case-links" role="group" aria-label={`${project.title} links`}>
       {shown.length > 0 && (
-        <ul className="case-link-list" onPointerLeave={() => setHovered(null)} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setHovered(null); }}>
-          {shown.map(({ label, href, icon: LinkIcon }) => {
-            const active = hovered === label;
-            const content = <>
-              <AnimatePresence>
-                {active && <motion.span layoutId={`case-link-highlight-${project.slug}`} className="case-link-highlight" aria-hidden initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: motionTokens.duration.fast } }} transition={motionTokens.spring} />}
-              </AnimatePresence>
-              <LinkIcon className="case-link-icon" size={16} aria-hidden />
-              <span className="case-link-label">{label}</span>
-              <ArrowUpRightIcon className="case-link-arrow" size={14} aria-hidden />
-            </>;
-            return (
-              <li key={label}>
-                <a className="case-link" href={href} target="_blank" rel="noopener noreferrer" data-active={active || undefined}
-                  onPointerEnter={event => { if (event.pointerType !== "touch") setHovered(label); }}
-                  onFocus={event => { if (event.currentTarget.matches(":focus-visible")) setHovered(label); }}
-                >{content}<span className="home-sr-only"> (opens in a new tab)</span></a>
-              </li>
-            );
-          })}
+        <ul className="case-link-list">
+          {shown.map(({ label, href, icon: LinkIcon }) => (
+            <li key={label}>
+              <a className="case-link" href={href} target="_blank" rel="noopener noreferrer">
+                <LinkIcon className="case-link-icon" size={16} aria-hidden />
+                <span className="case-link-label">{label}</span>
+                <ArrowUpRightIcon className="case-link-arrow" size={14} aria-hidden />
+                <span className="home-sr-only"> (opens in a new tab)</span>
+              </a>
+            </li>
+          ))}
         </ul>
       )}
       {project.caseStudyUrl && <CaseStudyLink href={project.caseStudyUrl} />}

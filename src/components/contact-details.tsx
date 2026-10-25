@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowUpRightIcon, CheckSquareIcon, CopyIcon } from "@phosphor-icons/react";
+import { ArrowUpRightIcon, CheckIcon, CopyIcon } from "@phosphor-icons/react";
 import { profile } from "@/content/profile";
 import { motionTokens } from "@/lib/motion";
 
@@ -42,7 +42,7 @@ export function ContactDetails() {
       const content = <>
         <AnimatePresence>{active && <motion.span className="contact-detail-highlight" layoutId={`${id}-highlight`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={reduced ? { duration: 0 } : motionTokens.spring} aria-hidden />}</AnimatePresence>
         <span className="contact-detail-copy"><small>{item.label}</small><span className="contact-detail-value"><motion.span initial={false} animate={{ opacity: done ? 0 : 1, y: done && !reduced ? -4 : 0 }} transition={swap.transition}>{item.value}</motion.span>{item.key === "email" && <motion.span aria-hidden initial={false} animate={{ opacity: done ? 1 : 0, y: done || reduced ? 0 : 4 }} transition={swap.transition}>Copied</motion.span>}</span></span>
-        <motion.span className="contact-detail-icon" aria-hidden animate={{ x: active && item.href && !reduced ? 2 : 0, y: active && item.href && !reduced ? -2 : 0 }} transition={reduced ? { duration: 0 } : motionTokens.spring}><AnimatePresence initial={false}><motion.span key={done ? "done" : "default"} {...swap}>{item.href ? <ArrowUpRightIcon size={16} /> : done ? <CheckSquareIcon size={16} /> : <CopyIcon size={16} />}</motion.span></AnimatePresence></motion.span>
+        <motion.span className="contact-detail-icon" aria-hidden animate={{ x: active && item.href && !reduced ? 2 : 0, y: active && item.href && !reduced ? -2 : 0 }} transition={reduced ? { duration: 0 } : motionTokens.spring}><AnimatePresence initial={false}><motion.span key={done ? "done" : "default"} {...swap}>{item.href ? <ArrowUpRightIcon size={16} /> : done ? <CheckIcon size={16} /> : <CopyIcon size={16} />}</motion.span></AnimatePresence></motion.span>
       </>;
       return item.href ? <a key={item.key} {...events} href={item.href} target="_blank" rel="noreferrer">{content}</a> : <button key={item.key} {...events} type="button" onClick={() => void copyEmail()} aria-label={done ? "Email copied" : `Copy email address ${profile.email}`}>{content}</button>;
     })}

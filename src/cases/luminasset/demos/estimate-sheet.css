@@ -1,0 +1,69 @@
+/* LuminAsset estimate sheet (estimate-sheet.tsx). Sized in screen points: --u is 1/393 of the screen. */
+.la-sheet-screen { --u: calc(100cqw / 393); position: absolute; inset: 0; overflow: hidden; background: var(--la-base-100); color: #fff; font-family: var(--la-font), system-ui, sans-serif; font-size: calc(15 * var(--u)); letter-spacing: .02em; user-select: none; }
+.la-sheet-screen button { font: inherit; color: inherit; cursor: pointer; }
+.la-sheet-screen svg { flex-shrink: 0; }
+/* The photo fills the space above the sheet (and under its rounded top), kept centred on the roof: almost the whole
+   picture with the sheet down, the top half at the middle, a strip around the panels with the sheet up. */
+.la-sheet-photo { position: absolute; top: 0; right: 0; left: 0; height: calc((var(--top) + 24) * var(--u)); overflow: hidden; transition: height 420ms cubic-bezier(.22, 1, .36, 1); }
+.la-sheet-screen:has(.la-sheet[data-dragging]) .la-sheet-photo { transition: none; }
+.la-sheet-photo img { object-fit: cover; object-position: 48% 50%; }
+.la-sheet-status { position: relative; display: flex; justify-content: space-between; align-items: center; padding: calc(20 * var(--u)) calc(34 * var(--u)) 0 calc(52 * var(--u)); font-size: calc(17 * var(--u)); font-weight: 600; text-shadow: 0 1px 4px rgb(0 0 0 / .4); }
+.la-sheet-status > span:last-child { display: flex; gap: calc(5 * var(--u)); }
+.la-sheet-status svg { width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
+.la-sheet-top { position: relative; display: flex; justify-content: space-between; align-items: center; padding: calc(16 * var(--u)) calc(16 * var(--u)) 0; }
+.la-sheet-round { display: grid; place-items: center; width: calc(44 * var(--u)); height: calc(44 * var(--u)); border-radius: 50%; background: rgb(0 0 0 / .55); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14); backdrop-filter: blur(8px); }
+.la-sheet-round svg { width: calc(20 * var(--u)); height: calc(20 * var(--u)); }
+.la-sheet-address { display: flex; align-items: center; gap: calc(7 * var(--u)); padding: calc(6 * var(--u)) calc(12 * var(--u)) calc(6 * var(--u)) calc(8 * var(--u)); border-radius: 999px; background: rgb(0 0 0 / .55); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14); font-size: calc(13 * var(--u)); backdrop-filter: blur(8px); }
+.la-sheet-address i { display: grid; place-items: center; width: calc(16 * var(--u)); height: calc(16 * var(--u)); border-radius: 50%; background: var(--la-system-failed); font-size: calc(11 * var(--u)); font-style: normal; font-weight: 700; }
+
+/* The sheet: its top sits at --top (screen points), easing between resting points unless dragged. */
+.la-sheet { position: absolute; top: calc(var(--top) * var(--u)); right: 0; bottom: 0; left: 0; display: flex; flex-direction: column; border-radius: calc(24 * var(--u)) calc(24 * var(--u)) 0 0; background: var(--la-base-100); box-shadow: 0 calc(-8 * var(--u)) calc(24 * var(--u)) rgb(0 0 0 / .35); transition: top 420ms cubic-bezier(.22, 1, .36, 1); }
+.la-sheet[data-dragging] { transition: none; }
+.la-sheet-handle { display: grid; place-items: center; flex-shrink: 0; height: calc(28 * var(--u)); cursor: grab; touch-action: none; }
+.la-sheet[data-dragging] .la-sheet-handle { cursor: grabbing; }
+.la-sheet-handle span { width: calc(100 * var(--u)); height: calc(4 * var(--u)); border-radius: 999px; background: var(--la-base-400); }
+.la-sheet-handle:focus-visible { outline: 2px solid var(--la-accent-blue); outline-offset: -4px; border-radius: calc(12 * var(--u)); }
+.la-sheet-content { flex: 1; min-height: 0; padding: calc(8 * var(--u)) 0 calc(200 * var(--u)); overflow: hidden; scrollbar-width: none; }
+.la-sheet[data-stop="up"] .la-sheet-content { overflow-y: auto; }
+.la-sheet-content::-webkit-scrollbar { display: none; }
+.la-sheet-label { margin: 0; color: var(--la-base-500); font-size: calc(14 * var(--u)); text-align: center; }
+.la-sheet-kw { margin: calc(4 * var(--u)) 0 calc(18 * var(--u)); font-size: calc(34 * var(--u)); font-weight: 600; text-align: center; font-variant-numeric: tabular-nums; }
+.la-sheet-cards { display: grid; grid-template-columns: 1fr 1fr; gap: calc(8 * var(--u)); padding: 0 calc(12 * var(--u)); }
+.la-sheet-cards > div { display: flex; flex-direction: column; align-items: center; gap: calc(4 * var(--u)); padding: calc(14 * var(--u)) 0; background: var(--la-base-200); }
+.la-sheet-cards strong { margin-top: calc(6 * var(--u)); font-size: calc(15 * var(--u)); font-weight: 500; }
+.la-sheet-cards span:last-child { color: var(--la-base-500); font-size: calc(12 * var(--u)); font-variant-numeric: tabular-nums; }
+.la-sheet-ring { display: grid; place-items: center; width: calc(46 * var(--u)); height: calc(46 * var(--u)); border-radius: 50%; background: radial-gradient(closest-side, var(--la-base-100) 88%, transparent 90%), conic-gradient(#34c77b calc(var(--p) * 100%), var(--la-base-400) 0); transition: background 300ms ease; }
+.la-sheet-ring svg { width: calc(20 * var(--u)); height: calc(20 * var(--u)); }
+.la-sheet-rows { margin: calc(12 * var(--u)) 0 0; padding: 0 calc(20 * var(--u)); }
+.la-sheet-rows > div { display: flex; justify-content: space-between; padding: calc(11 * var(--u)) 0; font-size: calc(14 * var(--u)); }
+.la-sheet-rows dt { display: flex; align-items: center; gap: calc(8 * var(--u)); font-weight: 500; }
+.la-sheet-rows dt > svg { width: calc(16 * var(--u)); height: calc(16 * var(--u)); color: var(--la-base-600); }
+.la-sheet-rows dt button { display: grid; place-items: center; margin-left: calc(-2 * var(--u)); color: var(--la-base-600); }
+.la-sheet-rows dt button svg { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
+.la-sheet-rows dt button:hover { color: var(--la-base-500); }
+.la-sheet-rows dd { margin: 0; color: var(--la-base-500); font-variant-numeric: tabular-nums; }
+.la-sheet-heading { margin: 0; padding: calc(24 * var(--u)) calc(20 * var(--u)) calc(12 * var(--u)); border-top: calc(6 * var(--u)) solid #0f0f0f; font-size: calc(16 * var(--u)); font-weight: 500; }
+.la-sheet-table { margin: 0 calc(12 * var(--u)); }
+.la-sheet-table > div { display: flex; justify-content: space-between; padding: calc(12 * var(--u)) calc(12 * var(--u)); border-bottom: 1px solid var(--la-base-200); color: var(--la-base-500); font-size: calc(14 * var(--u)); }
+.la-sheet-table dd { margin: 0; color: #fff; font-weight: 500; font-variant-numeric: tabular-nums; }
+.la-sheet-total { margin: calc(8 * var(--u)) 0 calc(24 * var(--u)); border: 0 !important; background: var(--la-base-200); color: #fff !important; font-size: calc(16 * var(--u)) !important; }
+.la-sheet-total dt { display: flex; align-items: center; gap: calc(8 * var(--u)); }
+.la-sheet-total svg { width: calc(16 * var(--u)); height: calc(16 * var(--u)); color: var(--la-base-500); }
+.la-sheet-ghost { display: flex; align-items: center; justify-content: center; gap: calc(10 * var(--u)); width: calc(100% - 40 * var(--u)); height: calc(52 * var(--u)); margin: 0 calc(20 * var(--u)) calc(8 * var(--u)); border-radius: 999px; background: var(--la-base-200); box-shadow: inset 0 0 0 1px var(--la-accent-white-subtle); font-size: calc(16 * var(--u)) !important; font-weight: 500 !important; transition: background-color 120ms ease; }
+.la-sheet-ghost:active { background: var(--la-base-400); }
+.la-sheet-ghost svg { width: calc(18 * var(--u)); height: calc(18 * var(--u)); color: var(--la-base-500); }
+.la-sheet-content > .la-sheet-ghost:last-child { margin-bottom: 0; }
+/* The tooltip: white, above the rows, after the Figma tooltip. */
+.la-sheet-tip { position: absolute; top: calc(190 * var(--u)); left: calc(36 * var(--u)); right: calc(36 * var(--u)); z-index: 3; display: grid; gap: calc(6 * var(--u)); padding: calc(14 * var(--u)) calc(18 * var(--u)); border-radius: calc(14 * var(--u)); background: #fff; color: var(--la-base-600); font-size: calc(14 * var(--u)); line-height: 1.45; text-align: center; box-shadow: var(--la-shadow-lg); animation: la-tip-in 200ms ease; }
+.la-sheet-tip b { color: var(--la-base-100); font-size: calc(16 * var(--u)); font-weight: 500; }
+.la-sheet-tip[data-tip="sun"] { top: calc(234 * var(--u)); }
+.la-sheet-tip[data-tip="roof"] { top: calc(278 * var(--u)); }
+@keyframes la-tip-in { from { opacity: 0; translate: 0 calc(6 * var(--u)); } }
+
+/* Ruler and Energize, pinned at the bottom over everything. */
+.la-sheet-actions { position: absolute; right: 0; bottom: 0; left: 0; z-index: 2; display: flex; flex-direction: column; padding-top: calc(16 * var(--u)); border-radius: calc(24 * var(--u)) calc(24 * var(--u)) 0 0; background: linear-gradient(transparent, var(--la-base-100) calc(20 * var(--u))); }
+.la-sheet-cta { display: flex; align-items: center; justify-content: center; gap: calc(8 * var(--u)); height: calc(52 * var(--u)); margin: calc(14 * var(--u)) calc(20 * var(--u)) 0; border-radius: 999px; background: var(--la-accent-blue); font-size: calc(17 * var(--u)) !important; font-weight: 500 !important; transition: background-color 120ms ease; }
+.la-sheet-cta:active { background: var(--la-accent-blue-pressed); }
+.la-sheet-cta svg { width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
+.la-sheet-home { align-self: center; width: calc(134 * var(--u)); height: calc(5 * var(--u)); margin: calc(22 * var(--u)) 0 calc(8 * var(--u)); border-radius: 999px; background: #fff; }
+@media (prefers-reduced-motion: reduce) { .la-sheet, .la-sheet-photo, .la-sheet-tip { transition: none; animation: none; } }

@@ -1,0 +1,36 @@
+/* LuminAsset tokens in the phone (tokens-phone.tsx), sized in screen points (1/393 of the screen). */
+.la-tokens { position: absolute; inset: 0; color: var(--la-base-100); font-family: var(--la-font), system-ui, sans-serif; letter-spacing: .2px; }
+.la-tokens button { font: inherit; color: inherit; cursor: pointer; }
+.la-tokens button:focus-visible { outline: 2px solid var(--la-accent-blue); outline-offset: 2px; }
+/* A colour fill, over a checkerboard so see-through colours show their alpha. */
+.la-swatch-fill { background: linear-gradient(var(--swatch), var(--swatch)), repeating-conic-gradient(#d9d9d9 0 25%, #f4f4f4 0 50%) 0 0 / 10px 10px; }
+
+/* ——— Phone: the tokens as an app screen ——— */
+.la-phone { --u: calc(100cqw / 393); overflow: hidden; background: var(--la-base-100); color: #fff; }
+.la-phone-scroll { position: absolute; inset: 0; padding: calc(64 * var(--u)) calc(20 * var(--u)) calc(40 * var(--u)); overflow-y: auto; scrollbar-width: none; animation: la-phone-in 280ms cubic-bezier(.22, 1, .36, 1); }
+.la-phone-scroll::-webkit-scrollbar { display: none; }
+@keyframes la-phone-in { from { opacity: 0; translate: 0 calc(8 * var(--u)); } }
+.la-phone-eyebrow { margin: 0; color: var(--la-base-500); font-size: calc(13 * var(--u)); }
+.la-phone-title { margin: calc(2 * var(--u)) 0 calc(20 * var(--u)); font-size: calc(32 * var(--u)); font-weight: 500; line-height: calc(36 * var(--u)); }
+.la-phone h4 { margin: calc(18 * var(--u)) 0 calc(10 * var(--u)); color: var(--la-base-500); font-size: calc(13 * var(--u)); font-weight: 500; }
+.la-phone-swatches { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: calc(14 * var(--u)) calc(8 * var(--u)); }
+.la-phone-swatches button { display: grid; justify-items: center; gap: calc(3 * var(--u)); min-width: 0; text-align: center; }
+.la-phone-swatches i { width: calc(56 * var(--u)); height: calc(56 * var(--u)); margin-bottom: calc(4 * var(--u)); border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14); transition: scale 140ms ease; }
+.la-phone-swatches button:active i { scale: .92; }
+.la-phone-swatches b { max-width: 100%; overflow: hidden; font-size: calc(11 * var(--u)); font-weight: 500; white-space: nowrap; text-overflow: ellipsis; }
+.la-phone-swatches span { color: var(--la-base-500); font-size: calc(10 * var(--u)); }
+.la-phone-type > div { display: grid; gap: calc(4 * var(--u)); padding: calc(12 * var(--u)) 0; border-bottom: 1px solid var(--la-base-200); }
+.la-phone-type span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.la-phone-type em { color: var(--la-base-500); font-size: calc(11 * var(--u)); font-style: normal; }
+.la-phone-radii { display: flex; justify-content: space-between; }
+.la-phone-radii span, .la-phone-space span { display: flex; align-items: center; gap: calc(8 * var(--u)); color: var(--la-base-500); font-size: calc(11 * var(--u)); }
+.la-phone-radii span { flex-direction: column; }
+.la-phone-radii i { width: calc(60 * var(--u)); height: calc(60 * var(--u)); border: 1.5px solid var(--la-accent-blue); background: color-mix(in srgb, var(--la-accent-blue) 16%, transparent); }
+.la-phone-space { display: grid; gap: calc(6 * var(--u)); }
+.la-phone-space i { height: calc(10 * var(--u)); border-radius: calc(3 * var(--u)); background: var(--la-accent-blue); }
+.la-phone-buttons { display: grid; gap: calc(10 * var(--u)); }
+.la-phone .la-button { height: calc(52 * var(--u)); font-size: calc(14 * var(--u)); }
+/* The system's toast, for copies. */
+.la-phone-toast { position: absolute; bottom: calc(28 * var(--u)); left: 50%; display: flex; align-items: center; gap: calc(6 * var(--u)); padding: calc(8 * var(--u)) calc(14 * var(--u)); border-radius: 999px; background: #fff; color: var(--la-base-100); font-size: calc(13 * var(--u)); font-weight: 500; white-space: nowrap; box-shadow: var(--la-shadow-lg); translate: -50% 0; animation: la-phone-in 240ms cubic-bezier(.22, 1, .36, 1); }
+.la-phone-toast svg { width: calc(16 * var(--u)); height: calc(16 * var(--u)); color: #34c77b; }
+@media (prefers-reduced-motion: reduce) { .la-tokens * { transition: none !important; animation: none !important; } }

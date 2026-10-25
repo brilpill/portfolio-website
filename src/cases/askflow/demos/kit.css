@@ -1,0 +1,161 @@
+/* AskFlow UI-kit demos (kit.tsx), with values from the kit's boards. */
+.afk { --k-blue: #2563eb; --k-blue-hover: #1d4ed8; --k-blue-active: #1e40af; --k-blue-off: #adc6fb; --k-blue-soft: #eff6ff; --k-blue-soft-2: #dbeafe; --k-ring: #bfdbfe;
+  --k-red: #dc2626; --k-red-hover: #b91c1c; --k-red-active: #991b1b; --k-red-soft: #fef2f2; --k-red-soft-2: #fee2e2; --k-red-soft-3: #fecaca;
+  --k-purple: #9333ea; --k-purple-soft: #faf5ff; --k-purple-soft-2: #f3e8ff; --k-purple-line: #e9d5ff; --k-green: #16a34a;
+  --k-ink: #111827; --k-text: #374151; --k-muted: #6b7280; --k-faint: #9ca3af; --k-line: #e5e7eb; --k-fill: #f3f4f6; --k-question: #f9fafb;
+  position: absolute; inset: 0; border-radius: inherit; color: var(--k-ink); font: 14px / 1.4 var(--af-font), Inter, system-ui, sans-serif; }
+.afk button, .afk input { font: inherit; color: inherit; }
+.afk button { cursor: pointer; }
+.afk :focus-visible { outline: none; box-shadow: 0 0 0 3px var(--k-ring); }
+.afk-center { display: grid; place-content: center; justify-items: center; gap: 18px; }
+.afk-top { align-content: start; padding-top: 44px; }
+.afk-row { display: flex; align-items: center; gap: 16px; color: var(--k-muted); font-size: 12px; }
+.afk-note { color: var(--k-muted); font-size: 12px; }
+.afk-corner { position: absolute; top: 16px; right: 20px; display: flex; align-items: center; gap: 16px; color: var(--k-muted); font-size: 12px; }
+.afk-switch { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+.afk-switch input { position: absolute; opacity: 0; pointer-events: none; }
+.afk-switch i { position: relative; width: 28px; height: 16px; border-radius: 999px; background: #d1d5db; transition: background-color 160ms ease; }
+.afk-switch i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff; transition: translate 200ms cubic-bezier(.22, 1, .36, 1); }
+.afk-switch input:checked + i { background: var(--k-blue); }
+.afk-switch input:checked + i::after { translate: 12px 0; }
+.afk-switch input:focus-visible + i { box-shadow: 0 0 0 3px var(--k-ring); }
+.afk-seg { display: flex; padding: 2px; border-radius: 6px; background: #fff; box-shadow: inset 0 0 0 1px var(--k-line); }
+.afk-seg button { height: 22px; padding: 0 8px; border: 0; border-radius: 4px; background: none; color: var(--k-muted); font-size: 12px !important; }
+.afk-seg button[aria-checked="true"] { background: var(--k-fill); color: var(--k-ink); font-weight: 500; }
+
+/* Button */
+.afk-button-demo { display: grid; place-items: center; padding-bottom: 40px; }
+.afk-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; min-width: 64px; padding: 0 12px; border: 0; border-radius: 6px; font-weight: 500; transition: background-color 120ms ease, color 120ms ease, box-shadow 120ms ease; }
+.afk-btn[data-size="Xs"] { height: 22px; padding: 0 8px; font-size: 12px; border-radius: 4px; min-width: 52px; }
+.afk-btn[data-size="Sm"] { height: 28px; padding: 0 10px; font-size: 12px; }
+.afk-btn[data-size="Md"] { height: 32px; font-size: 14px; }
+.afk-btn[data-size="Lg"] { height: 44px; padding: 0 18px; font-size: 16px; border-radius: 6px; }
+.afk-btn[data-style="primary"] { background: var(--k-blue); color: #fff; }
+.afk-btn[data-style="primary"]:hover { background: var(--k-blue-hover); }
+.afk-btn[data-style="primary"]:active, .afk-btn[data-style="primary"][data-loading] { background: var(--k-blue-active); }
+.afk-btn[data-style="primary"]:disabled { background: var(--k-blue-off); }
+.afk-btn[data-style="secondary"] { background: #fff; box-shadow: inset 0 0 0 1px var(--k-line); color: var(--k-text); }
+.afk-btn[data-style="secondary"]:hover { background: var(--k-fill); }
+.afk-btn[data-style="secondary"]:active, .afk-btn[data-style="secondary"][data-loading] { background: var(--k-line); }
+.afk-btn[data-style="secondary"]:disabled { background: #fafafa; color: var(--k-faint); }
+.afk-btn[data-style="primary"][data-destructive] { background: var(--k-red); }
+.afk-btn[data-style="primary"][data-destructive]:hover { background: var(--k-red-hover); }
+.afk-btn[data-style="primary"][data-destructive]:active, .afk-btn[data-style="primary"][data-destructive][data-loading] { background: var(--k-red-active); }
+.afk-btn[data-style="primary"][data-destructive]:disabled { background: #f0a7a7; }
+.afk-btn[data-style="secondary"][data-destructive] { background: var(--k-red-soft); box-shadow: none; color: #991b1b; }
+.afk-btn[data-style="secondary"][data-destructive]:hover { background: var(--k-red-soft-2); }
+.afk-btn[data-style="secondary"][data-destructive]:active, .afk-btn[data-style="secondary"][data-destructive][data-loading] { background: var(--k-red-soft-3); }
+.afk-btn[data-style="ghost"] { background: none; color: var(--k-muted); }
+.afk-btn[data-style="ghost"]:hover, .afk-btn[data-style="ghost"]:active, .afk-btn[data-style="ghost"][data-loading] { background: var(--k-line); color: var(--k-text); }
+.afk-btn[data-style="ghost"]:disabled { background: none; color: #d1d5db; }
+.afk-btn[data-style="link"] { background: none; color: var(--k-blue-hover); }
+.afk-btn[data-style="link"]:hover { background: var(--k-blue-soft); }
+.afk-btn[data-style="link"]:active, .afk-btn[data-style="link"][data-loading] { background: var(--k-blue-soft-2); }
+.afk-btn[data-style="link"]:disabled { background: none; color: #bfd3fb; }
+.afk-btn[data-style="toolbar"] { background: #fff; box-shadow: inset 0 0 0 1px var(--k-line); color: var(--k-ink); }
+.afk-btn[data-style="toolbar"]:hover { background: var(--k-blue-soft); box-shadow: inset 0 0 0 1px var(--k-ring); color: var(--k-blue-hover); }
+.afk-btn[data-style="toolbar"]:active, .afk-btn[data-style="toolbar"][data-loading] { background: var(--k-blue-soft-2); box-shadow: inset 0 0 0 1px var(--k-ring); color: var(--k-blue-hover); }
+.afk-btn[data-style="toolbar"]:disabled { background: #fafafa; color: var(--k-faint); }
+.afk-btn[data-style="highlighted"] { background: var(--k-purple-soft); box-shadow: inset 0 0 0 1px var(--k-purple-line); color: var(--k-purple); }
+.afk-btn[data-style="highlighted"]:hover { background: var(--k-purple-soft-2); }
+.afk-btn[data-style="highlighted"]:active, .afk-btn[data-style="highlighted"][data-loading] { background: #e9d5ff; }
+.afk-btn[data-style="highlighted"]:disabled { opacity: .5; }
+.afk-btn:disabled { cursor: not-allowed; }
+.afk-btn:focus-visible { box-shadow: 0 0 0 3px var(--k-ring); }
+.afk-spin { width: 1.1em; height: 1.1em; animation: afk-spin 800ms linear infinite; }
+@keyframes afk-spin { to { rotate: 360deg; } }
+
+/* Field: input and select */
+.afk-field { position: relative; display: grid; gap: 6px; width: 300px; }
+.afk-field > label, .afk-label { font-size: 14px; font-weight: 500; }
+.afk-box { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; border-radius: 6px; background: #fff; box-shadow: inset 0 0 0 1px var(--k-line); transition: box-shadow 120ms ease; }
+.afk-box > svg { flex-shrink: 0; width: 18px; height: 18px; color: var(--k-muted); }
+.afk-box input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: none; font-size: 16px; }
+.afk-box input::placeholder { color: var(--k-muted); }
+.afk-box:hover { background: #fcfcfd; }
+.afk-box:focus-within, .afk-trigger[data-open] { box-shadow: inset 0 0 0 1px var(--k-ring), 0 0 0 3px var(--k-ring); }
+.afk-box[data-disabled] { background: #f9fafb; color: var(--k-faint); }
+.afk-box[data-disabled] svg, .afk-box[data-disabled] input::placeholder { color: #d1d5db; }
+.afk-field[data-status="error"] .afk-box { box-shadow: inset 0 0 0 1px var(--k-red); }
+.afk-field[data-status="success"] .afk-box { box-shadow: inset 0 0 0 1px var(--k-green); }
+.afk-field[data-size="small"] .afk-box { height: 38px; }
+.afk-field[data-size="small"] input { font-size: 14px; }
+.afk-field > p { display: flex; align-items: center; gap: 5px; margin: 0; color: var(--k-muted); font-size: 12px; }
+.afk-field > p svg { width: 14px; height: 14px; }
+.afk-field[data-status="error"] > p { color: var(--k-red); }
+.afk-field[data-status="success"] > p { color: var(--k-green); }
+.afk-select { position: relative; }
+.afk-trigger { width: 100%; border: 0; text-align: left; cursor: pointer; }
+.afk-trigger span { flex: 1; font-size: 16px; }
+.afk-trigger span[data-placeholder] { color: var(--k-muted); }
+.afk-clear { position: absolute; top: 50%; right: 40px; display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 4px; background: none; color: var(--k-muted); translate: 0 -50%; }
+.afk-clear:hover { background: var(--k-fill); }
+.afk-clear svg { width: 14px; height: 14px; }
+.afk-menu { position: absolute; top: calc(20px + 6px + 44px + 6px); right: 0; left: 0; z-index: 3; margin: 0; padding: 6px; list-style: none; border-radius: 8px; background: #fff; box-shadow: 0 0 0 1px var(--k-line), 0 10px 24px -8px rgb(0 0 0 / .18); animation: afk-in 160ms cubic-bezier(.22, 1, .36, 1); }
+@keyframes afk-in { from { opacity: 0; translate: 0 -4px; } }
+.afk-menu li { display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 10px; border-radius: 6px; font-size: 15px; cursor: pointer; }
+.afk-menu li svg { width: 18px; height: 18px; color: var(--k-muted); }
+.afk-menu li[data-active] { background: var(--k-fill); }
+.afk-menu li[aria-selected="true"] { color: var(--k-blue); }
+.afk-menu li[aria-selected="true"] svg { color: var(--k-blue); }
+.afk-tick { margin-left: auto; }
+
+/* Selection */
+.afk-checks { display: grid; gap: 12px; min-width: 260px; margin: 0; padding: 0; border: 0; }
+.afk-checks legend { margin-bottom: 4px; }
+.afk-checks label { display: flex; align-items: center; gap: 10px; font-size: 16px; cursor: pointer; }
+.afk-checks label[data-disabled] { color: var(--k-faint); cursor: not-allowed; }
+.afk-checks-children { display: grid; gap: 12px; padding-left: 30px; }
+.afk-checks input { width: 20px; height: 20px; margin: 0; accent-color: var(--k-blue); cursor: inherit; }
+.afk-checks[data-size="sm"] label { font-size: 14px; }
+.afk-checks[data-size="sm"] input { width: 16px; height: 16px; }
+.afk-checks p { margin: 4px 0 0; color: var(--k-muted); font-size: 12px; }
+
+/* Question card */
+.afk-canvas { background-image: radial-gradient(rgb(17 24 39 / .07) 1px, transparent 1px); background-size: 18px 18px; }
+.afk-question { position: relative; width: 320px; background: var(--k-question); box-shadow: 0 1px 2px rgb(0 0 0 / .06); }
+.afk-question-flag { position: absolute; top: 6px; right: 100%; display: flex; align-items: center; gap: 4px; height: 32px; padding: 0 8px; border-radius: 6px 0 0 6px; background: var(--k-blue-soft-2); color: var(--k-blue-hover); font-size: 15px; }
+.afk-question-flag svg { width: 18px; height: 18px; }
+.afk-question-head { display: flex; gap: 8px; padding: 10px 14px 0; }
+.afk-badge { display: inline-flex; align-items: center; height: 26px; padding: 0 8px; border-radius: 4px; background: var(--k-blue-soft-2); color: var(--k-blue-active); font-size: 13px; }
+.afk-badge[data-tone="warn"] { background: #fef3c7; color: #92400e; }
+.afk-badge[data-tone="grey"] { margin-left: auto; background: var(--k-fill); color: var(--k-text); }
+.afk-question-title { display: flex; align-items: center; gap: 12px; padding: 12px 14px 14px; font-size: 16px; font-weight: 600; }
+.afk-step-icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 4px; background: var(--k-line); color: var(--k-text); }
+.afk-step-icon svg { width: 16px; height: 16px; }
+.afk-answers { margin: 0; padding: 0; list-style: none; }
+.afk-answers li { position: relative; }
+.afk-answer { display: flex; align-items: center; gap: 10px; width: 100%; height: 46px; padding: 0 14px; border: 0; border-top: 1px solid var(--k-line); background: #fff; font-size: 15px; text-align: left; transition: background-color 120ms ease; }
+.afk-answer svg { width: 18px; height: 18px; padding: 2px; border-radius: 3px; background: #9ca3af; color: #fff; }
+.afk-answer:hover { background: #fafafa; }
+.afk-answer-edit { box-shadow: 0 2px 8px rgb(0 0 0 / .12); outline: 0; cursor: text; }
+.afk-answers li[data-linked] .afk-answer { background: #eef0fe; }
+.afk-answers li[data-linked] .afk-answer svg { background: #6366f1; }
+.afk-port { position: absolute; top: 50%; right: -20px; width: 9px; height: 9px; margin-top: -4px; border: 1.5px solid var(--k-faint); border-radius: 50%; background: #fff; transition: background-color 160ms ease, border-color 160ms ease; }
+.afk-port[data-on] { border-color: #6366f1; background: #6366f1; }
+.afk-next { position: absolute; top: 112px; left: calc(100% + 56px); padding: 8px 10px; border-radius: 6px; background: #fff; box-shadow: 0 0 0 1px var(--k-line); font-size: 12px; white-space: nowrap; animation: afk-in 200ms ease; }
+.afk-next::before { content: ""; position: absolute; top: 50%; right: 100%; width: 38px; border-top: 1.5px solid #6366f1; }
+.afk-answer-insight { position: relative; display: grid; grid-template-columns: 1fr auto; height: 56px; align-content: center; row-gap: 6px; }
+.afk-answer-insight span:last-of-type { color: var(--k-muted); font-size: 13px; }
+.afk-answer-insight i { grid-column: 1 / -1; height: 8px; border-radius: 2px; background: #3b82f6; box-shadow: 0 0 0 0 transparent; animation: afk-bar 500ms cubic-bezier(.22, 1, .36, 1); }
+@keyframes afk-bar { from { width: 0; } }
+
+/* Minimap */
+.afk-map { overflow: hidden; }
+.afk-map-lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+.afk-map-lines path, .afk-mini-map path { fill: none; stroke-width: 1.5; }
+.afk-map-lines path[data-c="1"], .afk-mini-map path[data-c="1"] { stroke: #f97316; }
+.afk-map-lines path[data-c="2"], .afk-mini-map path[data-c="2"] { stroke: #6366f1; }
+.afk-map-card { position: absolute; display: flex; align-items: center; gap: 10px; width: 170px; padding: 10px 12px; background: #fff; box-shadow: 0 0 0 1px var(--k-line), 0 1px 2px rgb(0 0 0 / .05); font-size: 13px; font-weight: 500; transition: box-shadow 160ms ease, background-color 160ms ease; }
+.afk-map-card[data-picked] { background: var(--k-blue-soft); box-shadow: 0 0 0 2px var(--k-blue); }
+.afk-mini-wrap { position: absolute; right: 16px; bottom: 16px; display: flex; align-items: flex-end; gap: 10px; }
+.afk-mini { width: 190px; overflow: hidden; border-radius: 6px; background: #fff; box-shadow: 0 0 0 1px var(--k-line), 0 4px 12px -4px rgb(0 0 0 / .12); animation: afk-in 180ms ease; }
+.afk-mini-map { position: relative; height: 72px; margin: 10px; background: var(--k-fill); }
+.afk-mini-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.afk-mini-card { position: absolute; width: 52px; height: 20px; padding: 0 6px; border: 0; border-radius: 3px; background: #fff; box-shadow: 0 0 0 1px var(--k-line); font-size: 11px !important; font-weight: 600; text-align: left; }
+.afk-mini-card[data-picked] { background: var(--k-blue-soft-2); box-shadow: 0 0 0 1px var(--k-ring); color: var(--k-blue-active); }
+.afk-mini-bar { display: flex; gap: 6px; padding: 0 10px 10px; color: var(--k-text); }
+.afk-mini-bar svg { width: 14px; height: 14px; }
+.afk-mini-toggle { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 6px; background: #fff; box-shadow: 0 0 0 1px var(--k-line); color: var(--k-blue); }
+.afk-mini-toggle svg { width: 18px; height: 18px; }
+@media (prefers-reduced-motion: reduce) { .afk *, .afk *::after { animation: none !important; transition: none !important; } }

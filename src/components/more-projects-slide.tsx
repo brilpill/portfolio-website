@@ -2,18 +2,17 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { BroadcastIcon, CarIcon, CreditCardIcon, OrangeIcon, GitMergeIcon, BrainIcon, ArrowUpRightIcon, FolderOpenIcon, type Icon } from "@phosphor-icons/react";
-import { coverOf, projectSlides, type ProjectSlideContent } from "@/content/project-slides";
+import { CarIcon, CreditCardIcon, BrainIcon, ArrowUpRightIcon, FolderOpenIcon, type Icon } from "@phosphor-icons/react";
+import { coverOf, visibleProjectSlides, type ProjectSlideContent } from "@/content/project-slides";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ProjectSlide } from "./project-slide";
 
-const projectIcons: Record<string, Icon> = { ihidevpn: BroadcastIcon, draupnir: CreditCardIcon, "imo-car-wash": CarIcon, "peach-health": OrangeIcon, nearbor: GitMergeIcon, "knowledge-base": BrainIcon };
+const projectIcons: Record<string, Icon> = { draupnir: CreditCardIcon, "imo-car-wash": CarIcon, "knowledge-base": BrainIcon };
 
 export function MoreProjectsSlide({ group, onPreviewChange, layout = "gallery" }: { group: "Mobile" | "Web"; onPreviewChange: (open: boolean) => void; layout?: "gallery" | "list" | "featured" }) {
   const [selected, setSelected] = useState<ProjectSlideContent | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const projects = projectSlides.filter(project => project.group === group && project.placement === "more");
-  const SelectedIcon = selected ? projectIcons[selected.slug] ?? FolderOpenIcon : FolderOpenIcon;
+  const projects = visibleProjectSlides.filter(project => project.group === group && project.placement === "more");
   return <section className={`content-slide more-slide more-layout-${layout}`} aria-labelledby={`more-${group}`}>
     <header className="content-heading"><h1 id={`more-${group}`} tabIndex={-1} data-slide-heading>More {group.toLowerCase()} projects.</h1><p>A few more things I’ve worked on.</p></header>
     {projects.length ? <div className="more-grid">{projects.map(project => {
@@ -26,7 +25,7 @@ export function MoreProjectsSlide({ group, onPreviewChange, layout = "gallery" }
     <Dialog open={previewOpen} onOpenChange={open => { setPreviewOpen(open); onPreviewChange(open); }}>
       <DialogContent className="project-preview-dialog">
         <DialogTitle className="home-sr-only">{selected?.title ?? "Project preview"}</DialogTitle><DialogDescription className="project-preview-note">Project preview · Sample copy and visuals pending</DialogDescription>
-        {selected && <ProjectSlide project={selected} icon={SelectedIcon} />}
+        {selected && <ProjectSlide project={selected} />}
       </DialogContent>
     </Dialog>
   </section>;

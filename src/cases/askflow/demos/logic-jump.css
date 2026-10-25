@@ -1,0 +1,36 @@
+/* AskFlow logic jump (logic-jump.tsx). */
+.af-logic-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.af-logic-lines path { fill: none; stroke: #9ca3af; stroke-width: 2; }
+.af-logic-lines path[data-drag] { stroke: var(--af-blue); stroke-dasharray: 5 5; }
+.af-logic-flag { position: absolute; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 6px; background: var(--af-blue-soft); color: var(--af-blue); }
+.af-logic-flag svg { width: 18px; height: 18px; }
+.af-logic .af-port { cursor: crosshair; touch-action: none; }
+.af-logic button.af-port:hover, .af-logic button.af-port[data-live] { border-color: var(--af-blue); background: var(--af-blue-soft); }
+.af-logic .af-card[data-target] { box-shadow: 0 0 0 2px var(--af-blue), 0 1px 2px rgb(0 0 0 / .05); }
+.af-logic-chip { position: absolute; left: calc(100% + 30px); }
+.af-logic-rule { flex: 1; min-width: 0; padding: 0; border: 0; background: none; color: var(--af-blue); text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px !important; }
+.af-logic-rule:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* The rule dialog, over a dimmed canvas. */
+.af-logic-scrim { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; background: rgb(17 24 39 / .18); animation: af-fade 160ms ease; }
+@keyframes af-fade { from { opacity: 0; } }
+.af-logic-dialog { position: relative; width: min(520px, calc(100% - 48px)); padding: 26px 26px 0; border-radius: 10px; background: #fff; box-shadow: 0 20px 40px -12px rgb(0 0 0 / .25); animation: af-pop 200ms cubic-bezier(.22, 1, .36, 1); }
+@keyframes af-pop { from { opacity: 0; scale: .97; } }
+.af-logic-dialog h3 { margin: 0 0 18px; font-size: 17px; font-weight: 600; }
+.af-logic-x { position: absolute; top: 14px; right: 14px; display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 6px; background: none; color: var(--af-muted); }
+.af-logic-x:hover { background: #f3f4f6; }
+.af-logic-x svg { width: 18px; height: 18px; }
+.af-logic-box { display: grid; gap: 10px; padding: 12px; border-radius: 8px; background: var(--af-canvas); box-shadow: inset 0 0 0 1px var(--af-line); }
+.af-logic-box .af-chip { justify-self: start; }
+.af-logic-field { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; border-radius: 6px; background: #fff; box-shadow: inset 0 0 0 1px var(--af-line); }
+.af-logic-field svg { width: 16px; height: 16px; color: var(--af-muted); }
+.af-logic-field select { flex: 1; height: 100%; border: 0; background: none; outline-offset: 0; }
+.af-logic-pair { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 8px; }
+.af-logic-pair select, .af-logic-pair input { height: 36px; padding: 0 10px; border: 0; border-radius: 6px; background: #fff; box-shadow: inset 0 0 0 1px var(--af-line); }
+.af-logic-goto { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 10px; border-radius: 6px; background: #fff; color: var(--af-muted); }
+.af-logic-goto svg { width: 14px; height: 14px; }
+.af-logic-dialog footer { display: flex; justify-content: space-between; align-items: center; margin: 20px -26px 0; padding: 14px 26px; border-top: 1px solid var(--af-line); }
+.af-logic-dialog footer > span { display: flex; gap: 8px; }
+.af-logic-delete { display: flex; align-items: center; gap: 6px; padding: 0; border: 0; background: none; color: var(--af-muted); font-size: 12px !important; }
+.af-logic-delete svg { width: 14px; height: 14px; }
+.af-logic-delete:hover { color: #c13b30; }

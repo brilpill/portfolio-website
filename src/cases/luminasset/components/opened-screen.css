@@ -1,0 +1,8 @@
+/* LuminAsset opened screen (opened-screen.tsx): an exported screen over the demo, sliding in from the right. */
+.la-opened { position: absolute; inset: 0; z-index: 20; background: var(--la-base-100, #171717); animation: la-opened-in 320ms cubic-bezier(.22, 1, .36, 1); }
+.la-opened img { object-fit: cover; object-position: top; }
+.la-opened-back { position: absolute; top: calc(62 * var(--u)); left: calc(16 * var(--u)); display: grid; place-items: center; width: calc(44 * var(--u)); height: calc(44 * var(--u)); border-radius: 50%; background: #1f1f1f; color: #fff; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14); cursor: pointer; }
+.la-opened-back svg { width: calc(20 * var(--u)); height: calc(20 * var(--u)); }
+.la-opened-back:focus-visible { outline: 2px solid var(--la-accent-blue, #2f6fed); outline-offset: 2px; }
+@keyframes la-opened-in { from { translate: 30% 0; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .la-opened { animation: none; } }

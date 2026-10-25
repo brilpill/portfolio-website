@@ -1,0 +1,15 @@
+/* LuminAsset ruler (ruler.tsx). Sized in screen points: the parent sets --u (1/393 of the screen). */
+/* Ruler: the track moves under a fixed centre mark; the current panel count is large and white. */
+.la-ruler { position: relative; flex-shrink: 0; height: calc(64 * var(--u)); overflow: hidden; cursor: grab; touch-action: pan-y; mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); }
+.la-ruler[data-dragging] { cursor: grabbing; }
+.la-ruler:focus-visible { outline: 2px solid var(--la-accent-blue, #2f6fed); outline-offset: -2px; }
+.la-ruler-track { position: absolute; inset: 0; translate: calc(196.5 * var(--u) - var(--position) * 42 * var(--u)) 0; transition: translate 220ms cubic-bezier(.22, 1, .36, 1); }
+.la-ruler[data-dragging] .la-ruler-track { transition: none; }
+.la-ruler-tick { position: absolute; bottom: calc(14 * var(--u)); left: calc(var(--at) * 42 * var(--u)); width: 0; height: calc(16 * var(--u)); border-left: 1px solid var(--la-base-600); }
+/* Minor ticks between whole panels. */
+.la-ruler-tick::after { content: ""; position: absolute; bottom: 0; left: 0; width: calc(42 * var(--u)); height: calc(8 * var(--u)); background: repeating-linear-gradient(90deg, transparent 0 calc(8.4 * var(--u) - 1px), var(--la-base-400) calc(8.4 * var(--u) - 1px) calc(8.4 * var(--u))); }
+.la-ruler-tick:last-child::after { display: none; }
+.la-ruler-tick b { position: absolute; bottom: calc(22 * var(--u)); left: 0; color: var(--la-base-500); font-size: calc(14 * var(--u)); font-weight: 400; translate: -50% 0; transition: color 150ms ease, font-size 150ms ease; font-variant-numeric: tabular-nums; }
+.la-ruler-tick[data-current] b { color: #fff; font-size: calc(19 * var(--u)); font-weight: 600; }
+.la-ruler-marker { position: absolute; bottom: 0; left: 50%; width: 0; height: calc(34 * var(--u)); border-left: calc(2 * var(--u)) solid #fff; translate: -50% 0; }
+.la-ruler-marker::after { content: ""; position: absolute; bottom: calc(-1 * var(--u)); left: calc(-6 * var(--u)); border: calc(5 * var(--u)) solid transparent; border-bottom-color: #fff; }

@@ -1163,3 +1163,62 @@ Set moreProjectsEnabled=false. Removed More entry points in expanded/mobile navi
 - Contact rows share a moving hover/focus highlight and small icon motion. Email is a copy button, never an outbound email link in these cards.
 - Successful clipboard writes show Copied and animate the copy icon into a check-square for 2.2 seconds; failed writes announce failure instead of claiming success. Reduced motion supported.
 - Verified fixed bottom edge during expansion, mobile fit, Escape, actual clipboard contents and matching hero copy feedback. TypeScript and lint pass.
+
+### About cursor — 24 October 2026
+- Removed both cast drop shadows and the floor shadow from the chrome cursor. Metallic shading, extrusion and existing movement remain.
+- Alternative cursor styles are proposals only; no replacement selected yet.
+
+- Cursor finish exploration: temporary bottom-left selector on About offers Matte graphite (default), Flat blue and Satin silver. Both travelling and footer cursors share the selection. All remain shadow-free; outline excluded. Original chrome rendering retained in source for comparison/rollback.
+
+- Cursor exploration reverted at user request: restored the previous chrome finish, still without shadows. Removed the three alternative finishes and temporary preview selector.
+
+### About reading layout — 24 October 2026
+- Travelling chrome cursor sits near the viewport bottom with 88px clearance for Contact; keeps footer resting behavior.
+- Removed eyebrow kickers (Intro, What I believe, etc.). Remaining metadata uses normal sans-serif casing instead of uppercase monospace.
+- Alternating blocks now have a 48px vertical gap instead of overlapping by one line. Narrow layout retains its 28px spacing.
+
+- Follow-up: restored the About cursor to the viewport center. Keep the 48px block gaps, removed eyebrows and normal-case metadata.
+
+- Cursor position refinement: center at 70dvh (20% of viewport height below screen center). Keep existing text spacing and footer behavior.
+
+- Service illustrations now activate when scrolling brings them level with the floating cursor; reset after leaving that zone. Narrow layouts use 70% viewport height. AI thinking animation is triggered rather than continuously looping. Reduced-motion support retained. Replacement illustration concepts are proposals pending selection.
+
+- Implemented recommended service scenes: sliding phone screens (mobile), sequentially assembled miniature page (landing), prompt transforming into a structured result (AI), and wireframe filling into UI (front-end). SVG artwork uses grayscale/blue, with cursor-zone activation, reset and reduced-motion static states.
+
+- About experience media: user-supplied LinkedIn previews added for HotShots Labs (one title + thumbnail), Fourmeta (three thumbnails: agency branding, UltraLight, Staymo), Askflow (one title + thumbnail). Exact screenshot thumbnail regions displayed with CSS background positioning, retaining originals in public/experience. URLs supplied directly by user; no guessed media for other jobs. Replaces old chips on these entries.
+
+- About cleanup: experience previews are now image-only (accessible titles retained), with single previews aligned to their text column. Removed chapter tick navigation only on About; case studies retain it.
+
+### About scroll refinement — 24 October 2026
+- Inspected gionatannese.com/about: reference uses separate .12 vertical and .138 line settling. Adapted frame-rate independent desktop wheel smoothing on About, preserving native scrollbar, keyboard, touch and nested panel scrolling. Stops smoothing on direct input, reduced motion and unmount.
+- Softer text avoidance shoulder with a taller influence zone removes sudden sideways kicks; horizontal displacement stays within 24px viewport gutters. Reduced motion keeps text still. Cursor stays at 70dvh and block gaps stay 48px.
+
+- About footer: replaced Calendly contact column with LinkedIn (Oleh Bril). Added original, free canvas ASCII ember field below footer links, inspired by React Bits Pro Glyph Ember public preview (not its premium source). Brand blue, 24fps, pointer gently suppresses nearby glyphs; pauses offscreen/background and renders a still frame for reduced motion.
+
+- About footer email now copies only, with shared Copied/check feedback for both the main email block and email icon; no mail-app fallback. Footer icon row now LinkedIn, Telegram, email copy, Pinterest.
+
+- Footer ember adjustment: moved the animation up 56px, restored bottom breathing room, and added soft fades on all canvas edges so glyphs no longer appear abruptly clipped.
+
+- About footer social icon buttons use transparent backgrounds and 1px outlines; hover strengthens the outline.
+
+- Footer flame follow-up: field now spans the main page width outside the text container, reaching the bottom with no side/bottom fades or bottom gutter. Only a soft top fade remains.
+
+- About top animation exploration: original free falling-number canvas inspired by aiforui.dev, plus original ASCII ripple alternative inspired by React Bits Pro public preview (no premium source used). Temporary Top animation selector offers both and Off. Blue, soft elliptical edge fade above statement, pointer ripple input, 30fps cap, offscreen/background pause, reduced-motion still frame.
+
+- Selected falling numbers for the About top. Removed ripple alternative, Off option and temporary comparison selector; keep existing fades, speed and reduced-motion support.
+
+- Shared SiteFooter extracted from About and added to the case-study route template (LuminAsset and Quantum Body, plus future studies). Same chrome cursor, contact columns, copy/check feedback, outlined LinkedIn/Telegram/email/Pinterest icons, copyright and full-width bottom ASCII embers. Case next-project navigation retained before the footer.
+
+- Selected-text Ask AI shortcut: compact dark floating button above selection, inspired by ktz.dk. Opens existing assistant on Home, About and case studies, without storing/submitting or using selected text. Dismisses on scroll, resize, Escape, deselection. Controls, navigation and assistant text excluded; reduced-motion entrance supported.
+
+- AI sidebar is now a construction preview: info, preset questions, input and composer tools have no click/type actions, remain hoverable/focusable, and show “This feature is under construction.” tooltips. Close control and Escape remain functional. Removed prepared-answer interaction from the panel UI.
+
+- Mobile holding screen: split the former combined share/copy button into explicit “Here, copy link” and native Share controls. Added borderless, outline-style LinkedIn, Telegram, email-copy and Pinterest icons and the existing ASCII ember field behind the lower screen. Link and email copy have Copied feedback; Share calls `navigator.share` when available. Verified at 390px: no horizontal overflow, clipboard values and share payload correct.
+
+- Footer correction: restored the three text contact columns on About and case studies (LinkedIn, Telegram, copy email) after the user rejected their removal. The four social icons sit in visible 40px button boxes with a light gray background and use outline glyphs. Both email copy targets retain Copied/check feedback. Verified on About, LuminAsset and Quantum Body.
+
+- Case-study bottom navigation: replaced the old one-way "Next project" hash link with previous/next case buttons that follow `portfolioSlideIds` (the sidebar order), skipping projects without a published case-study route. With the two current full studies, LuminAsset offers next → Quantum Body and Quantum Body offers previous → LuminAsset. Links go directly to `/cases/[slug]`; tested both labels/routes and a click.
+
+- Assistant sidebar: restored functional editorial starter questions and follow-ups, sourced from the published About and case content. The composer now accepts typed questions, keeps Send on the right, offers suggested questions from the first icon, and lists the six currently visible projects from the second. Selected page text opens the assistant as a removable context chip. Custom questions remain local and explicitly state that live AI replies are not connected. The info tooltip explains the current source and limits. Implementation and the next AI phase are documented in `docs/assistant-plan.md`.
+
+- Assistant rollback: the chatbot is again a viewable unavailable preview. Its entry points and internal controls show “Currently unavailable.” on hover; questions and input do not submit. Restored the earlier soft gray single-line input container and original composer icons. The future question map remains in `src/content/assistant-content.ts`; `docs/assistant-plan.md` now distinguishes it from active behavior.

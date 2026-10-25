@@ -1,0 +1,42 @@
+/* AskFlow product picker (product-picker.tsx): the canvas on the left, the catalogue panel on the right. */
+.af-picker { display: grid; grid-template-columns: minmax(0, 1fr) 400px; }
+.af-picker-canvas { position: relative; display: flex; align-items: center; padding-left: 40px; }
+.af-picker-question { position: relative; width: 250px; }
+.af-picker-question .af-card-head { font-size: 14px; }
+.af-picker-line { width: 100px; height: 80px; margin: -110px 0 0 22px; overflow: visible; }
+.af-picker-line path { fill: none; stroke: #9ca3af; stroke-width: 2; }
+.af-picker-step { display: grid; justify-items: center; gap: 6px; width: 220px; margin-top: -110px; padding: 24px 16px; border-radius: 6px; background: var(--af-blue-soft); box-shadow: inset 0 0 0 1px #bcd2fb; color: var(--af-blue); text-align: center; transition: background-color 200ms ease; }
+.af-picker-step svg { width: 26px; height: 26px; }
+.af-picker-step b { font-size: 15px; font-weight: 500; }
+.af-picker-step span { color: var(--af-muted); font-size: 12px; animation: af-in 200ms ease; }
+.af-picker-step[data-filled] { background: #fff; box-shadow: inset 0 0 0 1px var(--af-line), 0 1px 2px rgb(0 0 0 / .05); }
+
+.af-picker-panel { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-height: 0; padding: 20px 18px 0; background: #fff; box-shadow: -1px 0 0 var(--af-line); }
+.af-picker-panel header { position: relative; margin-bottom: 14px; }
+.af-picker-panel h3 { margin: 0; font-size: 17px; font-weight: 600; }
+.af-picker-panel p { margin: 4px 0 0; color: var(--af-muted); font-size: 12px; }
+.af-picker-x { position: absolute; top: 0; right: 0; color: var(--af-muted); }
+.af-picker-x svg { width: 18px; height: 18px; }
+.af-picker-search { display: flex; align-items: center; gap: 8px; height: 38px; margin-bottom: 12px; padding: 0 10px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--af-line-strong); }
+.af-picker-search:focus-within { box-shadow: inset 0 0 0 1.5px var(--af-blue); }
+.af-picker-search svg { width: 16px; height: 16px; color: var(--af-muted); }
+.af-picker-search input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: none; }
+.af-picker-search input::placeholder { color: var(--af-faint); }
+.af-picker-search button { display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--af-muted); }
+.af-picker-list { display: grid; align-content: start; gap: 6px; min-height: 0; margin: 0 -18px; padding: 0 18px 12px; overflow-y: auto; list-style: none; scrollbar-width: thin; }
+.af-picker-list > li { border-radius: 6px; box-shadow: inset 0 0 0 1px var(--af-line); }
+.af-picker-row { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 12px; }
+.af-picker input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var(--af-blue); cursor: pointer; }
+.af-picker-thumb { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 4px; color: #4b5563; }
+.af-picker-thumb svg { width: 20px; height: 20px; }
+.af-picker-name { flex: 1; font-size: 14px; }
+.af-picker-caret { display: flex; align-items: center; gap: 6px; padding: 4px 2px; border: 0; background: none; color: var(--af-muted); font-size: 12px !important; }
+.af-picker-caret svg { width: 12px; height: 12px; transition: rotate 200ms ease; }
+.af-picker-caret[aria-expanded="true"] svg { rotate: 180deg; }
+.af-picker-variants { display: grid; margin: 0; padding: 0 12px 8px 38px; list-style: none; animation: af-drop 200ms cubic-bezier(.22, 1, .36, 1); }
+@keyframes af-drop { from { opacity: 0; translate: 0 -4px; } }
+.af-picker-variants label { display: flex; align-items: center; gap: 10px; height: 34px; border-top: 1px solid var(--af-line); font-size: 13px; cursor: pointer; }
+.af-picker-empty { padding: 14px; color: var(--af-muted); font-size: 13px; box-shadow: none !important; }
+.af-picker-panel footer { display: flex; justify-content: space-between; align-items: center; margin: 0 -18px; padding: 12px 18px; border-top: 1px solid var(--af-line); color: var(--af-muted); font-size: 12px; }
+.af-picker-panel footer > span:last-child { display: flex; gap: 8px; }
+.af-picker-panel footer button:disabled { opacity: .5; cursor: default; }

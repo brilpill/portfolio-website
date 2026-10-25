@@ -1,0 +1,48 @@
+/* LuminAsset system size slider (system-size-slider.tsx). Sized in screen points: --u is 1/393 of the screen.
+   Colours and type come from the design tokens (tokens.ts, as --la-* variables) and Geist (--la-font). */
+.lumin-size { --u: calc(100cqw / 393); position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--la-base-100); color: #fff; font-family: var(--la-font), system-ui, sans-serif; letter-spacing: .02em; font-size: calc(15 * var(--u)); user-select: none; }
+.lumin-size svg { flex-shrink: 0; }
+.lumin-size-status { display: flex; justify-content: space-between; align-items: center; padding: calc(20 * var(--u)) calc(34 * var(--u)) 0 calc(52 * var(--u)); font-size: calc(17 * var(--u)); font-weight: 600; }
+.lumin-size-status > span:last-child { display: flex; gap: calc(5 * var(--u)); }
+.lumin-size-status svg { width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
+.lumin-size-top { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; padding: calc(14 * var(--u)) calc(15 * var(--u)) 0; }
+.lumin-size-round { display: grid; place-items: center; width: calc(44 * var(--u)); height: calc(44 * var(--u)); border-radius: 50%; background: rgb(0 0 0 / .55); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14); }
+.lumin-size-round svg { width: calc(20 * var(--u)); height: calc(20 * var(--u)); }
+.lumin-size-address { display: flex; align-items: center; gap: calc(7 * var(--u)); padding: calc(6 * var(--u)) calc(12 * var(--u)) calc(6 * var(--u)) calc(8 * var(--u)); border-radius: 999px; background: rgb(0 0 0 / .55); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14); font-size: calc(13 * var(--u)); }
+.lumin-size-address i { display: grid; place-items: center; width: calc(16 * var(--u)); height: calc(16 * var(--u)); border-radius: 50%; background: var(--la-system-failed); font-size: calc(11 * var(--u)); font-style: normal; font-weight: 700; }
+/* The roof illustration (Figma 1264:39045): a blurred amber glow under a grid of dark cells, amber panels on top. */
+.lumin-size-art { position: absolute; top: 0; left: 0; width: calc(393 * var(--u)); height: calc(412 * var(--u)); overflow: hidden; }
+.lumin-size-glow { position: absolute; top: calc(81 * var(--u)); left: calc(72 * var(--u)); width: calc(250 * var(--u)); height: calc(250 * var(--u)); border-radius: 50%; background: radial-gradient(closest-side, rgb(212 153 71 / .8), rgb(212 153 71 / .2)); filter: blur(calc(87 * var(--u))); }
+.lumin-size-grid { position: absolute; top: calc(-45 * var(--u)); left: calc(-55 * var(--u)); width: calc(503 * var(--u)); height: calc(503 * var(--u)); background: rgb(23 23 23 / .9);
+  /* Cells only: the 1pt gaps between them are cut out, so the glow shows through as lines. */
+  mask: linear-gradient(90deg, #000 calc(20 * var(--u)), transparent 0) 0 0 / calc(21 * var(--u)) 100%, linear-gradient(#000 calc(20 * var(--u)), transparent 0) 0 0 / 100% calc(21 * var(--u)); mask-composite: intersect; }
+.lumin-size-panel { position: absolute; top: calc((var(--row) * 21 - 45) * var(--u)); left: calc((var(--column) * 21 - 55) * var(--u)); width: calc(20 * var(--u)); height: calc(20 * var(--u)); border-radius: calc(2 * var(--u)); background: var(--la-accent-amber); animation: lumin-size-pop 220ms cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes lumin-size-pop { from { scale: .6; opacity: 0; } }
+/* Only the space above the sheet gives way when the screen is short; the sheet's rows and ruler keep their height. */
+.lumin-size > * { flex-shrink: 0; }
+.lumin-size > .lumin-size-space { flex-shrink: 1; min-height: 0; height: calc(258 * var(--u)); }
+/* Everything but the illustration sits above it, so the sheet's top (grabber, label, kW) is never covered. */
+.lumin-size > :not(.lumin-size-art) { position: relative; z-index: 1; }
+.lumin-size-grabber { align-self: center; width: calc(100 * var(--u)); height: calc(4 * var(--u)); margin: calc(8 * var(--u)) 0 calc(22 * var(--u)); border-radius: 999px; background: var(--la-base-400); }
+.lumin-size-label { margin: 0; color: var(--la-base-500); font-size: calc(14 * var(--u)); text-align: center; }
+.lumin-size-kw { margin: calc(4 * var(--u)) 0 calc(18 * var(--u)); font-size: calc(34 * var(--u)); font-weight: 700; letter-spacing: -.01em; text-align: center; font-variant-numeric: tabular-nums; }
+.lumin-size-cards { display: grid; grid-template-columns: 1fr 1fr; gap: calc(8 * var(--u)); padding: 0 calc(12 * var(--u)); }
+.lumin-size-cards > div { display: flex; flex-direction: column; align-items: center; gap: calc(4 * var(--u)); padding: calc(14 * var(--u)) 0 calc(14 * var(--u)); background: var(--la-base-200); }
+.lumin-size-cards strong { margin-top: calc(6 * var(--u)); font-size: calc(15 * var(--u)); font-weight: 500; }
+.lumin-size-cards span:last-child { color: var(--la-base-500); font-size: calc(12 * var(--u)); font-variant-numeric: tabular-nums; }
+.lumin-size-ring { position: relative; display: grid; place-items: center; width: calc(46 * var(--u)); height: calc(46 * var(--u)); border-radius: 50%; background: var(--la-base-100); }
+.lumin-size-ring > svg:first-child { position: absolute; inset: 0; width: 100%; height: 100%; rotate: -90deg; }
+/* The ring green is the colour inside System/Success Subtle (#34c77b29) at full strength, as on the screens. */
+.lumin-size-ring circle { fill: none; stroke: #34c77b; stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 1; transition: stroke-dashoffset 300ms ease; }
+.lumin-size-ring > svg:not(:first-child) { width: calc(20 * var(--u)); height: calc(20 * var(--u)); }
+.lumin-size-rows { margin: calc(12 * var(--u)) 0 0; padding: 0 calc(20 * var(--u)); }
+.lumin-size-rows > div { display: flex; justify-content: space-between; padding: calc(9 * var(--u)) 0; color: var(--la-base-300); font-size: calc(14 * var(--u)); }
+.lumin-size-rows dt { display: flex; align-items: center; gap: calc(8 * var(--u)); font-weight: 500; }
+.lumin-size-rows dt svg { width: calc(16 * var(--u)); height: calc(16 * var(--u)); color: var(--la-base-500); }
+.lumin-size-rows dd { margin: 0; color: var(--la-base-500); font-variant-numeric: tabular-nums; }
+.lumin-size-cta { display: flex; align-items: center; justify-content: center; gap: calc(8 * var(--u)); height: calc(52 * var(--u)); margin: calc(14 * var(--u)) calc(20 * var(--u)) 0; border: 0; border-radius: 999px; background: var(--la-accent-blue); color: #fff; font: 500 calc(17 * var(--u)) / 1 inherit; cursor: pointer; transition: scale 150ms ease; }
+.lumin-size-cta:active { scale: .97; }
+.lumin-size-cta svg { width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
+.lumin-size-home { align-self: center; width: calc(134 * var(--u)); height: calc(5 * var(--u)); margin: calc(22 * var(--u)) 0 calc(8 * var(--u)); border-radius: 999px; background: #fff; }
+.lumin-size .la-ruler { margin-top: auto; }
+@media (prefers-reduced-motion: reduce) { .lumin-size *, .lumin-size *::after { transition: none !important; } }

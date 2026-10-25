@@ -1,0 +1,65 @@
+/* LuminAsset inputs (inputs.tsx): the Figma frames at real size in a 2 × 2 grid, light, from Components. */
+.la-inputs { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(2, 393px); align-content: center; justify-content: center; gap: 28px 24px; padding-top: 24px; font-family: var(--la-font), system-ui, sans-serif; letter-spacing: .5px; }
+/* One component alone, centred in its own frame. */
+.la-inputs-single { grid-template-columns: 393px; padding-top: 0; }
+.la-inputs-frame { position: relative; display: grid; grid-template-rows: auto 1fr; gap: 8px; }
+.la-inputs-frame:nth-child(2) { z-index: 2; } /* the Select's menu opens over the frame below */
+.la-inputs-name { margin: 0; color: rgb(25 25 25 / .45); font-size: 12px; letter-spacing: .2px; }
+.la-inputs-card { padding: 20px; border-radius: 16px; background: #fdfdfd; box-shadow: 0 1px 1.5px rgb(25 25 25 / .04), 0 4px 11px -7px rgb(25 25 25 / .21); }
+
+/* A field: label, the box, a note. */
+.la-field { position: relative; display: grid; gap: 6px; }
+.la-field-label { color: var(--la-base-900); font-size: 14px; font-weight: 500; line-height: 20px; }
+.la-field-box { display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 16px 0 14px; border: 0; border-radius: 12px; background: #f3f3f3; box-shadow: inset 0 0 0 1.5px transparent; color: var(--la-base-900); font: inherit; font-size: 16px; text-align: left; cursor: text; transition: box-shadow 140ms ease; }
+.la-field-box[data-focus] { box-shadow: inset 0 0 0 1.5px var(--la-accent-blue); }
+.la-field-box[data-loading] { justify-content: center; color: #8b8b8b; font-weight: 500; cursor: progress; }
+.la-field-icon { flex-shrink: 0; width: 24px; height: 24px; color: #8b8b8b; transition: color 140ms ease; }
+.la-field-icon[data-on] { color: var(--la-accent-blue); }
+.la-field-box input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; }
+.la-field-box input::placeholder { color: #8b8b8b; }
+.la-field-clear { display: grid; place-items: center; padding: 0; border: 0; background: none; color: #8b8b8b; cursor: pointer; }
+.la-field-clear svg { width: 20px; height: 20px; }
+.la-field-clear:hover { color: var(--la-base-700); }
+.la-field-spin { width: 24px; height: 24px; color: #343330; animation: la-field-spin 900ms linear infinite; }
+@keyframes la-field-spin { to { rotate: 360deg; } }
+.la-field-note { margin: 0; color: var(--la-base-700); font-size: 14px; line-height: 20px; }
+.la-field-note button { padding: 0; border: 0; background: none; color: inherit; font: inherit; font-weight: 500; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.la-field[data-status="error"] .la-field-note, .la-field[data-status="error"] .la-field-box input, .la-field[data-status="error"] .la-code-box input { color: #c13b30; }
+.la-field[data-status="error"] .la-field-icon { color: #c13b30; }
+.la-field[data-status="error"] .la-field-box input { font-weight: 500; }
+.la-field[data-status="found"] .la-field-note { color: var(--la-system-success); }
+
+/* OTP: six boxes; an empty one shows a dot until it has focus. */
+.la-code { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.la-code-box { position: relative; display: grid; place-items: center; height: 56px; border-radius: 12px; background: #f3f3f3; box-shadow: inset 0 0 0 1.5px transparent; cursor: text; transition: box-shadow 140ms ease; }
+.la-code-box[data-focus] { box-shadow: inset 0 0 0 1.5px var(--la-accent-blue); }
+.la-code-box i { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: #d4d4d4; pointer-events: none; }
+.la-code-box input { width: 100%; height: 100%; padding: 0; border: 0; outline: 0; background: none; color: var(--la-base-900); font: inherit; font-size: 16px; font-weight: 500; text-align: center; caret-color: var(--la-accent-blue); }
+
+/* Select and its menu (Dropdown-Menu 937:45483). */
+.la-select { justify-content: space-between; padding-left: 16px; cursor: pointer; }
+.la-select [data-placeholder] { color: #6e6e6e; }
+.la-select-caret { width: 24px; height: 24px; color: #343330; transition: rotate 200ms cubic-bezier(.22, 1, .36, 1); }
+.la-select-caret[data-open] { rotate: 180deg; }
+.la-select:focus-visible { outline: 2px solid var(--la-accent-blue); outline-offset: 2px; }
+.la-menu { position: absolute; top: calc(20px + 6px + 56px + 6px); right: 0; left: 0; z-index: 3; max-height: 248px; margin: 0; padding: 4px 16px; overflow-y: auto; list-style: none; border: 1px solid #e7e7e7; border-radius: 12px; background: #fdfdfd; box-shadow: 0 4px 6px rgb(0 0 0 / .05), 0 10px 15px rgb(0 0 0 / .1); animation: la-menu-in 160ms cubic-bezier(.22, 1, .36, 1); scrollbar-width: thin; }
+@keyframes la-menu-in { from { opacity: 0; translate: 0 -4px; } }
+.la-menu li { display: flex; align-items: center; justify-content: space-between; height: 48px; color: var(--la-base-900); font-size: 16px; cursor: pointer; }
+.la-menu li + li { border-top: 1px solid #f0f0f0; }
+.la-menu li[data-active] { color: var(--la-accent-blue); }
+.la-menu li svg { width: 18px; height: 18px; color: var(--la-accent-blue); }
+
+/* Toggles: pills, the chosen one green. */
+.la-toggles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.la-toggles button { height: 52px; border: 0; border-radius: 32px; background: #f3f3f3; box-shadow: inset 0 0 0 1.5px rgb(23 23 23 / .1); color: var(--la-base-900); font: inherit; font-size: 16px; font-weight: 500; cursor: pointer; transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease, scale 120ms ease; }
+.la-toggles button:active { scale: .97; }
+.la-toggles button[aria-checked="true"] { background: var(--la-system-success); box-shadow: none; color: #fdfdfd; }
+.la-toggles button:focus-visible { outline: 2px solid var(--la-accent-blue); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .la-inputs *, .la-menu { animation: none !important; transition: none !important; } }
+
+/* Postcode results (Figma 910:8565): the menu under the field, location first in orange, addresses below. */
+.la-results li { height: auto; min-height: 48px; padding: 12px 0; line-height: 20px; font-size: 15px; }
+.la-results-here { display: flex; align-items: center; gap: 10px; color: var(--la-base-900); }
+.la-results .la-results-here svg { width: 20px; height: 20px; color: #f26b1d; }
+.la-results li[data-active] .la-results-here { color: var(--la-accent-blue); }
+.la-results .la-results-empty { color: #8b8b8b; cursor: default; }

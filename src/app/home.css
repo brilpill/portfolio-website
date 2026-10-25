@@ -1210,3 +1210,21 @@ img.media-viewer-media[data-tall="web"] { width: min(1120px, 100cqw); }
 .media-viewer-source { display: flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; border-radius: 999px; color: inherit; text-decoration: none; white-space: nowrap; }
 .media-viewer-source:hover { background: rgb(255 255 255 / .1); color: #fff; }
 .media-viewer-source:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* ——— Intro loader (intro-loader.tsx): first visit per session, desktop only ———
+   Covers the page while fonts, the hero and the first case slides' images get ready, then fades away. */
+.intro-loader { position: fixed; inset: 0; z-index: 2147482000; display: grid; place-items: center; background: var(--background); transition: opacity 420ms var(--motion-ease-out), visibility 0s linear 420ms; }
+.intro-loader[data-phase="leaving"] { opacity: 0; visibility: hidden; pointer-events: none; }
+html[data-intro-seen] .intro-loader { display: none; }
+@media (max-width: 767px) { .intro-loader { display: none; } }
+.intro-loader-mark { display: flex; flex-direction: column; align-items: center; gap: 12px; animation: intro-loader-in 360ms var(--motion-ease-out) both; transition: transform 420ms var(--motion-ease-out), filter 420ms var(--motion-ease-out); }
+.intro-loader[data-phase="leaving"] .intro-loader-mark { transform: translateY(-6px) scale(.98); filter: blur(4px); }
+.intro-loader-mark img { display: block; border-radius: 999px; }
+.intro-loader-name { font: 400 18px/1.2 var(--font-radley), serif; letter-spacing: var(--tracking-section); color: var(--foreground); }
+.intro-loader-track { position: relative; width: 96px; height: 2px; overflow: hidden; border-radius: 999px; background: var(--border); }
+.intro-loader-track > span { position: absolute; inset: 0; border-radius: inherit; background: var(--foreground); transform-origin: left; transition: transform 300ms var(--motion-ease-out); }
+@keyframes intro-loader-in { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) {
+  .intro-loader, .intro-loader-mark, .intro-loader-track > span { transition: opacity 200ms ease; animation: none; }
+  .intro-loader[data-phase="leaving"] .intro-loader-mark { transform: none; filter: none; }
+}

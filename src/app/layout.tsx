@@ -4,6 +4,7 @@ import { UIProvider } from "@/components/ui-provider";
 import { SiteSoundEffects } from "@/components/site-sound-effects";
 import { SiteAnalytics } from "@/components/site-analytics";
 import { MobileBlocker } from "@/components/mobile-blocker";
+import { IntroLoader, introSeenScript } from "@/components/intro-loader";
 import { profile } from "@/content/profile";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
@@ -51,8 +52,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${ronzino.variable} ${radley.variable} antialiased`}>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: introSeenScript }} />
         {person && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person).replace(/</g, "\\u003c") }} />}
-        <UIProvider>{children}</UIProvider><MobileBlocker /><SiteSoundEffects /><SiteAnalytics scriptUrl={origin ? process.env.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL ?? null : null} />
+        <UIProvider>{children}</UIProvider><IntroLoader /><MobileBlocker /><SiteSoundEffects /><SiteAnalytics scriptUrl={origin ? process.env.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL ?? null : null} />
       </body>
     </html>
   );

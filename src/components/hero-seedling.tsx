@@ -371,7 +371,8 @@ export function HeroSeedling({ active, plant = true }: { active: boolean; plant?
       if (now - last < frameBudget - 1) return;
       const delta = Math.min((now - last) / 1000, .05);
       last = now;
-      const running = state.current.active && !document.hidden && !motion.matches;
+      // It also waits while the first-visit intro covers the page, so the plant still grows in view.
+      const running = state.current.active && !document.hidden && !motion.matches && !document.documentElement.hasAttribute("data-intro");
       canvas!.dataset.running = String(running);
       if (!running) return;
       time += delta;

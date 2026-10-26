@@ -11,7 +11,7 @@ import { motionTokens } from "@/lib/motion";
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
 /** An independent, click-only destination. The board pans; the page never scrolls. */
-export function Playground({ onClose }: { onClose: () => void }) {
+export function Playground({ onClose, variant = "default", theme = "light" }: { onClose: () => void; variant?: "default" | "files"; theme?: "light" | "dark" }) {
   const board = useRef<HTMLDivElement>(null);
   const grid = useRef<HTMLDivElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -130,7 +130,7 @@ export function Playground({ onClose }: { onClose: () => void }) {
     setSelected(item); setImageIndex(0); setOpen(true);
   }
 
-  return <section className="playground-view" aria-labelledby="playground-heading" onKeyDown={event => { if (event.key === "Escape" && !open && !event.defaultPrevented) { event.stopPropagation(); onClose(); } }}>
+  return <section className="playground-view" data-variant={variant} data-theme={theme} aria-labelledby="playground-heading" onKeyDown={event => { if (event.key === "Escape" && !open && !event.defaultPrevented) { event.stopPropagation(); onClose(); } }}>
     <h1 id="playground-heading" ref={heading} tabIndex={-1} className="home-sr-only">Playground</h1>
     <div ref={board} className="playground-board" role="region" aria-label="Draggable image grid" aria-describedby="playground-help" tabIndex={0}
       onKeyDown={event => {
@@ -156,7 +156,8 @@ export function Playground({ onClose }: { onClose: () => void }) {
         dragTransition={{ bounceStiffness: 300, bounceDamping: 32, power: .18 }}
         onDragStart={() => { dragging.current = true; }} onDragEnd={event => { dragging.current = false; suppressClickUntil.current = event.timeStamp + 180; }}>
         {Array.from({ length: 6 }, (_, column) => <div className="playground-column" key={column}>
-        {playgroundItems.filter((_, index) => index % 6 === column).map((item, index) => <button type="button" className="playground-card" data-stack={item.media.length > 1 ? "true" : undefined} key={item.id} style={{ "--pin-order": column + index * 2 } as CSSProperties} aria-label={`Preview ${item.title}${item.media.length > 1 ? `, ${item.media.length} media items` : ""}${item.media.some(media => media.kind === "video") ? ", with video" : ""}`} onClick={event => preview(item, event.currentTarget, event.timeStamp)}
+        {playgroundItems.filter((_, index) => index % 6 === column).map((item, index) => {
+          const card = <button type="button" className="playground-card" data-stack={item.media.length > 1 ? "true" : undefined} key={item.id} style={{ "--pin-order": column + index * 2 } as CSSProperties} aria-label={`Preview ${item.title}${item.media.length > 1 ? `, ${item.media.length} media items` : ""}${item.media.some(media => media.kind === "video") ? ", with video" : ""}`} onClick={event => preview(item, event.currentTarget, event.timeStamp)}
           onFocus={event => {
             if (!event.currentTarget.matches(":focus-visible")) return;
             const b = board.current?.getBoundingClientRect(), c = event.currentTarget.getBoundingClientRect();
@@ -173,8 +174,12 @@ export function Playground({ onClose }: { onClose: () => void }) {
               <Image src={item.image} alt={item.title} fill draggable={false} sizes="300px" priority={column < 3 && index === 2} />
             </span>
           </span>
-        </button>)}
+          {variant === "files" && <span className="playground-file-name" title={item.title}>{item.title}</span>}
+        </button>;
+          return card;
+        })}
         </div>)}
+        {variant === "files" && <div className="playground-selection" aria-hidden="true"><span>Playground</span>{["tl", "tm", "tr", "ml", "mr", "bl", "bm", "br"].map(handle => <i key={handle} data-handle={handle} />)}</div>}
       </motion.div>
     </div>
     <p id="playground-help" className="home-sr-only">Drag or scroll to pan; Shift-scroll moves horizontally. Pinch or press plus/minus to zoom; zero resets. Arrow keys pan when the board is focused; Home resets. Select a shot to preview its images and videos; Escape returns to the previous slide.</p>

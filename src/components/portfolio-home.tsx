@@ -13,14 +13,14 @@ import {
   HandWavingIcon, XIcon, WaveformSlashIcon,
   type Icon,
 } from "@phosphor-icons/react";
-import { ProfileMenu } from "./profile-menu";
+import { ProfileMenu, type AppearanceSetting } from "./profile-menu";
 import { SidebarResizer } from "./sidebar-resizer";
 import { SelectionAskAI } from "./selection-ask-ai";
 import { AskAiIcon } from "./ask-ai-icon";
 import { AssistantPanel } from "./assistant-panel";
 import { SoundWaveform } from "./sound-waveform";
 import { playCue, playUiSound } from "./ui-sound";
-import { useSidebarVisible, setSidebarVisible, useSoundEnabled, setSoundEnabled, useSectionSnap } from "./settings-store";
+import { useSidebarVisible, setSidebarVisible, useSoundEnabled, setSoundEnabled, useSectionSnap, usePlaygroundAppearance, setPlaygroundAppearance } from "./settings-store";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/sheet";
@@ -112,7 +112,7 @@ function NavigationGroup({ label, compact, more, children }: { label: string; co
   return <details className="home-nav-group" open onPointerLeave={() => setHovered(false)}><summary>{label}<CaretDownIcon size={14} aria-hidden /></summary><div className="home-group-items" onPointerEnter={event => { if (event.pointerType !== "touch") setHovered(true); }}>{children}</div>{more && <MoreReveal label={label} more={more} hovered={hovered} />}</details>;
 }
 
-function SidebarContent({ onJump, onOpen, active, openPanel, compact = false, assistantOpen, onAsk, soundEnabled, onSound, sidebarExpanded, onSidebar, onProfileOpenChange }: { onOpen: (panel: Panel) => void; onJump: (slug: string) => void; active: string; openPanel: Panel; compact?: boolean; assistantOpen: boolean; onAsk: () => void; soundEnabled: boolean; onSound: () => void; sidebarExpanded: boolean; onSidebar: (expanded: boolean) => void; onProfileOpenChange: (open: boolean) => void }) {
+function SidebarContent({ onJump, onOpen, active, openPanel, compact = false, assistantOpen, onAsk, soundEnabled, onSound, sidebarExpanded, onSidebar, onProfileOpenChange, appearance }: { onOpen: (panel: Panel) => void; onJump: (slug: string) => void; active: string; openPanel: Panel; compact?: boolean; assistantOpen: boolean; onAsk: () => void; soundEnabled: boolean; onSound: () => void; sidebarExpanded: boolean; onSidebar: (expanded: boolean) => void; onProfileOpenChange: (open: boolean) => void; appearance?: AppearanceSetting }) {
   const navigationActive = openPanel === "playground" ? "" : active;
   const shared = { compact, active: navigationActive, openPanel, onJump, onOpen };
 
@@ -128,9 +128,9 @@ function SidebarContent({ onJump, onOpen, active, openPanel, compact = false, as
     </SidebarMotionNav>
     {/* Ask AI lives beside the profile: always in reach on every slide, without taking a navigation row. */}
     <div className={compact ? "rail-footer" : "sidebar-footer"}>
-      {!compact && <ProfileMenu compact={false} soundEnabled={soundEnabled} onSound={onSound} sidebarExpanded={sidebarExpanded} onSidebar={onSidebar} onOpenChange={onProfileOpenChange} />}
+      {!compact && <ProfileMenu compact={false} soundEnabled={soundEnabled} onSound={onSound} sidebarExpanded={sidebarExpanded} onSidebar={onSidebar} onOpenChange={onProfileOpenChange} appearance={appearance} />}
       <NavigationAskAI compact={compact} open={assistantOpen} onAsk={onAsk} />
-      {compact && <ProfileMenu compact soundEnabled={soundEnabled} onSound={onSound} sidebarExpanded={sidebarExpanded} onSidebar={onSidebar} onOpenChange={onProfileOpenChange} />}
+      {compact && <ProfileMenu compact soundEnabled={soundEnabled} onSound={onSound} sidebarExpanded={sidebarExpanded} onSidebar={onSidebar} onOpenChange={onProfileOpenChange} appearance={appearance} />}
     </div>
   </>;
 }
@@ -139,9 +139,10 @@ const scrollingSlideIds = portfolioSlideIds.filter(id => id !== "mobile-more" &&
 type MorePage = "mobile-more" | "web-more";
 const isMorePage = (id: string): id is MorePage => id === "mobile-more" || id === "web-more";
 
-export function PortfolioHome({ layout = "default" }: { layout?: "default" | "card-shell" }) {
+export function PortfolioHome({ layout = "default", playgroundExperiment = false }: { layout?: "default" | "card-shell"; playgroundExperiment?: boolean }) {
   const [morePage, setMorePage] = useState<MorePage | null>(null);
-  const [panel, setPanel] = useState<Panel>(null);
+  const [panel, setPanel] = useState<Panel>(playgroundExperiment ? "playground" : null);
+  const playgroundTheme = usePlaygroundAppearance();
   const [factIndex, setFactIndex] = useState(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [projectPreviewOpen, setProjectPreviewOpen] = useState(false);
@@ -288,11 +289,11 @@ export function PortfolioHome({ layout = "default" }: { layout?: "default" | "ca
     {layout === "card-shell" && <ControlHint label={soundEnabled ? "Turn sound off" : "Turn sound on"}><Button data-sound-toggle variant="quiet" size="icon" aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"} aria-pressed={soundEnabled} onClick={toggleSound}>{soundEnabled ? <SoundWaveform /> : <WaveformSlashIcon aria-hidden />}</Button></ControlHint>}
     <ControlHint label="Currently unavailable."><Button hidden={assistantOpen} data-ai-trigger className="ask-ai-trigger" variant="quiet" aria-label="Ask AI preview" aria-expanded={assistantOpen} aria-controls="portfolio-assistant" onClick={openAssistant}><AskAiIcon />Ask AI</Button></ControlHint>
   </div>;
-  const sidebarControls = { openPanel: panel, assistantOpen, onAsk: () => { if (assistantOpen) closeAssistant(); else openAssistant(); }, soundEnabled, onSound: toggleSound, sidebarExpanded: sidebarVisible, onSidebar: commitSidebar, onProfileOpenChange: setProfileMenuOpen };
+  const sidebarControls = { openPanel: panel, assistantOpen, onAsk: () => { if (assistantOpen) closeAssistant(); else openAssistant(); }, soundEnabled, onSound: toggleSound, sidebarExpanded: sidebarVisible, onSidebar: commitSidebar, onProfileOpenChange: setProfileMenuOpen, appearance: playgroundExperiment && panel === "playground" ? { value: playgroundTheme, onChange: setPlaygroundAppearance } : undefined };
   const close = () => setPanel(null);
 
   return (
-    <div className="home-screen" data-layout={layout} id="home" data-sidebar-resizing={sidebarResizing} data-section={active} data-navigation-direction={direction} data-sidebar={sidebarVisible ? "open" : "closed"} data-assistant={assistantOpen ? "open" : "closed"} data-snap={sectionSnap ? "on" : "off"}>
+    <div className="home-screen" data-layout={layout} data-playground-theme={playgroundExperiment && panel === "playground" ? playgroundTheme : undefined} id="home" data-sidebar-resizing={sidebarResizing} data-section={active} data-navigation-direction={direction} data-sidebar={sidebarVisible ? "open" : "closed"} data-assistant={assistantOpen ? "open" : "closed"} data-snap={sectionSnap ? "on" : "off"}>
       <a className="home-skip" href="#slide-content" onClick={(event) => { event.preventDefault(); viewportRef.current?.querySelector<HTMLElement>('[data-state="active"] [data-slide-heading]')?.focus(); }}>Skip to content</a>
       <aside ref={sidebarRef} id="portfolio-sidebar" className="home-sidebar" aria-label="Portfolio navigation">
         <div className="sidebar-expanded" hidden={!sidebarVisible}>
@@ -323,7 +324,7 @@ export function PortfolioHome({ layout = "default" }: { layout?: "default" | "ca
           })}
         </div>
         {morePage && panel !== "playground" && <MoreProjectsSlide key={morePage} group={morePage === "mobile-more" ? "Mobile" : "Web"} onPreviewChange={setProjectPreviewOpen} />}
-        {panel === "playground" && <Playground onClose={() => { setPanel(null); requestAnimationFrame(() => returnFocus.current?.focus()); }} />}
+        {panel === "playground" && <Playground variant={playgroundExperiment ? "files" : "default"} theme={playgroundTheme} onClose={() => { setPanel(null); requestAnimationFrame(() => returnFocus.current?.focus()); }} />}
       </main>
       <span className="home-sr-only" role="status" aria-live="polite">{sectionTitles[active] ?? projectSlides.find((project) => project.slug === active)?.title}</span>
       <Sheet open={panel === "menu"} onOpenChange={(open) => { if (!open) close(); }}>

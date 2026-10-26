@@ -183,6 +183,28 @@
   background-size: 180px 180px;
 }
 
+/* Dark version of the unlinked Playground experiment. Keep the light production shell unchanged. */
+.home-screen[data-layout="card-shell"][data-playground-theme="dark"] {
+  color-scheme: dark;
+  --background: #17181b;
+  --foreground: #f3f4f5;
+  --surface: #1e1f22;
+  --body-text: #e8e9eb;
+  --muted-foreground: #a1a4ab;
+  --secondary: #2a2c31;
+  --border: #3b3d43;
+  --home-paper: #141518;
+  --home-sidebar: transparent;
+  --home-ink: #f3f4f5;
+  --home-text: #e8e9eb;
+  --home-muted: #a1a4ab;
+  --home-fill: #2a2c31;
+  --home-line: #3b3d43;
+  background: #141518;
+}
+.home-screen[data-layout="card-shell"][data-playground-theme="dark"] :is(.playground-view, .playground-board) { background-color: #1e1f22; }
+.home-screen[data-layout="card-shell"][data-playground-theme="dark"] .playground-board::before { filter: invert(1); opacity: .13; }
+
 /* Previous sections reveal their overview immediately; only forward entry rises in. */
 .home-screen[data-layout="card-shell"][data-navigation-direction="backward"] .portfolio-page[data-state="active"] .project-info :is(.project-draft-label, .project-overview, .project-facts, .case-links) {
   animation: none;

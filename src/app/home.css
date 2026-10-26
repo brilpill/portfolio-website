@@ -114,6 +114,7 @@
    in the rail as well. Same surface as the content cards: their soft two-layer shadow
    (card-shell's --shell-shadow, written out because the panel sits outside .home-screen) and no border. */
 :root .profile-menu-panel { width: 224px; border: 0; box-shadow: 0 1.4px 5.6px rgb(25 25 25 / .0385), 0 11.2px 33.6px rgb(25 25 25 / .0175); }
+:root .profile-menu-panel-dark { color-scheme: dark; --popover: #25262a; --secondary: #36383d; --foreground: #f3f4f5; --body-text: #d9dbe0; --muted-foreground: #a1a4ab; --border: #46484e; --ring: #8194ff; box-shadow: 0 12px 36px rgb(0 0 0 / .28); }
 .sidebar-footer { display: flex; flex-shrink: 0; align-items: center; gap: 0; margin-top: 16px; }
 .sidebar-footer .home-profile { flex: 1; min-width: 0; margin-top: 0; gap: 10px; }
 .home-profile > span { min-width: 0; }
@@ -939,6 +940,30 @@
   width: auto !important; height: auto !important;
   max-width: 100%; max-height: 100%;
   border-radius: var(--radius-preview);
+}
+
+/* Unlinked file-canvas experiment: leave a clear central lane for a Figma-style selected title. */
+.playground-view[data-variant="files"] { --playground-canvas: #f3f3f3; --playground-ink: #111; --playground-label: #2b2b2b; --playground-handle: #555; }
+.playground-view[data-variant="files"][data-theme="dark"] { --playground-canvas: #1e1f22; --playground-ink: #f4f4f5; --playground-label: #c7c9cf; --playground-handle: #aaadb4; }
+.playground-view[data-variant="files"] .playground-board { background: var(--playground-canvas); }
+.playground-view[data-variant="files"] .playground-grid { --file-title-gap: 440px; }
+.playground-view[data-variant="files"] .playground-column:nth-child(3) { margin-right: var(--file-title-gap); }
+.playground-view[data-variant="files"] .playground-card { display: flex; flex-direction: column; align-items: center; height: calc(var(--pin-size) + 25px); max-height: none; overflow: visible; gap: 9px; }
+.playground-view[data-variant="files"] .playground-card-image { flex: 0 0 var(--pin-size); height: var(--pin-size); }
+.playground-file-name { max-width: 100%; overflow: hidden; color: var(--playground-label); font-size: 12px; line-height: 1.3; text-align: center; text-overflow: ellipsis; white-space: nowrap; user-select: none; }
+.playground-selection { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 0 7px 3px; border: 1px solid var(--playground-handle); color: var(--playground-ink); font-family: Arial, Helvetica, sans-serif; font-size: 67px; font-weight: 400; letter-spacing: -.065em; line-height: 1; white-space: nowrap; pointer-events: none; user-select: none; }
+.playground-selection i { position: absolute; width: 7px; height: 7px; border: 1px solid var(--playground-handle); background: var(--playground-canvas); transform: translate(-50%, -50%); }
+.playground-selection i[data-handle="tl"] { left: 0; top: 0; }
+.playground-selection i[data-handle="tm"] { left: 50%; top: 0; }
+.playground-selection i[data-handle="tr"] { left: 100%; top: 0; }
+.playground-selection i[data-handle="ml"] { left: 0; top: 50%; }
+.playground-selection i[data-handle="mr"] { left: 100%; top: 50%; }
+.playground-selection i[data-handle="bl"] { left: 0; top: 100%; }
+.playground-selection i[data-handle="bm"] { left: 50%; top: 100%; }
+.playground-selection i[data-handle="br"] { left: 100%; top: 100%; }
+@media (max-width: 767px) {
+  .playground-view[data-variant="files"] .playground-grid { --file-title-gap: 320px; }
+  .playground-selection { font-size: 48px; }
 }
 
 /* More-project links use a text cue, without the moving background pill. */

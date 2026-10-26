@@ -12,6 +12,7 @@ const sidebarRole = "Designer & Engineer";
 /** Phones have no rail to collapse to, so the Sidebar switch shows only where the desktop sidebar does. */
 const wideQuery = "(min-width: 768px)";
 const subscribeWide = (change: () => void) => { const query = window.matchMedia(wideQuery); query.addEventListener("change", change); return () => query.removeEventListener("change", change); };
+export type AppearanceSetting = { value: "light" | "dark"; onChange: (value: "light" | "dark") => void };
 
 /**
  * The profile menu (Arc UI User menu, adapted): only the settings, Appearance, Sound, Scrolling and (on wider screens,
@@ -20,10 +21,10 @@ const subscribeWide = (change: () => void) => { const query = window.matchMedia(
  * dropdown is as wide as the expanded sidebar's rows, in the rail too. On phones it rises as a bottom sheet
  * inside the navigation sheet.
  */
-export function ProfileMenu({ compact, soundEnabled, onSound, sidebarExpanded, onSidebar, onOpenChange }: { compact: boolean; soundEnabled: boolean; onSound: () => void; sidebarExpanded: boolean; onSidebar: (expanded: boolean) => void; onOpenChange: (open: boolean) => void }) {
+export function ProfileMenu({ compact, soundEnabled, onSound, sidebarExpanded, onSidebar, onOpenChange, appearance }: { compact: boolean; soundEnabled: boolean; onSound: () => void; sidebarExpanded: boolean; onSidebar: (expanded: boolean) => void; onOpenChange: (open: boolean) => void; appearance?: AppearanceSetting }) {
   const snap = useSectionSnap();
   const wide = useSyncExternalStore(subscribeWide, () => window.matchMedia(wideQuery).matches, () => true);
-  return <UserMenu user={user} align="start" onOpenChange={onOpenChange} showHeader={false} panelClassName="profile-menu-panel"
+  return <UserMenu user={user} align="start" onOpenChange={onOpenChange} showHeader={false} panelClassName={`profile-menu-panel${appearance?.value === "dark" ? " profile-menu-panel-dark" : ""}`}
     getSheetContainer={() => document.querySelector<HTMLElement>(".portfolio-menu")}
     triggerClassName={compact ? "rail-avatar" : "home-profile"}
     trigger={<>
@@ -31,9 +32,9 @@ export function ProfileMenu({ compact, soundEnabled, onSound, sidebarExpanded, o
       {!compact && <span><span className="home-profile-name">{user.name}</span><span className="home-profile-role" title={user.detail}>{sidebarRole}</span></span>}
     </>}
     switches={[
-      { label: "Appearance", icon: <PaletteIcon />, value: "light", onChange: () => {}, options: [
+      { label: "Appearance", icon: <PaletteIcon />, value: appearance?.value ?? "light", onChange: (value) => appearance?.onChange(value as "light" | "dark"), options: [
         { value: "light", label: "Light", icon: <SunIcon /> },
-        { value: "dark", label: "Dark, coming soon", icon: <MoonIcon />, disabled: true },
+        { value: "dark", label: appearance ? "Dark" : "Dark, coming soon", icon: <MoonIcon />, disabled: !appearance },
       ] },
       { label: "Sound", icon: soundEnabled ? <WaveformIcon /> : <WaveformSlashIcon />, value: soundEnabled ? "on" : "off", onChange: (value) => { if ((value === "on") !== soundEnabled) onSound(); },
         // The page's click sound skips this switch; onSound plays its single confirmation cue.

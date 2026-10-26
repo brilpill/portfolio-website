@@ -57,3 +57,11 @@ export function useSectionSnap() {
   return useSyncExternalStore(subscribe, () => read("portfolio-snap", switches, "off") === "on", () => false);
 }
 export function setSectionSnap(enabled: boolean) { write("portfolio-snap", enabled ? "on" : "off"); }
+
+/** Light and dark appearances for the unlinked Playground files experiment. */
+const playgroundAppearances = ["light", "dark"] as const;
+export type PlaygroundAppearance = (typeof playgroundAppearances)[number];
+export function usePlaygroundAppearance() {
+  return useSyncExternalStore(subscribe, () => read("playground-files-appearance", playgroundAppearances, "dark"), () => "dark" as PlaygroundAppearance);
+}
+export function setPlaygroundAppearance(value: PlaygroundAppearance) { write("playground-files-appearance", value === "dark" ? null : value); }

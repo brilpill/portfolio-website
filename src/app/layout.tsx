@@ -49,8 +49,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     url: origin.href, jobTitle: "UX/UI Designer & Engineer", homeLocation: { "@type": "Place", name: "Warsaw, Poland" },
     sameAs: profile.links.map(link => link.href),
   } : null;
+  // The intro script marks <html> before React loads (data-intro-seen), so its attributes may differ.
   return (
-    <html lang="en" className={`${ronzino.variable} ${radley.variable} antialiased`}>
+    <html lang="en" className={`${ronzino.variable} ${radley.variable} antialiased`} suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: introSeenScript }} />
         {person && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person).replace(/</g, "\\u003c") }} />}

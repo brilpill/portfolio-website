@@ -86,7 +86,7 @@ export const timelineItems: TimelineItem[] = [
 export const experienceJobs = contentJobs.map(job => ({
   ...job,
   ...({
-    "HotShots Labs": { website: "https://hotshotslabs.com", projects: [{ label: "HotShots Labs", slug: "hotshots-labs" }] },
+    "HotShots Labs": { website: "https://hotshotslabs.com", projects: [{ label: "LuminAsset", slug: "luminasset" }] },
     "Fourmeta Agency": { projects: [{ label: "SmartHost", slug: "smarthost" }] },
   } as Record<string, { website?: string; projects?: { label: string; slug: string }[] }>)[job.company],
 }));

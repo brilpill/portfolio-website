@@ -1,7 +1,7 @@
 import type { ProjectSlideMedia } from "./project-slides";
 import { AF_RATIO, af, as } from "./askflow-media";
 import { lumin, luminAdmin } from "./luminasset-media";
-import { qb, qbAppStore, qbDribbble } from "./quantum-body-media";
+import { qb, qbAppStore } from "./quantum-body-media";
 import { snooze } from "./snoozeband-media";
 import { nb } from "./nearbor-media";
 import { SH_RATIO, sh } from "./smarthost-media";
@@ -186,7 +186,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     // From the revised quantum-body.md (24 Oct 2026): app screens, wireframes, comparisons and app behaviour first,
-    // then scope, then the three presentation pieces (Behance, Dribbble, App Store). Every visual is sample until
+    // then scope, then the presentation pieces (Behance, App Store; Dribbble left out on 26 Oct). Every visual is sample until
     // permission. Confirmed: the Behance case and App Store screenshots are mine. Still open, so not on the page: my part
     // in the app and wireframes, the year and duration, the brief, research, results and lessons. The working notes and
     // Figma links are in docs/cases/quantum-body.md.
@@ -213,11 +213,11 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         id: "capture", label: "Capture", title: "From choosing a practice to keeping an entry",
-        body: "Each practice starts with a recognisable form: a title, details, feelings, and an image option. The final designs also account for leaving unfinished writing, editing an entry, and attaching more than one image. The save-or-discard prompt makes that unfinished state explicit.",
+        body: "Each practice starts with a recognisable form: a title, details, feelings, and an image option. The final designs also account for leaving unfinished writing, editing an entry, and attaching an image. The save-or-discard prompt makes that unfinished state explicit.",
         highlight: { text: "leaving unfinished writing" },
         figures: [
           { kind: "device", frame: "row", screens: [qb.newEntry, { ...qb.manifestationForm, label: "Write" }, qb.leaveEntry] },
-          { kind: "device", frame: "row", screens: [qb.editEntry, qb.attachImage, qb.twoImages, qb.entryDetail] },
+          { kind: "device", frame: "row", screens: [qb.editEntry, qb.attachImage, qb.entryDetail] },
         ],
       },
       {
@@ -255,12 +255,8 @@ export const caseStudies: CaseStudy[] = [
           kind: "image", src: "/cases/quantum-body/behance-preview.jpg",
           alt: "Sample Quantum Body editorial presentation, including onboarding, visual foundations, journaling screens, education, and wireframes",
           full: { src: "/cases/quantum-body/behance-full.jpg", ratio: 21151 / 1400 },
+          scroll: true,
         }],
-      },
-      {
-        id: "dribbble", label: "Dribbble", title: "A closer look at the visual direction",
-        body: "Selected Dribbble compositions offer a shorter look at the product cover, active entries, and privacy-themed artwork.",
-        figures: [{ kind: "images", images: qbDribbble }],
       },
       {
         id: "store", label: "Store", title: "Introducing the product before the app",
@@ -317,8 +313,8 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         id: "access", label: "Access", title: "Returning to an account",
-        body: "Account creation offers email and Apple sign-up, while returning listeners have a separate sign-in screen. The password-recovery designs cover requesting an email, opening it, and entering a new password. These account screens sit alongside the listening experience rather than inside the player.",
-        figures: [{ kind: "device", frame: "row", screens: [snooze.createAccount, snooze.signIn, snooze.passwordRecovery, snooze.recoveryEmail, snooze.newPassword, snooze.recoveryConfirmation] }],
+        body: "Account creation offers email and Apple sign-up, while returning listeners have a separate sign-in screen. A forgotten password starts with a short recovery screen that asks only for an email. These account screens sit alongside the listening experience rather than inside the player.",
+        figures: [{ kind: "device", frame: "row", screens: [snooze.createAccount, snooze.signIn, snooze.passwordRecovery] }],
       },
     ],
     next: { slug: "quantum-body", title: "Quantum Body", summary: "A place to capture a thought and come back to it" },
@@ -894,7 +890,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     // Dangdi, a small UI case from the "Finish: Design Concepts" page of the Dangdi design file (25 Oct 2026), made the same
-    // way as Peach Health. Every concept on the page appears: three accents, the Chinese version, the photo concept at three
+    // way as Peach Health. Every concept on the page appears except the accent colours (left out on 26 Oct): the Chinese version, the photo concept at three
     // times of day (and in Chinese), the Black scroll states and the four asset boards. Green, Coral and Chinese scroll states
     // are covered by their full-length screens. The copy describes the visible UI and the file's own notes ("local", "your
     // own bubble"); no research, users, results, role or dates are claimed. Notes: docs/cases/dangdi.md.
@@ -906,23 +902,16 @@ export const caseStudies: CaseStudy[] = [
     chapters: [
       {
         id: "home", label: "Home", title: "One feed for a new city",
-        body: "The home screen is a single long feed, scrollable in the phone below. A row of 3D icons switches between Home, News, Read, Food and Places, and each section that follows is a horizontal shelf with its own See All: For You, top articles, people, events, places nearby and offers. A floating bar keeps create, explore, community and search within reach at every scroll position.",
+        body: "The home screen is a single long feed. A row of 3D icons switches between Home, News, Read, Food and Places, and each section that follows is a horizontal shelf with its own See All: For You, top articles, people, events, places nearby and offers. A floating bar keeps create, explore, community and search within reach at every scroll position.",
         figures: [
-          { kind: "device", screens: [{ ...dd.black, label: "Whole feed" }] },
           { kind: "device", frame: "row", screens: [dd.scroll1, dd.scroll2, dd.scroll3, dd.scroll4, dd.scroll5, dd.scroll6, dd.scroll7] },
         ],
-      },
-      {
-        id: "accent", label: "Accent", title: "Three accents, one system",
-        body: "The same screen was explored with a black, a green and a coral accent. The neutral layout and photography stay constant, and the accent shows up where it matters: the active tab, buttons and the explore button in the floating bar.",
-        figures: [{ kind: "device", frame: "row", screens: [dd.black, dd.green, dd.coral] }],
       },
       {
         id: "language", label: "Language", title: "Designed for Chinese as well as English",
         body: "A Simplified Chinese version runs through the whole feed, not just the headings. The same layout holds both languages, with shorter Chinese labels in the tabs, buttons and section titles.",
         figures: [
-          { kind: "compare", frame: "device", before: { ...dd.scroll1, label: "English" }, after: { ...dd.chinese, label: "简体中文" } },
-          { kind: "device", screens: [dd.chinese] },
+          { kind: "device", frame: "row", screens: [{ ...dd.black, label: "English" }, dd.chinese] },
         ],
       },
       {

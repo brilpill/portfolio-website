@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
-import { ArrowRightIcon, ArrowUpRightIcon, FigmaLogoIcon, GlobeSimpleIcon, LinkSimpleIcon, type Icon } from "@phosphor-icons/react";
+import { AppleLogoIcon, ArrowRightIcon, ArrowUpRightIcon, FigmaLogoIcon, GlobeSimpleIcon, GooglePlayLogoIcon, LinkSimpleIcon, type Icon } from "@phosphor-icons/react";
 import type { ProjectSlideContent } from "@/content/project-slides";
 import { motionTokens } from "@/lib/motion";
 
@@ -14,8 +14,10 @@ type Props = { project: ProjectSlideContent };
  */
 export function CaseLinks({ project }: Props) {
   const links: { label: string; href?: string; icon: Icon }[] = [
-    { label: "Figma", href: project.figmaUrl, icon: FigmaLogoIcon },
     { label: "Website", href: project.webUrl, icon: GlobeSimpleIcon },
+    { label: "App Store", href: project.appStoreUrl, icon: AppleLogoIcon },
+    { label: "Google Play", href: project.googlePlayUrl, icon: GooglePlayLogoIcon },
+    { label: "Figma", href: project.figmaUrl, icon: FigmaLogoIcon },
     { label: "Other link", href: project.otherUrl, icon: LinkSimpleIcon },
   ];
   const shown = links.filter((link): link is typeof link & { href: string } => Boolean(link.href));

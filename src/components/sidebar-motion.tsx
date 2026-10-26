@@ -58,7 +58,6 @@ const gestures: Record<string, TargetAndTransition> = {
   "quantum-body": { rotate: 18 },
   snoozeband: { rotate: -12, y: -1 },
   "tutor-iq": { y: -2, rotate: -5 },
-  "hotshots-labs": { rotate: 9, scale: 1.1 },
   smarthost: { rotate: -15 },
   about: { y: -1, scale: 1.1 },
   experience: { y: -2, rotate: -5 },

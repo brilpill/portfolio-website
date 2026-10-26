@@ -68,7 +68,7 @@ function Figure({ media }: { media: CaseStudyFigure }) {
   // Images sit framed inside the grey; mockups and clips use the whole frame, as on the case slides.
   const items = viewerItems(media);
   return (
-    <div className="case-study-figure" data-framed={media.kind === "image" || undefined} data-grid={media.kind === "components" || undefined}>
+    <div className="case-study-figure" data-framed={(media.kind === "image" && !media.scroll) || undefined} data-grid={media.kind === "components" || undefined}>
       <CaseMedia media={{ ...withSource(media), caption: undefined }} />
       {items.length > 0 && <FigureExpand items={items} label={media.kind === "video" ? "Play larger" : "Expand image"} />}
     </div>

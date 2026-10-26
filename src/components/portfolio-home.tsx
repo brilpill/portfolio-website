@@ -7,7 +7,7 @@ import {
   ArrowRightIcon, ArrowUpRightIcon, FlowArrowIcon, FlowerLotusIcon,
   CaretDownIcon, SolarPanelIcon,
   DiamondsFourIcon,
-  GraduationCapIcon, HouseSimpleIcon, LightningIcon,
+  GraduationCapIcon, HouseSimpleIcon,
   ListIcon, MoonIcon, ShieldCheckIcon, UsersThreeIcon, HouseLineIcon, ChartLineUpIcon, HeartbeatIcon, BowlFoodIcon,
   ShuffleIcon,
   HandWavingIcon, XIcon, WaveformSlashIcon,
@@ -43,18 +43,17 @@ const moreCount = (group: "Mobile" | "Web") => visibleProjectSlides.filter(proje
 const groups: { label: "Mobile" | "Web"; more: string; items: { slug: string; label: string; icon: Icon }[] }[] = [
   { label: "Mobile", more: "mobile-more", items: [
     { slug: "luminasset", label: "LuminAsset", icon: SolarPanelIcon },
-    { slug: "quantum-body", label: "Quantum Body", icon: FlowerLotusIcon },
-    { slug: "snoozeband", label: "Snoozeband", icon: MoonIcon },
-    { slug: "nearbor", label: "Nearbor", icon: UsersThreeIcon },
-    { slug: "peach-health", label: "Peach Health", icon: HeartbeatIcon },
     { slug: "dangdi", label: "Dangdi", icon: BowlFoodIcon },
+    { slug: "snoozeband", label: "Snoozeband", icon: MoonIcon },
     { slug: "ihide-vpn", label: "iHide VPN", icon: ShieldCheckIcon },
+    { slug: "quantum-body", label: "Quantum Body", icon: FlowerLotusIcon },
+    { slug: "peach-health", label: "Peach Health", icon: HeartbeatIcon },
+    { slug: "nearbor", label: "Nearbor", icon: UsersThreeIcon },
   ] },
   { label: "Web", more: "web-more", items: [
-    { slug: "askflow", label: "AskFlow", icon: FlowArrowIcon },
     { slug: "sellergenius", label: "SellerGenius", icon: ChartLineUpIcon },
+    { slug: "askflow", label: "AskFlow", icon: FlowArrowIcon },
     { slug: "tutor-iq", label: "Tutor IQ", icon: GraduationCapIcon },
-    { slug: "hotshots-labs", label: "HotShots Labs", icon: LightningIcon },
     { slug: "smarthost", label: "SmartHost", icon: HouseLineIcon },
   ] },
 ];
@@ -361,7 +360,7 @@ function HomeSlide({ active, controls }: { active: boolean; controls: ReactNode 
   return (
       <section className="home-slide" aria-label="Introduction">
         <HeroSeedling active={active} />
-        <div hidden={!active} className="home-work-status home-construction-status"><span className="home-status-dot" aria-hidden />Currently open for work</div>
+        <div hidden={!active} className="home-work-status home-construction-status"><span className="home-status-dot" aria-hidden />Site under development</div>
         {active && controls}
         <div aria-hidden="true" />
         <section className="home-introduction" id="introduction" tabIndex={-1} data-slide-heading>
@@ -371,7 +370,7 @@ function HomeSlide({ active, controls }: { active: boolean; controls: ReactNode 
               <p>UX/UI Designer &amp; Engineer from <span className="home-ukraine" role="img" aria-label="Ukraine">🇺🇦</span> Ukraine based in Warsaw.{" "}<span className="home-subtitle-followup">I design how products look, move and feel, and I build them that way.</span></p>
             </div>
           </div>
-          <HeroActions facts={facts} active={active} />
+          <HeroActions active={active} />
         </section>
         <SocialLinks />
       </section>

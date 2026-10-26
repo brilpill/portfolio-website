@@ -9,6 +9,7 @@ type Props = {
 
 /** Shared project layout. Copy and media are deliberately supplied through content data. */
 export function ProjectSlide({ project, overviewHidden = false }: Props) {
+  const facts = ([["My role", project.role], ["Timeline - Year", project.timeline], ["Industry", project.industry]] as const).filter(([, value]) => value);
   return (
     <section className="project-slide" aria-labelledby={`project-${project.slug}`}>
       <div className="project-layout" data-overview-hidden={overviewHidden || undefined}>
@@ -23,11 +24,10 @@ export function ProjectSlide({ project, overviewHidden = false }: Props) {
               <h2 id={overviewHidden ? undefined : `project-${project.slug}`} tabIndex={-1} data-slide-heading>{project.headline ?? `${project.title}: ${project.format}`}</h2>
               {project.overview ? <p>{project.overview}</p> : <div className="project-overview-space" aria-label="Overview not added yet" />}
             </div>
-            <dl className="project-facts">
-              <div><dt>My role</dt><dd>{project.role || "—"}</dd></div>
-              <div><dt>Timeline - Year</dt><dd>{project.timeline || "—"}</dd></div>
-              <div><dt>Industry</dt><dd>{project.industry || "—"}</dd></div>
-            </dl>
+            {/* Facts not confirmed yet (empty) are left out rather than shown as a dash. */}
+            {facts.length > 0 && <dl className="project-facts">
+              {facts.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
+            </dl>}
             <CaseLinks project={project} />
           </div>
 

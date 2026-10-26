@@ -136,6 +136,7 @@ function useScrollLock(root: RefObject<HTMLElement | null>) {
 function ImageStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "image" }> }) {
   const [ratio, setRatio] = useState<number>();
   const show = useViewer();
+  if (media.scroll && media.full) return <ScrollImageStage media={media} full={media.full} />;
   return <div className="case-stage case-stage-bleed case-stage-image" style={ratio ? { "--media-ratio": ratio } as CSSProperties : undefined}>
     <Image src={media.src} alt={media.alt} fill sizes={sizes} onLoad={(event) => { const { naturalWidth, naturalHeight } = event.currentTarget; if (naturalWidth && naturalHeight) setRatio(naturalWidth / naturalHeight); }} />
     {/* A preview of something much taller: the whole thing opens in the viewer, loaded only then. */}
@@ -146,7 +147,70 @@ function ImageStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "imag
 }
 
 /**
- * Finished posters side by side in a strip that scrolls sideways (wheel, trackpad, drag on touch, arrow keys when
+ * A very tall image (a long-form presentation) as one sheet, narrower than the stage, starting near its top and running
+ * off the bottom. Once the block is in view, the wheel (or a mouse drag) over the sheet slides the whole sheet up (its top edge leaves the frame) until
+ * its end sits as far from the bottom as its start sat from the top; past either end the page scrolls on.
+ */
+function ScrollImageStage({ media, full }: { media: Extract<ProjectSlideMedia, { kind: "image" }>; full: NonNullable<Extract<ProjectSlideMedia, { kind: "image" }>["full"]> }) {
+  const stage = useRef<HTMLDivElement>(null);
+  const sheet = useRef<HTMLDivElement>(null);
+  const offset = useRef(0);
+  useEffect(() => {
+    const frame = stage.current, element = sheet.current;
+    if (!frame || !element) return;
+    // How far the sheet can travel: its bottom stops at the same gap from the frame's bottom as its top starts at.
+    const travel = () => Math.max(0, element.offsetHeight + 2 * element.offsetTop - frame.clientHeight);
+    const move = (to: number) => { offset.current = Math.min(travel(), Math.max(0, to)); element.style.transform = `translateY(${-offset.current}px)`; };
+    const wheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX) || frame.closest("[data-scroll-lock]")) return;
+      const room = event.deltaY > 0 ? travel() - offset.current : offset.current;
+      if (room < 1) return;
+      event.preventDefault();
+      move(offset.current + event.deltaY);
+    };
+    const keys = (event: KeyboardEvent) => {
+      const step = { ArrowDown: 80, ArrowUp: -80, PageDown: frame.clientHeight * .8, PageUp: -frame.clientHeight * .8, Home: -Infinity, End: Infinity }[event.key];
+      if (step === undefined) return;
+      event.preventDefault();
+      move(offset.current + step);
+    };
+    // A mouse can drag the sheet up and down too.
+    let drag: { y: number; from: number } | null = null;
+    const down = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse" || event.button !== 0) return;
+      drag = { y: event.clientY, from: offset.current };
+      element.setPointerCapture(event.pointerId);
+      element.dataset.dragging = "";
+    };
+    const drift = (event: PointerEvent) => { if (drag) move(drag.from - (event.clientY - drag.y)); };
+    const up = () => { drag = null; delete element.dataset.dragging; };
+    const resize = new ResizeObserver(() => move(offset.current));
+    resize.observe(frame);
+    // Only a wheel over the sheet itself moves it; over the grey around it the page scrolls.
+    element.addEventListener("wheel", wheel, { passive: false });
+    element.addEventListener("keydown", keys);
+    element.addEventListener("pointerdown", down);
+    element.addEventListener("pointermove", drift);
+    element.addEventListener("pointerup", up);
+    element.addEventListener("pointercancel", up);
+    return () => {
+      resize.disconnect();
+      element.removeEventListener("wheel", wheel); element.removeEventListener("keydown", keys);
+      element.removeEventListener("pointerdown", down); element.removeEventListener("pointermove", drift);
+      element.removeEventListener("pointerup", up); element.removeEventListener("pointercancel", up);
+    };
+  }, []);
+  return <div ref={stage} className="case-stage case-stage-scroll-image">
+    <div ref={sheet} className="case-scroll-sheet" tabIndex={0} role="region" aria-label={`${media.alt}. Scroll or use the arrow keys to move through it.`} style={{ aspectRatio: `1 / ${full.ratio}` }}>
+      {/* The light cover shows at once while the long image (over a megabyte) is still loading over it. */}
+      <Image className="case-scroll-cover" src={media.src} alt="" width={1400} height={1100} sizes="(max-width: 767px) 90vw, 720px" draggable={false} aria-hidden />
+      <Image src={full.src} alt={media.alt} fill sizes="(max-width: 767px) 90vw, 720px" draggable={false} />
+    </div>
+  </div>;
+}
+
+/**
+ * Finished posters side by side in a strip that scrolls sideways only (trackpad swipes, a mouse drag, touch, arrow keys when
  * focused), about three and a hint of the next in view, with end-aware arrows. A click opens that poster in the
  * viewer, where the rest can be stepped through.
  */
@@ -159,6 +223,25 @@ function PostersStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "po
     if (element) setEdges({ start: element.scrollLeft < 4, end: element.scrollLeft + element.clientWidth > element.scrollWidth - 4 });
   };
   useEffect(update, []);
+  // A mouse can also drag the strip; a drag doesn't count as a click on the poster it ends on.
+  const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
+  const dragStart = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "mouse" && event.button === 0) drag.current = { x: event.clientX, left: event.currentTarget.scrollLeft, moved: false };
+  };
+  const dragMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const state = drag.current;
+    if (!state) return;
+    const dx = event.clientX - state.x;
+    if (!state.moved && Math.abs(dx) < 5) return;
+    if (!state.moved) { state.moved = true; event.currentTarget.setPointerCapture(event.pointerId); event.currentTarget.dataset.dragging = ""; }
+    event.currentTarget.scrollLeft = state.left - dx;
+  };
+  const dragEnd = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!drag.current) return;
+    delete event.currentTarget.dataset.dragging;
+    // Keep `moved` until the click that follows this pointerup has been swallowed.
+    if (drag.current.moved) window.setTimeout(() => { drag.current = null; }); else drag.current = null;
+  };
   const page = (direction: number) => {
     const element = strip.current;
     const poster = element?.querySelector<HTMLElement>(".case-poster");
@@ -166,10 +249,13 @@ function PostersStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "po
   };
   const items = media.images.map(({ src, alt }) => ({ src, alt }));
   return <div className="case-stage case-stage-posters">
-    <div ref={strip} className="case-posters" tabIndex={0} role="group" aria-label="Posters" onScroll={update}>
+    <div ref={strip} className="case-posters" tabIndex={0} role="group" aria-label="Posters" onScroll={update}
+      onPointerDown={dragStart} onPointerMove={dragMove} onPointerUp={dragEnd} onPointerCancel={dragEnd}
+      onClickCapture={event => { if (drag.current?.moved) { event.preventDefault(); event.stopPropagation(); } }}
+      onDragStart={event => event.preventDefault()}>
       {media.images.map((image, index) => <button key={image.src} type="button" className="case-poster" aria-label={`Open: ${image.alt}`}
         onClick={event => show?.(items, index, event.currentTarget)}>
-        <Image src={image.src} alt={image.alt} fill sizes="(max-width: 767px) 70vw, 280px" />
+        <Image src={image.src} alt={image.alt} fill sizes="(max-width: 767px) 70vw, 280px" draggable={false} />
       </button>)}
     </div>
     {!edges.start && <button type="button" className="case-arrow case-arrow-previous" aria-label="Previous posters" onClick={() => page(-1)}><CaretLeftIcon size={18} /></button>}
@@ -475,6 +561,43 @@ function ComponentsGrid({ media }: { media: Extract<ProjectSlideMedia, { kind: "
   </div>;
 }
 
+const HOTSPOTS = 'button, a[href], input, select, textarea, label, [role="button"], [role="slider"], [role="tab"], [role="switch"], [role="checkbox"], [tabindex]:not([tabindex="-1"])';
+type Hotspot = { left: number; top: number; width: number; height: number };
+
+/**
+ * Like a Figma prototype: a tap on a part of the screen that does nothing flashes blue boxes over everything
+ * that can be tapped, then they fade. Boxes are measured in the screen's own px, so a scaled phone still lines up.
+ */
+function HotspotHints({ children }: { children: ReactNode }) {
+  const [hint, setHint] = useState<{ key: number; boxes: Hotspot[] } | null>(null);
+  const showHints = (event: React.PointerEvent<HTMLDivElement>) => {
+    const screen = event.currentTarget;
+    if ((event.target as Element).closest(HOTSPOTS)) return;
+    const frame = screen.getBoundingClientRect();
+    const scale = frame.width / screen.offsetWidth || 1;
+    const targets = [...screen.querySelectorAll<HTMLElement>(HOTSPOTS)].filter(element => !element.matches(":disabled") && !element.closest("[aria-hidden='true'], [inert]"));
+    // A control inside another control (a slider's ticks) shares its parent's box.
+    const outer = targets.filter(element => !targets.some(other => other !== element && other.contains(element)));
+    const boxes = outer.flatMap(element => {
+      const box = element.getBoundingClientRect();
+      // Skip controls scrolled out of their panel or covered by another layer: only what a tap would reach.
+      const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+      if (!hit || !(element === hit || element.contains(hit))) return [];
+      const left = Math.max(box.left, frame.left), top = Math.max(box.top, frame.top);
+      const right = Math.min(box.right, frame.right), bottom = Math.min(box.bottom, frame.bottom);
+      if (right - left < 4 || bottom - top < 4) return [];
+      return [{ left: (left - frame.left) / scale, top: (top - frame.top) / scale, width: (right - left) / scale, height: (bottom - top) / scale }];
+    });
+    if (boxes.length) setHint({ key: event.timeStamp, boxes });
+  };
+  return <div className="case-demo-screen" onPointerDown={showHints}>
+    {children}
+    {hint && <div key={hint.key} className="case-hotspots" aria-hidden onAnimationEnd={event => { if (event.target === event.currentTarget) setHint(null); }}>
+      {hint.boxes.map((box, i) => <span key={i} style={box} />)}
+    </div>}
+  </div>;
+}
+
 function ComponentStage({ media, hint = true }: { media: Extract<ProjectSlideMedia, { kind: "component" }>; hint?: boolean }) {
   const demo = demos[media.demo];
   const id = useId();
@@ -490,7 +613,7 @@ function ComponentStage({ media, hint = true }: { media: Extract<ProjectSlideMed
   return <div className="case-stage case-demo" data-frame={demo.frame} data-view={view} style={demo.ratio ? { "--demo-ratio": demo.ratio } as CSSProperties : undefined}>
     {view === "preview"
       ? demo.frame === "device"
-        ? <div className="case-stage-body case-stage-device"><Phone interactive={demo.badge !== false}><div className="case-demo-screen"><Component value={value} onValueChange={setValue} /></div></Phone></div>
+        ? <div className="case-stage-body case-stage-device"><Phone interactive={demo.badge !== false}><HotspotHints><Component value={value} onValueChange={setValue} /></HotspotHints></Phone></div>
         : <div className="case-demo-stage"><Component value={value} onValueChange={setValue} /></div>
       : <div className="case-code">
           <div className="case-code-bar"><span>{media.file?.split("/").pop()}</span>

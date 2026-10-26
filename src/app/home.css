@@ -266,16 +266,27 @@
 /* Scrollable inside the phone: no bar, the page takes over at either end. */
 .case-screen-scrollable { overflow-y: auto; overscroll-behavior-y: auto; scrollbar-width: none; }
 /* A tall presentation's preview: a pill over the bottom of the stage opens the whole thing in the viewer. */
+/* A long image as one sheet that slides up inside the stage as you scroll (ScrollImageStage). */
+.case-stage-scroll-image { display: block; }
+.case-scroll-sheet { position: absolute; top: 7cqh; left: 19%; width: 62%; overflow: hidden; border-radius: 10px; box-shadow: 0 1px 2px rgb(25 25 25 / .06), 0 18px 40px -20px rgb(25 25 25 / .35); will-change: transform; }
+.case-scroll-sheet:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.case-scroll-sheet { cursor: grab; user-select: none; }
+.case-scroll-sheet[data-dragging] { cursor: grabbing; }
+.case-scroll-sheet img { object-fit: cover; object-position: top; }
+.case-scroll-sheet .case-scroll-cover { position: absolute; top: 0; left: 0; width: 100%; height: auto; }
 .case-view-full { position: absolute; bottom: 20px; left: 50%; z-index: 2; display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px 0 16px; border-radius: 999px; background: rgb(255 255 255 / .92); box-shadow: 0 1px 2px rgb(0 0 0 / .08), 0 6px 18px -8px rgb(0 0 0 / .35); color: var(--home-ink, #191919); font-size: var(--text-ui); font-weight: 500; translate: -50% 0; backdrop-filter: blur(8px); transition: background-color var(--motion-fast) ease, transform var(--motion-press) var(--motion-ease-out); }
 .case-view-full:hover { background: #fff; }
 .case-view-full:active { transform: scale(.97); }
 .case-view-full:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 /* Posters in a sideways strip: about three in view and a hint of the next, snapping to each; no device frame. */
 .case-stage-posters { display: grid; align-items: center; }
-.case-posters { display: flex; gap: 16px; height: 100%; padding: 6% 56px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: 56px; scrollbar-width: none; }
+.case-posters { display: flex; gap: 16px; width: 100%; min-width: 0; height: 100%; padding: 6% 56px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scroll-padding-inline: 56px; scrollbar-width: none; }
 .case-posters::-webkit-scrollbar { display: none; }
+/* While a mouse drags the strip it doesn't snap, and it shows the grabbing cursor. */
+.case-posters[data-dragging] { scroll-snap-type: none; cursor: grabbing; user-select: none; }
+.case-posters[data-dragging] .case-poster { cursor: grabbing; }
 .case-posters:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
-.case-poster { position: relative; flex: 0 0 auto; height: 100%; aspect-ratio: 1290 / 2796; overflow: hidden; border-radius: 14px; scroll-snap-align: start; box-shadow: 0 1px 2px rgb(25 25 25 / .06), 0 8px 20px -12px rgb(25 25 25 / .3); cursor: zoom-in; transition: transform 200ms cubic-bezier(.22, 1, .36, 1); }
+.case-poster { position: relative; flex: 0 0 auto; height: 100%; aspect-ratio: 1290 / 2796; overflow: hidden; border-radius: 14px; scroll-snap-align: start; box-shadow: 0 1px 2px rgb(25 25 25 / .06), 0 8px 20px -12px rgb(25 25 25 / .3); cursor: grab; transition: transform 200ms cubic-bezier(.22, 1, .36, 1); }
 .case-poster img { object-fit: contain; }
 .case-poster:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 @media (hover: hover) and (pointer: fine) { .case-poster:hover { transform: translateY(-3px); } }
@@ -1041,7 +1052,14 @@ img.media-viewer-media[data-tall="web"] { width: min(1120px, 100cqw); }
 /* Hero buttons unfold in place; the whole pair stays centered. */
 .hero-actions { display: flex; align-items: flex-start; justify-content: center; gap: 8px; width: 100%; height: 36px; position: relative; z-index: 5; }
 .hero-action-slot { position: relative; flex: 0 0 auto; width: 104px; height: 36px; }
-.hero-action-facts { width: 132px; }
+/* About me: a plain link in the grey pill; the hand waves on hover. */
+.hero-action-about { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; height: 36px; padding: 0 14px; border-radius: 8px; background: #f0f0f0; color: #191919; font-size: 14px; white-space: nowrap; text-decoration: none; transition: background-color 150ms ease, scale 100ms var(--motion-ease-out); }
+.hero-action-about:hover { background: #e8e8e8; }
+.hero-action-about:active { scale: .97; }
+.hero-action-about-icon { flex-shrink: 0; transform-origin: 70% 80%; }
+.hero-action-about:hover .hero-action-about-icon, .hero-action-about:focus-visible .hero-action-about-icon { animation: hero-wave 600ms var(--motion-ease-out); }
+@keyframes hero-wave { 20% { rotate: 16deg; } 40% { rotate: -10deg; } 60% { rotate: 12deg; } 80% { rotate: -4deg; } }
+@media (prefers-reduced-motion: reduce) { .hero-action-about-icon { animation: none !important; } .hero-action-about:active { scale: 1; } }
 
 .hero-action-card { position: absolute; top: 0; left: 0; width: 100%; overflow: hidden; border-radius: 8px; background: #f0f0f0; color: #191919; text-align: left; }
 .hero-action-contact .hero-action-card { background: #191919; color: #fafafa; }
@@ -1057,12 +1075,9 @@ img.media-viewer-media[data-tall="web"] { width: min(1120px, 100cqw); }
 .hero-action-details small { display: block; font-size: 12px; line-height: 18px; opacity: .6; }
 .hero-action-details h2 { margin: 0 0 8px; font: 400 22px/26px var(--font-radley), serif; }
 .hero-action-details p { margin: 0; }
-.hero-fact-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
-.hero-fact-footer button { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 0; }
-.hero-fact-footer button:hover { text-decoration: underline; text-underline-offset: 3px; }
 .hero-actions button:focus-visible, .hero-actions a:focus-visible { outline: 2px solid var(--home-accent); outline-offset: -3px; border-radius: 6px; }
 @media (max-width: 600px) {
-  .hero-actions[data-open="contact"] .hero-action-facts, .hero-actions[data-open="facts"] .hero-action-contact { display: none; }
+  .hero-actions[data-open="contact"] .hero-action-about { display: none; }
 
 }
 
@@ -1180,6 +1195,11 @@ img.media-viewer-media[data-tall="web"] { width: min(1120px, 100cqw); }
    The demo scales from its own box (container), a badge says it's live, Preview / Code switch at the top right,
    state tabs along the bottom. The Code tab fills the frame with the source on white. */
 .case-demo-screen { position: absolute; inset: 0; container-type: inline-size; }
+/* The demo gets its own layer, so the hotspot boxes sit above anything it stacks (sheets, maps). */
+.case-demo-screen > :not(.case-hotspots) { isolation: isolate; }
+.case-hotspots { position: absolute; inset: 0; z-index: 5; pointer-events: none; animation: case-hotspots 900ms ease-out forwards; }
+.case-hotspots span { position: absolute; border: 1px solid rgb(24 160 251 / .9); border-radius: 4px; background: rgb(24 160 251 / .25); }
+@keyframes case-hotspots { 0%, 45% { opacity: 1; } 100% { opacity: 0; } }
 /* Stage demos: the component fills the frame (its own container), centred unless it lays itself out. */
 .case-demo-stage { position: absolute; inset: 0; container-type: size; }
 /* "Interactive" on a stage frame: the same small grey note as above a phone, centred at the top. */

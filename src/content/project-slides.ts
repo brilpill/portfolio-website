@@ -53,7 +53,9 @@ export type ProjectSlideMedia = { annotation?: MediaAnnotation } & (
   | { kind: "responsive"; web: CaseScreen[]; mobile: CaseScreen[]; frame?: "dark" | "bare"; url?: string; ratio?: string; control?: "tabs" | "player"; caption?: string }
   /** One image. `full`: a much taller original (a long presentation) that the stage previews from its top; the viewer
    * opens it at full length, and a "View full presentation" button sits on the stage. */
-  | { kind: "image"; src: string; alt: string; caption?: string; full?: { src: string; ratio: number; label?: string } }
+  /** `scroll`: instead of the cropped preview, the whole `full` image is one narrower sheet that runs off the bottom
+   * of the frame and slides up through it with the wheel or a mouse drag over it (case studies only). */
+  | { kind: "image"; src: string; alt: string; caption?: string; full?: { src: string; ratio: number; label?: string }; scroll?: true }
   /** Finished posters (App Store screenshots) in a horizontal strip, about three in view, each opening in the viewer. */
   | { kind: "posters"; images: CaseScreen[]; caption?: string }
   /** Several finished images (flows, boards) in one frame, each fitted whole, switched by tabs. */
@@ -86,6 +88,8 @@ export type ProjectSlideContent = {
   industry: string;
   figmaUrl: string;
   webUrl?: string;
+  appStoreUrl?: string;
+  googlePlayUrl?: string;
   otherUrl?: string;
   /** The full case study page; shown as the one emphasised link. */
   caseStudyUrl?: string;
@@ -117,6 +121,7 @@ export const projectSlides: ProjectSlideContent[] = [
     timeline: "2 months · 2026",
     industry: "Cleantech",
     figmaUrl: "", // the Figma file is private
+    webUrl: "https://luminasset.co.uk/",
     caseStudyUrl: "/cases/luminasset",
     media: [
       { kind: "device", screens: [lumin.start, lumin.estimateFetched, lumin.myOrders, { ...lumin.trackerDirect, label: "Tracker" }, { ...lumin.monitoring, label: "Live" }, lumin.notifications], caption: "From the first screen to panels producing power." },
@@ -124,20 +129,20 @@ export const projectSlides: ProjectSlideContent[] = [
     ],
   },
   {
-    // From the revised quantum-body.md (24 Oct 2026). All visuals are sample until permission. Role and timeline are left
-    // empty (shown as a dash) until confirmed.
-    slug: "quantum-body", title: "Quantum Body", group: "Mobile",
+    // A small UI case from the "Finish: Design Concepts" page of the Dangdi design file (25 Oct 2026), made the same way
+    // as Peach Health. A client project (confirmed by Oleh); role and timeline still to come (a dash). All content is sample.
+    slug: "dangdi", title: "Dangdi", group: "Mobile",
     format: "Mobile App",
-    headline: "A place to capture a thought and come back to it.",
-    overview: "Quantum Body brings five journaling practices into one mobile experience: manifestations, gratitude, synchronicities, dreams, and intentions. The designs connect choosing a practice, creating an entry, and returning to it through a searchable journal, reminders, and in-app guidance.",
+    headline: "A local feed for a new city.",
+    overview: "Dangdi (当地, \"local\") is a community app for Chinese newcomers in Copenhagen. Its home screen brings people, articles, events, places to eat and local offers into one scrolling feed, with Dangdi AI as the app's own local guide. This case focuses on the interface: a Simplified Chinese version, a photo-led concept that changes with the time of day, and custom 3D details.",
     role: "",
     timeline: "",
-    industry: "Journaling / Personal wellbeing",
-    figmaUrl: "", // the Figma files are private
-    caseStudyUrl: "/cases/quantum-body",
+    industry: "Community / Lifestyle",
+    figmaUrl: "", // the Figma file is private
+    caseStudyUrl: "/cases/dangdi",
     media: [
-      { kind: "device", screens: [{ ...qb.newEntry, label: "Choose a practice" }, { ...qb.manifestationForm, label: "Write" }, qb.alignmentLog, { ...qb.filters, label: "Filter" }, { ...qb.reminders, label: "Reminders" }], caption: "Five practices connected through a shared journaling experience. Sample designs." },
-      { kind: "device", frame: "row", screens: [qb.newEntry, { ...qb.manifestationForm, label: "Create" }, { ...qb.entryDetail, label: "Revisit" }], caption: "The intended path from choosing a practice to revisiting an entry. Sample designs." },
+      { kind: "device", frame: "row", screens: [dd.black, dd.photoDay, dd.chinese], caption: "The home feed, the photo-led concept and the Chinese version. Sample design." },
+      { kind: "device", screens: [{ ...dd.photoDay, label: "Day" }, { ...dd.photoEvening, label: "Evening" }, { ...dd.photoNight, label: "Night" }], caption: "The photo-led home screen follows the time of day. Sample design." },
     ],
   },
   {
@@ -151,6 +156,9 @@ export const projectSlides: ProjectSlideContent[] = [
     timeline: "",
     industry: "Wellness / Audio",
     figmaUrl: "", // the Figma file is private
+    webUrl: "https://www.snoozeband.eu/",
+    appStoreUrl: "https://apps.apple.com/app/snoozeband/id6749370010",
+    googlePlayUrl: "https://play.google.com/store/apps/details?id=com.snoozeband",
     caseStudyUrl: "/cases/snoozeband",
     media: [
       { kind: "device", screens: [snooze.home, snooze.player, snooze.library, snooze.insights], caption: "Discover audio, listen, save tracks, and review activity. Sample designs." },
@@ -158,20 +166,42 @@ export const projectSlides: ProjectSlideContent[] = [
     ],
   },
   {
-    // From nearbor.md (25 Oct 2026). Oleh improved an existing app and designed most screens within the previous
-    // designer's design system: not a redesign or his own system. All screens sample. Timeline isn't confirmed (a dash).
-    slug: "nearbor", title: "Nearbor", group: "Mobile",
-    format: "Community App",
-    headline: "Making an existing community app easier to use.",
-    overview: "Nearbor helps people organise gatherings, coordinate care, and keep trusted services close. I took over UX/UI work on an existing app and designed most of its screens within the previous designer's design system. My focus was clearer flows, practical improvements, and readability for a broad range of ages and digital confidence—including older adults.",
-    role: "UX/UI Design / Existing-product improvements",
+    // From ihide-vpn.md (25 Oct 2026). Overview only: no case study page. Screens are sample until publication clearance.
+    // Role and timeline aren't confirmed, so they're empty (shown as a dash). Replaces the earlier "ihidevpn" placeholder.
+    slug: "ihide-vpn", title: "iHide VPN", group: "Mobile",
+    format: "Mobile App",
+    headline: "A clear path to a private connection.",
+    overview: "iHide VPN brings connection controls, server selection, and onboarding into a focused mobile interface. This overview showcases the connection states, browsing and searching locations, and the introductory screens that explain the app.",
+    role: "",
     timeline: "",
-    industry: "Community / Social networking",
+    industry: "Privacy / Utilities",
     figmaUrl: "", // the Figma file is private
-    caseStudyUrl: "/cases/nearbor",
+    appStoreUrl: "https://apps.apple.com/app/ihide-vpn-secure-private/id6737909085",
+    googlePlayUrl: "https://play.google.com/store/apps/details?id=com.ihidevpn",
     media: [
-      { kind: "device", frame: "row", screens: [{ ...nb.home, label: "Community calendar" }, { ...nb.careOverview, label: "Helping others" }, { ...nb.serviceHistory, label: "Provider history" }], caption: "The everyday tasks behind Nearbor: getting together, helping, and keeping useful information." },
-      { kind: "compare", frame: "device", before: { ...nb.textSizeDefault, label: "Default text" }, after: { ...nb.textSizeLarge, label: "Large text" }, caption: "A text-size preview gives users a visible way to choose what is comfortable to read. These are two settings, not an old/new redesign comparison." },
+      { kind: "device", frame: "row", screens: [ihide.disconnected, ihide.connecting, ihide.connected], caption: "The connection journey, from idle to connected." },
+      { kind: "device", screens: [ihide.locations, ihide.searchActive, ihide.search], caption: "Browse server locations, or search and pick a destination." },
+      { kind: "device", screens: [ihide.onboardingTrial, ihide.onboardingPrivacy, ihide.onboardingConnection, ihide.onboardingData], caption: "Onboarding introduces the free trial, privacy, connection speed and encryption." },
+    ],
+  },
+  {
+    // From the revised quantum-body.md (24 Oct 2026). All visuals are sample until permission. Role and timeline are left
+    // empty (shown as a dash) until confirmed.
+    slug: "quantum-body", title: "Quantum Body", group: "Mobile",
+    format: "Mobile App",
+    headline: "A place to capture a thought and come back to it.",
+    overview: "Quantum Body brings five journaling practices into one mobile experience: manifestations, gratitude, synchronicities, dreams, and intentions. The designs connect choosing a practice, creating an entry, and returning to it through a searchable journal, reminders, and in-app guidance.",
+    role: "",
+    timeline: "",
+    industry: "Journaling / Personal wellbeing",
+    figmaUrl: "", // the Figma files are private
+    webUrl: "https://www.quantumbody.io/",
+    appStoreUrl: "https://apps.apple.com/app/quantum-body/id6752645253",
+    googlePlayUrl: "https://play.google.com/store/apps/details?id=com.quantumbody.io.quantumbody",
+    caseStudyUrl: "/cases/quantum-body",
+    media: [
+      { kind: "device", screens: [{ ...qb.newEntry, label: "Choose a practice" }, { ...qb.manifestationForm, label: "Write" }, qb.alignmentLog, { ...qb.filters, label: "Filter" }, { ...qb.reminders, label: "Reminders" }], caption: "Five practices connected through a shared journaling experience. Sample designs." },
+      { kind: "device", frame: "row", screens: [qb.gratitudeForm, qb.synchronicityForm, qb.dreamForm], caption: "One form, five practices: each gets its own colour and symbol. Sample designs." },
     ],
   },
   {
@@ -192,37 +222,23 @@ export const projectSlides: ProjectSlideContent[] = [
     ],
   },
   {
-    // A small UI case from the "Finish: Design Concepts" page of the Dangdi design file (25 Oct 2026), made the same way
-    // as Peach Health. A client project (confirmed by Oleh); role and timeline still to come (a dash). All content is sample.
-    slug: "dangdi", title: "Dangdi", group: "Mobile",
-    format: "Mobile App",
-    headline: "A local feed for a new city.",
-    overview: "Dangdi (当地, \"local\") is a community app for Chinese newcomers in Copenhagen. Its home screen brings people, articles, events, places to eat and local offers into one scrolling feed, with Dangdi AI as the app's own local guide. This case focuses on the interface: three accent colours, a Simplified Chinese version, a photo-led concept that changes with the time of day, and custom 3D details.",
-    role: "",
+    // From nearbor.md (25 Oct 2026). Oleh improved an existing app and designed most screens within the previous
+    // designer's design system: not a redesign or his own system. All screens sample. Timeline isn't confirmed (a dash).
+    slug: "nearbor", title: "Nearbor", group: "Mobile",
+    format: "Community App",
+    headline: "Making an existing community app easier to use.",
+    overview: "Nearbor helps people organise gatherings, coordinate care, and keep trusted services close. I took over UX/UI work on an existing app and designed most of its screens within the previous designer's design system. My focus was clearer flows, practical improvements, and readability for a broad range of ages and digital confidence—including older adults.",
+    role: "UX/UI Design / Existing-product improvements",
     timeline: "",
-    industry: "Community / Lifestyle",
+    industry: "Community / Social networking",
     figmaUrl: "", // the Figma file is private
-    caseStudyUrl: "/cases/dangdi",
+    webUrl: "https://www.nearbor.net/",
+    appStoreUrl: "https://apps.apple.com/app/nearbor/id6799039544",
+    googlePlayUrl: "https://play.google.com/store/apps/details?id=com.nearbor",
+    caseStudyUrl: "/cases/nearbor",
     media: [
-      { kind: "device", frame: "row", screens: [dd.black, dd.photoDay, dd.chinese], caption: "The home feed, the photo-led concept and the Chinese version. Sample design." },
-      { kind: "device", screens: [dd.black, dd.green, dd.coral], caption: "Three accent colours on the same home screen. Sample design." },
-    ],
-  },
-  {
-    // From ihide-vpn.md (25 Oct 2026). Overview only: no case study page. Screens are sample until publication clearance.
-    // Role and timeline aren't confirmed, so they're empty (shown as a dash). Replaces the earlier "ihidevpn" placeholder.
-    slug: "ihide-vpn", title: "iHide VPN", group: "Mobile",
-    format: "Mobile App",
-    headline: "A clear path to a private connection.",
-    overview: "iHide VPN brings connection controls, server selection, and onboarding into a focused mobile interface. This overview showcases the connection states, browsing and searching locations, and the introductory screens that explain the app.",
-    role: "",
-    timeline: "",
-    industry: "Privacy / Utilities",
-    figmaUrl: "", // the Figma file is private
-    media: [
-      { kind: "device", frame: "row", screens: [ihide.disconnected, ihide.connecting, ihide.connected], caption: "The connection journey, from idle to connected." },
-      { kind: "device", screens: [ihide.locations, ihide.search], caption: "Browse server locations or search for a destination." },
-      { kind: "device", screens: [ihide.onboardingPrivacy, ihide.onboardingConnection], caption: "Introducing privacy and connection features during onboarding." },
+      { kind: "device", frame: "row", screens: [{ ...nb.home, label: "Community calendar" }, { ...nb.careOverview, label: "Helping others" }, { ...nb.serviceHistory, label: "Provider history" }], caption: "The everyday tasks behind Nearbor: getting together, helping, and keeping useful information." },
+      { kind: "compare", frame: "device", before: { ...nb.textSizeDefault, label: "Default text" }, after: { ...nb.textSizeLarge, label: "Large text" }, caption: "A text-size preview gives users a visible way to choose what is comfortable to read. These are two settings, not an old/new redesign comparison." },
     ],
   },
   {
@@ -231,24 +247,6 @@ export const projectSlides: ProjectSlideContent[] = [
     ...sampleProjectCopy,
     figmaUrl: "",
     media: [],
-  },
-  {
-    // From the revised askflow.md (25 Oct 2026). All screens are sample until permission. Oleh co-designed new app
-    // features (never the sole app designer) and designed the website. Timeline is left empty until confirmed.
-    slug: "askflow", title: "AskFlow", group: "Web",
-    format: "Web App & Website",
-    headline: "Building the tools behind a more personal shopping experience.",
-    overview: "AskFlow gives merchants tools to create product quizzes and configure AI shopping assistance. I co-designed new app features and designed the marketing website. This case connects the visual builder, recommendation settings, shopper experience, publishing tools, and reporting that surround those features.",
-    role: "Product Design (co-designer) / Website Design",
-    timeline: "",
-    industry: "eCommerce / SaaS",
-    figmaUrl: "", // the Figma files are private
-    caseStudyUrl: "/cases/askflow",
-    media: [
-      { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.builder, "Quiz builder"), as(af.productMatch, "Product matching"), as(af.chatWorkspace, "AI assistant"), as(af.insightsMap, "Flow insights")], caption: "The product from creation to configuration and review. Sample designs." },
-      { kind: "image", src: af.articleAssistant.src, alt: af.articleAssistant.alt, caption: "A finished presentation of AskFlow's shopping-assistant experience. Sample design." },
-      { kind: "device", screens: [as(af.shopperChoiceMobile, "Choice"), as(af.shopperImageMobile, "Image choices"), as(af.shopperFormMobile, "Form")], caption: "Three examples of the shopper-facing experience on mobile. Sample designs." },
-    ],
   },
   {
     // From Oleh's brief (25 Oct 2026) and the SellerGenius Figma file. A small case: two overview blocks and a short case
@@ -261,10 +259,30 @@ export const projectSlides: ProjectSlideContent[] = [
     timeline: "3–4 mo · 2025",
     industry: "E-commerce / Analytics SaaS",
     figmaUrl: "", // the Figma file is private
+    webUrl: "https://seller-genius.com/",
     caseStudyUrl: "/cases/sellergenius",
     media: [
       { kind: "browser", frame: "bare", ratio: SG_RATIO, screens: [sg.dashboard, sg.profit, sg.advertising, sg.brands, sg.aiChat], caption: "From the main dashboard to profit, advertising, brands and the AI assistant. Sample designs." },
       { kind: "compare", frame: "bare", ratio: SG_RATIO, before: { ...sg.dashboard, label: "Light" }, after: sg.dashboardDark, caption: "Every screen was designed in a light and a dark theme. Sample design." },
+    ],
+  },
+  {
+    // From the revised askflow.md (25 Oct 2026). All screens are sample until permission. Oleh co-designed new app
+    // features (never the sole app designer) and designed the website. Timeline is left empty until confirmed.
+    slug: "askflow", title: "AskFlow", group: "Web",
+    format: "Web App & Website",
+    headline: "Building the tools behind a more personal shopping experience.",
+    overview: "AskFlow gives merchants tools to create product quizzes and configure AI shopping assistance. I co-designed new app features and designed the marketing website. This case connects the visual builder, recommendation settings, shopper experience, publishing tools, and reporting that surround those features.",
+    role: "Product Design (co-designer) / Website Design",
+    timeline: "",
+    industry: "eCommerce / SaaS",
+    figmaUrl: "", // the Figma files are private
+    webUrl: "https://www.askflow.ai/",
+    caseStudyUrl: "/cases/askflow",
+    media: [
+      { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.builder, "Quiz builder"), as(af.productMatch, "Product matching"), as(af.chatWorkspace, "AI assistant"), as(af.insightsMap, "Flow insights")], caption: "The product from creation to configuration and review. Sample designs." },
+      { kind: "image", src: af.articleAssistant.src, alt: af.articleAssistant.alt, caption: "A finished presentation of AskFlow's shopping-assistant experience. Sample design." },
+      { kind: "device", screens: [as(af.shopperChoiceMobile, "Choice"), as(af.shopperImageMobile, "Image choices"), as(af.shopperFormMobile, "Form")], caption: "Three examples of the shopper-facing experience on mobile. Sample designs." },
     ],
   },
   {
@@ -287,17 +305,6 @@ export const projectSlides: ProjectSlideContent[] = [
     ],
   },
   {
-    slug: "hotshots-labs", title: "HotShots Labs", group: "Web",
-    format: "Web Project",
-    ...sampleProjectCopy,
-    figmaUrl: "",
-    media: [
-      { kind: "image", src: "/cases/placeholders/hotshots-labs-1.svg", alt: "HotShots Labs temporary layout study 1; placeholder artwork" },
-      { kind: "image", src: "/cases/placeholders/hotshots-labs-2.svg", alt: "HotShots Labs temporary layout study 2; placeholder artwork" },
-      { kind: "image", src: "/cases/placeholders/hotshots-labs-3.svg", alt: "HotShots Labs temporary layout study 3; placeholder artwork" },
-    ],
-  },
-  {
     // From smarthost.md (25 Oct 2026). Exactly two overview blocks, bare browser frames (the old domain now redirects).
     // Personal contribution, dates and outcomes aren't confirmed, so role and timeline are empty. All screens sample;
     // figures in the designs are illustrative.
@@ -309,6 +316,7 @@ export const projectSlides: ProjectSlideContent[] = [
     timeline: "",
     industry: "Property management / Hospitality",
     figmaUrl: "", // the Figma file is private
+    webUrl: "https://www.staymo.com/",
     caseStudyUrl: "/cases/smarthost",
     media: [
       { kind: "responsive", frame: "bare", ratio: SH_RATIO.page, web: [sh.home], mobile: [sh.homeMobile], caption: "A shared visual language across the desktop and mobile homepage. Sample design." },

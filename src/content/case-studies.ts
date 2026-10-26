@@ -329,7 +329,7 @@ export const caseStudies: CaseStudy[] = [
     title: "Building the tools behind a more personal shopping experience.",
     intro: "A product quiz involves more than writing questions. Merchants need to shape a flow, connect answers to products, make the experience fit their store, and understand what happens after publication. AskFlow brings these tasks together with AI shopping assistance. I worked as a co-designer on new app features within the shared product and also designed its marketing website.",
     introHighlight: { text: "connect answers to products" },
-    hero: { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [af.builder] },
+    hero: { kind: "images", fill: true, control: "player", images: [af.fmWebsite, af.fmQuiz, af.fmHowItWorks] },
     chapters: [
       {
         id: "product", label: "Product", title: "Two sides of the same experience",
@@ -341,18 +341,16 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         id: "website", label: "Website", title: "Introducing the product through its interface",
-        body: "I designed the marketing website to explain product quizzes and AI shopping assistance through interface examples, clear product sections, and calls to action. The visual language carries across desktop and mobile. A small set of finished presentations adds another view of how the product was communicated.",
+        body: "I designed the marketing website to explain product quizzes and AI shopping assistance through interface examples, clear product sections, and calls to action. The visual language carries across desktop and mobile.",
         figures: [
-          { kind: "responsive", frame: "bare", ratio: AF_RATIO, web: [as(af.websiteHome, "Homepage")], mobile: [af.websiteHomeMobile] },
-          { kind: "images", images: [as(af.articleWebsite, "Website presentation"), as(af.articleMobile, "Mobile presentation")] },
+          { kind: "responsive", frame: "laptop", web: [as(af.websiteHomeFull, "Homepage")], mobile: [af.websiteHomeMobile] },
         ],
       },
       {
         id: "setup", label: "Setup", title: "Connecting the store before building the experience",
-        body: "Setup covers account creation, platform choice, store connection, and catalogue preparation. These stages give the merchant a route into the workspace before they begin configuring a quiz or assistant. The connection examples and completion screen make the hand-off between store setup and product creation visible.",
+        body: "Setup covers account creation, platform choice, store connection, and catalogue preparation. These stages give the merchant a route into the workspace before they begin configuring a quiz or assistant. The catalogue step closes setup and hands the merchant over to product creation.",
         figures: [
           { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.signup, "Create an account"), as(af.accountSetup, "Account setup"), as(af.cmsChoice, "Choose a platform"), as(af.catalogSync, "Catalogue ready")] },
-          { kind: "images", images: [as(af.connectStore, "Connect the store"), as(af.storeConnected, "Connection complete")] },
         ],
       },
       {
@@ -395,30 +393,32 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         id: "catalogue", label: "Catalogue", title: "Matching the flow to products and variants",
-        body: "Product matching places a searchable catalogue beside the canvas. Merchants can work with products and variants, use filters, and review their selection before saving. Empty matches and selection-limit feedback are part of the same task, so the interface also needs to explain when a choice cannot continue as expected.",
+        body: "Product matching places a searchable catalogue beside the canvas. Merchants can work with products and variants, use filters, and review their selection before saving. Empty matches and selection-limit feedback are part of the same task, so the interface also needs to explain when a choice cannot continue as expected. Products can also be matched to a single answer from its menu; the matched list sits beside the answer, and in the scoring designs each product takes a score.",
         figures: [
           { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.productMatch, "Browse products"), as(af.productFilter, "Filter the catalogue"), as(af.productSelected, "Select products and variants"), as(af.productEmpty, "No matches"), as(af.productLimit, "Selection limit")] },
-          { kind: "image", src: af.catalogueCloseup.src, alt: af.catalogueCloseup.alt },
           { kind: "component", demo: "askflow/product-picker" },
+          { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.matchMenu, "Match from an answer"), as(af.matchEmpty, "Open the catalogue"), as(af.matchOne, "One product"), as(af.matchThree, "Three products"), as(af.matchScores, "Score each product")] },
         ],
       },
       {
         id: "recommendations", label: "Recommendations", title: "Controlling the result of the quiz",
-        body: "Result settings determine how recommendations are presented, including a single-product layout and a route through multiple result sets. The populated preview connects these settings to the shopper-facing outcome. Separate controls cover result imagery and the labels and actions attached to a product.",
+        body: "Result settings determine how recommendations are presented, including a single-product layout and a route through multiple result sets. The populated preview connects these settings to the shopper-facing outcome. Separate controls cover result imagery and the labels and actions attached to a product. Global settings, reached from one menu in the builder, hold the start screen's button, the results page's buttons and image scaling, and, for the assistant, product sorting and media.",
         pair: [
           { label: "Result", title: "A recommendation the shopper can act on", body: "A populated preview shows the relationship between product imagery, the recommendation, and its actions.", media: { kind: "image", src: af.shopperRecommendations.src, alt: af.shopperRecommendations.alt } },
-          { label: "Configuration", title: "Decide what the result exposes", body: "Result controls define the available actions and how product imagery is treated.", media: { kind: "image", src: af.resultControls.src, alt: af.resultControls.alt } },
+          { label: "Configuration", title: "Decide what the result exposes", body: "Result controls define the available actions and how product imagery is treated.", media: { kind: "image", src: af.resultsPageCard.src, alt: af.resultsPageCard.alt } },
         ],
         figures: [
           { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.resultRules, "Result configuration"), as(af.resultOneProduct, "One selected product"), as(af.resultScroll, "Multiple result sets")] },
+          { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.resultsMenu, "Settings menu"), as(af.resultsStart, "Start settings"), as(af.resultsAssistant, "Assistant results")] },
         ],
       },
       {
         id: "appearance", label: "Appearance", title: "Giving the experience a consistent visual treatment",
-        body: "Theme settings sit beside the preview, covering typography, colours, backgrounds, buttons, and step transitions. Merchants can move between step types while working on the shared appearance, then save a theme. Close-ups keep these controls readable instead of reducing them to a thin sidebar in a full-window image.",
+        body: "Theme settings sit beside the preview, covering typography, colours, backgrounds, buttons, and step transitions. Merchants can move between step types while working on the shared appearance, then save a theme. A single brand colour drives every answer state: text, backgrounds, borders and fills are that colour at set opacities, so one choice re-tints the whole quiz. The theme examples apply the same system to different type, colour and backgrounds.",
         figures: [
           { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.themeSettings, "Theme selection"), as(af.designBackground, "Background image"), as(af.designWidth, "Button width"), as(af.designTransition, "Step transitions"), as(af.themeSave, "Save a theme")] },
-          { kind: "images", images: [as(af.typographyCloseup, "Typography controls"), as(af.colourCloseup, "Colour controls")] },
+          { kind: "component", demo: "askflow/answer-colour" },
+          { kind: "images", images: [as(af.themeSans, "Warm"), as(af.themeForm, "Green"), as(af.themeSerif, "Serif"), as(af.themeLilac, "Lilac"), as(af.themeLilacForm, "Lilac form")] },
         ],
       },
       {
@@ -431,11 +431,10 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         id: "cart", label: "Cart", title: "Connecting a recommendation to the next action",
-        body: "Result-step settings include the number of recommendations and the actions available on each product. The screen set also contains individual cart actions and an add-all option. The mobile examples show a recommendation and its actions, with a separate close-up of the action at the end of the page.",
+        body: "Result-step settings include the number of recommendations and the actions available on each product. The screen set also contains individual cart actions and an add-all option. The mobile examples show a recommendation and its actions.",
         figures: [
           { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.cartSettings, "Cart settings")] },
           { kind: "device", screens: [as(af.shopperResultsMobile, "Recommendations"), as(af.shopperCartMobile, "Cart actions")] },
-          { kind: "image", src: af.mobileCartControls.src, alt: af.mobileCartControls.alt },
         ],
       },
       {
@@ -443,7 +442,6 @@ export const caseStudies: CaseStudy[] = [
         body: "AskFlow also includes a conversational shopping experience. Its setup brings together store context, a greeting, personality, language, and visual settings, with a preview beside the configuration. The file includes multiple design iterations of these tools, showing both assistant behavior settings and its appearance within the store.",
         figures: [
           { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.chatOnboarding, "Choose an experience"), as(af.chatWorkspace, "Configure an assistant"), as(af.chatSettings, "Conversation settings"), as(af.chatDesign, "Assistant settings")] },
-          { kind: "image", src: af.assistantControls.src, alt: af.assistantControls.alt },
         ],
       },
       {
@@ -458,22 +456,28 @@ export const caseStudies: CaseStudy[] = [
         body: "Integrations appear both at workspace level and within a quiz. The designs distinguish connecting a service from configuring its use in a particular experience. A segmentation rule brings together product selection, a destination value, and a trigger condition, linking the quiz's configuration to the merchant's wider workflow.",
         figures: [
           { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.integrationsList, "Available connections"), as(af.integrationConnected, "Connected state"), as(af.integrationQuiz, "Quiz integration settings"), as(af.segmentationRule, "Segmentation rule")] },
-          { kind: "image", src: af.segmentationCloseup.src, alt: af.segmentationCloseup.alt },
         ],
       },
       {
         id: "publish", label: "Publish", title: "Checking the flow before it reaches the store",
         body: "Publishing includes validation for missing structure, such as an unset start step or an empty result. Each example states what is missing and offers a relevant next action. Publishing then opens format-specific configuration rather than one generic finish screen.",
         figures: [
-          { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.publishValidation, "Set the start step"), as(af.publishEmptyResult, "Match result products"), as(af.trialFirstPublish, "First publication"), as(af.publishOptions, "Choose a format")] },
-          { kind: "image", src: af.validationCloseup.src, alt: af.validationCloseup.alt },
+          { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.publishValidation, "Set the start step"), as(af.publishEmptyResult, "Match result products"), as(af.publishOptions, "Choose a format")] },
+        ],
+      },
+      {
+        id: "trial", label: "Free trial", title: "Two places to offer the trial",
+        body: "The free-trial designs come in two versions. Version A starts with AI: the merchant generates a first quiz from a collection, then meets the plans. Version B lets them build first and shows the plans at the first publication, followed by the share and embed step. Both versions sit side by side in the design file. Prices are hidden here.",
+        figures: [
+          { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.trialAAi, "A · Generate with AI"), as(af.trialAPlans, "A · Choose a plan"), as(af.trialFirstPublish, "B · First publication"), as(af.trialBPlans, "B · Choose a plan"), as(af.trialBEmbed, "B · Share and embed")] },
         ],
       },
       {
         id: "storefront", label: "Storefront", title: "Choosing how the experience appears",
-        body: "The publishing designs offer iframe, popup, and widget routes. Page placement and customisation settings let the merchant configure how an experience enters the store. Storefront examples show a quiz inside a popup and a widget beside the shopping content; mobile examples show the launcher in a smaller viewport.",
+        body: "The publishing designs offer iframe, popup, and widget routes. Page placement and customisation settings let the merchant configure how an experience enters the store. Storefront examples show a quiz inside a popup and a widget beside the shopping content; mobile examples show the launcher in a smaller viewport. A full run on a demo store, from the opening screen through a question and image answers to the results, shows the popup at its real size.",
         figures: [
           { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.publishSettings, "Choose a page"), as(af.publishEmbed, "Iframe instructions"), as(af.widgetCustomise, "Widget placement"), as(af.popupStore, "Popup example"), as(af.widgetStore, "Widget example")] },
+          { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.storeStart, "Start"), as(af.storeQuestion, "Question"), as(af.storeImages, "Image answers"), as(af.storeResults, "Results")] },
           { kind: "device", screens: [as(af.widgetMobile, "Chat launcher"), as(af.popupMobile, "Quiz launcher")] },
         ],
       },
@@ -489,7 +493,7 @@ export const caseStudies: CaseStudy[] = [
         body: "Reporting separates general activity, quizzes, and AI chats, with period selection and comparison controls. An empty overview provides the structure before activity is available. The sample figures are withheld here; the case focuses on what the reporting views organise and how merchants move between them.",
         figures: [
           { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.analytics, "Overview"), as(af.quizAnalytics, "Quizzes"), as(af.chatAnalytics, "AI chats"), as(af.analyticsEmpty, "Empty state")] },
-          { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.analyticsDate, "Choose a period"), as(af.analyticsPeriod, "Compare periods"), as(af.advancedAnalytics, "Additional reporting design")] },
+          { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.analyticsDate, "Choose a period"), as(af.analyticsPeriod, "Compare periods")] },
         ],
       },
       {
@@ -497,14 +501,13 @@ export const caseStudies: CaseStudy[] = [
         body: "Quiz insights place activity information on the same question-and-answer structure used for building. Answer-level bars, drop-off detail, and version selection connect the report to a specific route through the quiz. Form-response and export views provide another level of inspection for steps that collect input.",
         figures: [
           { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.insightsMap, "Activity on a logic flow"), as(af.insightsDropoff, "Drop-off detail"), as(af.insightsHistory, "Version selection"), as(af.formResponses, "Form responses"), as(af.formExport, "Export choices")] },
-          { kind: "image", src: af.dropoffCloseup.src, alt: af.dropoffCloseup.alt, annotation: { kind: "cursor", name: "Oleh", note: "Inspect an answer within its route.", points: [[40, 45], [52, 72]] } },
         ],
       },
       {
         id: "components", label: "Components", title: "A shared language for a complex editor",
         body: "The supplied UI kit defines the recurring controls behind the experience: buttons, inputs, selection states, question and answer cards, navigation, and feedback. This section lets visitors try a small set of those pieces, connecting the system to the interactions already shown in the product.",
         figures: [
-          { kind: "components", demos: ["askflow/button", "askflow/input", "askflow/select", "askflow/selection"], wide: ["askflow/button"] },
+          { kind: "components", demos: ["askflow/button", "askflow/input", "askflow/select"], wide: ["askflow/button"] },
           { kind: "components", demos: ["askflow/question-card", "askflow/minimap"] },
         ],
       },

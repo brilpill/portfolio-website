@@ -200,12 +200,13 @@ function ScrollImageStage({ media, full }: { media: Extract<ProjectSlideMedia, {
       element.removeEventListener("pointerup", up); element.removeEventListener("pointercancel", up);
     };
   }, []);
-  return <div ref={stage} className="case-stage case-stage-scroll-image">
+  return <div ref={stage} className="case-stage case-stage-scroll-image" data-phone={media.phone ? "" : undefined}>
     <div ref={sheet} className="case-scroll-sheet" tabIndex={0} role="region" aria-label={`${media.alt}. Scroll or use the arrow keys to move through it.`} style={{ aspectRatio: `1 / ${full.ratio}` }}>
       {/* The light cover shows at once while the long image (over a megabyte) is still loading over it. */}
       <Image className="case-scroll-cover" src={media.src} alt="" width={1400} height={1100} sizes="(max-width: 767px) 90vw, 720px" draggable={false} aria-hidden />
       <Image src={full.src} alt={media.alt} fill sizes="(max-width: 767px) 90vw, 720px" draggable={false} />
     </div>
+    {media.phone && <Phone className="case-scroll-phone" scrollable={scrolls(media.phone)}><Swap screen={media.phone} sizes={phoneSizes} /></Phone>}
   </div>;
 }
 
@@ -443,10 +444,12 @@ function ScreensStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "de
     else body = <Phone silver={frame === "silver"} scrollable={scrolls(at(0))}><Swap screen={at(0)} sizes={phoneSizes} /></Phone>;
   } else if (media.kind === "browser") {
     const frame = media.frame ?? "dark";
-    body = frame === "laptop" ? <Laptop><Swap screen={at(0)} sizes={sizes} still /></Laptop> : <Browser url={media.url} frame={frame} ratio={media.ratio}><Swap screen={at(0)} sizes={sizes} still /></Browser>;
+    // A laptop screen with a full-length export scrolls inside the lid, like a long phone screen.
+    body = frame === "laptop" ? <Laptop><Swap screen={at(0)} sizes={sizes} still={!scrolls(at(0))} /></Laptop> : <Browser url={media.url} frame={frame} ratio={media.ratio}><Swap screen={at(0)} sizes={sizes} still /></Browser>;
   } else {
-    body = <div className="case-responsive">
-      <Browser url={media.url} frame={media.frame ?? "dark"} ratio={media.ratio}><Swap screen={at(0)} sizes={sizes} still /></Browser>
+    const web = <Swap screen={at(0)} sizes={sizes} still={!scrolls(at(0))} />;
+    body = <div className="case-responsive" data-laptop={media.frame === "laptop" || undefined}>
+      {media.frame === "laptop" ? <Laptop>{web}</Laptop> : <Browser url={media.url} frame={media.frame ?? "dark"} ratio={media.ratio}>{web}</Browser>}
       <Phone className="case-responsive-phone" scrollable={scrolls(at(0, media.mobile))}><Swap screen={at(0, media.mobile)} sizes={phoneSizes} /></Phone>
     </div>;
   }
@@ -616,23 +619,40 @@ function HotspotHints({ children }: { children: ReactNode }) {
   </div>;
 }
 
+/** The width a framed (`window`) stage demo is laid out at before it is scaled into its window. */
+const DEMO_WIDTH = 1152;
+
 function ComponentStage({ media, hint = true }: { media: Extract<ProjectSlideMedia, { kind: "component" }>; hint?: boolean }) {
   const demo = demos[media.demo];
   const id = useId();
   const [value, setValue] = useState<string | number>(demo?.initial ?? 0);
   const [view, setView] = useState<"preview" | "code">("preview");
   const [copied, setCopied] = useState(false);
+  // A framed demo renders at its design width and is scaled to fit its window (the same size as a screenshot frame).
+  const win = useRef<HTMLDivElement>(null);
+  const framed = !!demo?.window && view === "preview";
+  useLayoutEffect(() => {
+    const element = win.current;
+    if (!framed || !element) return;
+    const fit = () => element.style.setProperty("--demo-scale", String(element.clientWidth / DEMO_WIDTH));
+    const resize = new ResizeObserver(fit);
+    resize.observe(element);
+    fit();
+    return () => resize.disconnect();
+  }, [framed]);
   if (!demo) return <div className="case-stage"><span className="case-control case-video-pending">Demo “{media.demo}” not found</span></div>;
   const { Component } = demo;
   const copy = async () => {
     try { await navigator.clipboard.writeText(media.source ?? ""); setCopied(true); window.setTimeout(() => setCopied(false), 1600); } catch {}
   };
 
-  return <div className="case-stage case-demo" data-frame={demo.frame} data-view={view} style={demo.ratio ? { "--demo-ratio": demo.ratio } as CSSProperties : undefined}>
+  return <div className="case-stage case-demo" data-frame={demo.frame} data-view={view} data-window={demo.window || undefined} style={demo.ratio && !demo.window ? { "--demo-ratio": demo.ratio } as CSSProperties : undefined}>
     {view === "preview"
       ? demo.frame === "device"
         ? <div className="case-stage-body case-stage-device"><Phone interactive={demo.badge !== false}><HotspotHints><Component value={value} onValueChange={setValue} /></HotspotHints></Phone></div>
-        : <div className="case-demo-stage"><Component value={value} onValueChange={setValue} /></div>
+        : demo.window
+          ? <div ref={win} className="case-demo-window" style={{ aspectRatio: demo.ratio }}><div className="case-demo-stage"><Component value={value} onValueChange={setValue} /></div></div>
+          : <div className="case-demo-stage"><Component value={value} onValueChange={setValue} /></div>
       : <div className="case-code">
           <div className="case-code-bar"><span>{media.file?.split("/").pop()}</span>
             <button type="button" onClick={copy}>{copied ? <CheckIcon size={14} aria-hidden /> : <CopyIcon size={14} aria-hidden />}<span aria-live="polite">{copied ? "Copied" : "Copy"}</span></button>
@@ -668,12 +688,27 @@ function ComponentStage({ media, hint = true }: { media: Extract<ProjectSlideMed
 
 /**
  * Several finished images in one frame (wireframe flows, boards): each fitted whole on the grey, switched by tabs
- * or the arrows. Expand opens the one showing in the viewer, to pan and zoom.
+ * or the arrows. Expand opens the one showing in the viewer, to pan and zoom. `fill` covers the frame edge to edge;
+ * `control: "player"` advances on its own like the screens' step player.
  */
 function ImagesStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "images" }> }) {
   const [index, setIndex] = useState(0);
-  const current = media.images[index];
-  return <div className="case-stage case-images">
+  const current = media.images[Math.min(index, media.images.length - 1)];
+  const stage = useRef<HTMLDivElement>(null);
+  const reduced = !!useReducedMotion();
+  const visible = useInView(stage);
+  const [playing, setPlaying] = useState(true);
+  const [hovered, setHovered] = useState(false);
+  const player = media.images.length > 1 && media.control === "player";
+  const running = player && playing && visible && !hovered && !reduced;
+
+  useEffect(() => {
+    if (!running) return;
+    const timer = window.setTimeout(() => setIndex(current => (current + 1) % media.images.length), PLAYER_PACE);
+    return () => window.clearTimeout(timer);
+  }, [running, index, media.images.length]);
+
+  return <div ref={stage} className="case-stage case-images" data-fill={media.fill || undefined} onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)} onFocus={() => setHovered(true)} onBlur={() => setHovered(false)}>
     <div className="case-images-body">
       <AnimatePresence initial={false} mode="popLayout">
         <motion.div key={current.src} className="case-images-picture" initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: .3 } }} exit={{ opacity: 0, transition: { duration: .15 } }}>
@@ -683,7 +718,9 @@ function ImagesStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "ima
     </div>
     {media.images.length > 1 && <>
       <StageArrows index={index} count={media.images.length} onGo={setIndex} noun="image" />
-      <StepTabs screens={media.images} index={index} onSelect={setIndex} />
+      {player
+        ? <StepPlayer count={media.images.length} index={index} running={running} playing={playing} labels={media.images.map((item, i) => item.label ?? `Image ${i + 1}`)} onSelect={setIndex} onToggle={() => setPlaying(value => !value)} />
+        : <StepTabs screens={media.images} index={index} onSelect={setIndex} />}
     </>}
   </div>;
 }

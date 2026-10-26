@@ -143,6 +143,8 @@ html:has(.case-study-shell) { overflow-y: auto; scroll-behavior: smooth; }
 .case-study-figure .case-responsive-phone { --phone-w: 16cqw; }
 .case-study-figure .case-responsive { width: 70cqw; }
 .case-study-figure .case-laptop { --laptop-w: 70cqw; }
+.case-study-figure .case-responsive[data-laptop] { width: 82cqw; }
+.case-study-figure .case-responsive[data-laptop] .case-laptop { --laptop-w: 75cqw; }
 .case-study-figure .case-responsive .case-browser { width: 100%; }
 /* A live component sits in the same frame as the images; a demo can ask for other proportions (--demo-ratio). */
 .case-study-figure .case-demo { aspect-ratio: var(--demo-ratio, 1152 / 670); }
@@ -154,7 +156,7 @@ html:has(.case-study-shell) { overflow-y: auto; scroll-behavior: smooth; }
 .case-demo-grid-hint svg { width: 12px; height: 12px; }
 .case-demo-tile { position: relative; border-radius: var(--radius); background: var(--home-fill); }
 .case-demo-tile[data-wide] { grid-column: 1 / -1; }
-.case-demo-tile:has(.la-menu) { z-index: 2; }
+.case-demo-tile:has(.la-menu), .case-demo-tile:has(.afk-menu) { z-index: 2; }
 .case-demo-tile .case-demo { overflow: visible; border-radius: inherit; }
 @media (max-width: 767px) { .case-demo-grid { grid-template-columns: minmax(0, 1fr); } }
 .case-study-figure .case-arrow { background: var(--background); }

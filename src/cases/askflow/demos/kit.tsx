@@ -59,19 +59,20 @@ export function KitInput() {
   const [disabled, setDisabled] = useState(false);
   const [small, setSmall] = useState(false);
   const validate = () => { const ok = !!text.trim(); setStatus(ok ? "success" : "error"); playCue(ok ? "success" : "error"); };
-  const help = status === "error" ? "Add a quiz name to continue" : status === "success" ? "Looks good (a demo check only)" : "Shown to shoppers above the first question";
+  const help = status === "error" ? "Add a quiz name to continue" : status === "success" ? "Looks good (a demo check only)" : "";
   return <Surface className="afk-center">
     <div className="afk-field" data-status={status} data-size={small ? "small" : undefined}>
       <label htmlFor="afk-input">Quiz name</label>
       <div className="afk-box" data-disabled={disabled || undefined}>
         <MagnifyingGlassIcon aria-hidden />
-        <input id="afk-input" value={text} disabled={disabled} placeholder="Find your perfect size" aria-describedby="afk-input-help" aria-invalid={status === "error" || undefined}
+        <input id="afk-input" value={text} disabled={disabled} placeholder="Find your perfect size" aria-describedby={help ? "afk-input-help" : undefined} aria-invalid={status === "error" || undefined}
           onChange={event => { setText(event.target.value); setStatus("idle"); }} onKeyDown={event => { if (event.key === "Enter") validate(); }} />
         <EyeIcon aria-hidden />
       </div>
-      <p id="afk-input-help" aria-live="polite">{status === "error" && <WarningCircleIcon weight="fill" />}{status === "success" && <CheckCircleIcon weight="fill" />}{help}</p>
+      {/* Only the validation result shows under the field; no standing helper text. */}
+      {help && <p id="afk-input-help" aria-live="polite">{status === "error" && <WarningCircleIcon weight="fill" />}{status === "success" && <CheckCircleIcon weight="fill" />}{help}</p>}
     </div>
-    <div className="afk-row">
+    <div className="afk-row afk-dock">
       <button type="button" className="afk-btn" data-style="secondary" data-size="Sm" onClick={validate} disabled={disabled} data-sound="off">Validate</button>
       <Switch label="Small" on={small} onChange={setSmall} />
       <Switch label="Disabled" on={disabled} onChange={on => { setDisabled(on); setStatus("idle"); }} />
@@ -108,7 +109,7 @@ export function KitSelect() {
     if ((event.key === "Enter" || event.key === " ") && open) { event.preventDefault(); choose(types[active].label); }
   };
   const Current = types.find(type => type.label === value)?.icon ?? MagnifyingGlassIcon;
-  return <Surface className="afk-center afk-top">
+  return <Surface className="afk-center">
     <div className="afk-field" ref={root} onKeyDown={key}>
       <span className="afk-label" id="afk-select-label">Question type</span>
       <div className="afk-select">
@@ -125,7 +126,6 @@ export function KitSelect() {
           <type.icon aria-hidden />{type.label}{type.label === value && <CheckIcon className="afk-tick" weight="bold" aria-hidden />}
         </li>)}
       </ul>}
-      <p>{value ? "Selected; open again to change it" : "Arrow keys open the list and move through it"}</p>
     </div>
   </Surface>;
 }
@@ -148,28 +148,27 @@ export function KitSelection() {
       </div>
       <p aria-live="polite">{count === 2 ? "All selected" : count === 1 ? "Mixed: one of two selected" : "None selected"}</p>
     </fieldset>
-    <div className="afk-row"><Switch label="Small" on={small} onChange={setSmall} /></div>
+    <div className="afk-row afk-dock"><Switch label="Small" on={small} onChange={setSmall} /></div>
   </Surface>;
 }
 
-/* Question card: one question with two answers; edit an answer inline, reveal its connection; Insights adds bars. */
+/* Question card: one question with two answers; edit an answer inline; Insights adds bars. */
 export function KitQuestionCard({ value }: { value: string | number }) {
   const insights = value === "insights";
   const [answers, setAnswers] = useState(["Casual", "Formal"]);
   const [editing, setEditing] = useState<number | null>(null);
-  const [linked, setLinked] = useState(false);
   const shares = [64, 36]; // illustrative
   return <Surface className="afk-center afk-canvas">
     <div className="afk-question" data-insights={insights || undefined}>
       <span className="afk-question-flag" aria-hidden>{insights ? <><UserIcon />621</> : <FlagIcon />}</span>
       <div className="afk-question-head">
         <span className="afk-badge">1/12</span>
-        {!insights && !linked && <span className="afk-badge" data-tone="warn">Step is not connected</span>}
+        {!insights && <span className="afk-badge" data-tone="warn">Step is not connected</span>}
         {insights && <span className="afk-badge" data-tone="grey">1m 4s</span>}
       </div>
       <div className="afk-question-title"><span className="afk-step-icon"><ListBulletsIcon /></span>Which style suits you?</div>
       <ul className="afk-answers">
-        {answers.map((answer, index) => <li key={index} data-linked={!insights && linked && index === 0 ? "" : undefined}>
+        {answers.map((answer, index) => <li key={index}>
           {insights
             ? <div className="afk-answer afk-answer-insight"><span>{answer}</span><span>{Math.round(shares[index] * 3.06)} resp.</span><i style={{ width: `${shares[index]}%` }} /></div>
             : editing === index
@@ -179,26 +178,22 @@ export function KitQuestionCard({ value }: { value: string | number }) {
               : <button type="button" className="afk-answer" onClick={() => setEditing(index)} aria-label={`Edit answer ${index + 1}: ${answer}`}>
                 <DotsSixVerticalIcon weight="bold" aria-hidden />{answer}
               </button>}
-          {!insights && <span className="afk-port" data-on={linked && index === 0 ? "" : undefined} aria-hidden />}
+          {!insights && <span className="afk-port" aria-hidden />}
         </li>)}
       </ul>
-      {!insights && linked && <span className="afk-next" aria-hidden>Result: Casual edit</span>}
     </div>
-    <div className="afk-row">
-      {insights
-        ? <span className="afk-note">Bars are illustrative, not merchant data</span>
-        : <Switch label="Show connection" on={linked} onChange={on => setLinked(on)} />}
-    </div>
+    {insights && <div className="afk-row"><span className="afk-note">Bars are illustrative, not merchant data</span></div>}
   </Surface>;
 }
 
 /* Minimap: a three-card map; the minimap opens and closes, and picking a mini card highlights its card. */
-const cards = [{ n: 1, title: "Which style suits you?", x: 60, y: 70 }, { n: 2, title: "Casual edit", x: 300, y: 30 }, { n: 3, title: "Formal edit", x: 300, y: 130 }];
+// Placed so the three cards sit centred across the tile, above the minimap in the corner.
+const cards = [{ n: 1, title: "Which style suits you?", x: 80, y: 130 }, { n: 2, title: "Casual edit", x: 320, y: 90 }, { n: 3, title: "Formal edit", x: 320, y: 190 }];
 export function KitMinimap() {
   const [open, setOpen] = useState(true);
   const [picked, setPicked] = useState<number | null>(null);
   return <Surface className="afk-canvas afk-map">
-    <svg className="afk-map-lines" aria-hidden><path d="M230 92 C265 92 265 52 300 52" data-c="1" /><path d="M230 92 C265 92 265 152 300 152" data-c="2" /></svg>
+    <svg className="afk-map-lines" aria-hidden><path d="M250 152 C285 152 285 112 320 112" data-c="1" /><path d="M250 152 C285 152 285 212 320 212" data-c="2" /></svg>
     {cards.map(card => <div key={card.n} className="afk-map-card" data-picked={picked === card.n || undefined} style={{ left: card.x, top: card.y }}>
       <span className="afk-step-icon">{card.n === 1 ? <ListBulletsIcon /> : <CursorClickIcon />}</span>{card.n}. {card.title}
     </div>)}

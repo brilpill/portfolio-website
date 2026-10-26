@@ -70,8 +70,9 @@ List the blocks in order; two is the usual number. Each block is one card. Pick 
 | `browser` | Web screens in macOS Safari with the project's address. Several screens get tabs or the player; desktop screens switch instantly. | Web products, dashboards. |
 | `browser + background` | The window over a full-bleed image or colour. | A hero shot of a web product. |
 | `image` | One image filling the whole card. On the slide the card takes the image's own proportions, so a full landing page can go in as one tall image. | Finished compositions, mockup renders, diagrams, long pages, anything already designed as an image. |
+| `image` · `scroll` (case studies) | A very tall image (`full`) as one sheet that slides up through the frame with the wheel, a mouse drag or the arrow keys, with its top (`src`) as a quick cover. Add `phone` (a long mobile screen) to stand a scrolling phone over the sheet's right edge. | Long-form presentations (Quantum Body's Behance). |
 | `image · full` | A preview (the top of a very long composition) with a "View full presentation" pill; the full image loads only in the viewer, at full length to scroll and zoom. | A Behance case or any long editorial presentation. Send the preview and the full image. |
-| `images` | Several finished images in one frame, each shown whole, switched by tabs or the arrows. | Presentation excerpts, Dribbble shots, flows already laid out as one image each. |
+| `images` | Several finished images in one frame, each shown whole, switched by tabs or the arrows. `fill`: each covers the frame edge to edge (cropping what overflows). `control: "player"`: timed dots with play/pause instead of tabs. | Presentation excerpts, Dribbble shots, flows already laid out as one image each. With `fill` and the player: presentation images that carry their own background. |
 | `posters` | Finished posters side by side in a strip that scrolls sideways, about three in view, with arrows; a click opens one in the viewer. No device frame. | App Store screenshots and other store artwork. |
 | `compare` | Before and after inside one mockup (Safari by default, a bare window with `frame: bare`, or a phone with `frame: device`), with a divider across the whole frame that follows the mouse (dragged on touch). `frame: row` puts up to three pairs side by side as phones. | A redesign, wireframe → final, or two states of one screen. Write it as `compare · before.png → after.png` (plus `url` for Safari). |
 | `component` | A live, rebuilt component in its own frame (see **Live components**). | A key control, an interaction worth feeling, the foundations. |
@@ -97,6 +98,7 @@ A design system doesn't go in as an image or a component sheet (tried, and dropp
 - **Tabs underneath** switch its styles or states when it has them (the button's White · Blue · Black · Dark · Ghost · Outline · Destructive). Inputs have no tabs: every state (focus, filled, loading, error, open, selected) comes from using it.
 - **Two frames:**
   - `stage`: the component alone at real size on the grey frame, for web parts and single controls.
+  - `stage` + `window: true`: a whole app view (canvas, side panel) as its own rounded window with a border and shadow, the same size as a screenshot frame (64% wide, `ratio: "16 / 10"`) and centred on the grey. The demo is laid out 1152px wide and scaled down to fit, so pointer maths must divide by the scale (see `at()` in `askflow/demos/logic-jump.tsx`). AskFlow logic jump, product picker, answer colours.
   - `device`: inside the phone, for app screens and mobile controls.
 - **Frame height fits the content.** A button gets a short, wide frame, a phone a tall one.
 - **An "Interactive" label** (a hand icon) says it can be touched: above the phone, just above the mock on a stage, or (only if asked for) once above a `components` grid. Frames that aren't a component (a moodboard) don't get it.
@@ -178,6 +180,7 @@ Phone and browser blocks take an optional `frame`; leave it out for the default.
 | `browser` | `laptop` | The page on a MacBook. | Desktop apps and dashboards. |
 | `browser` | `window` | One whole window with a minimal light bar, on a light grey ground. | Web pages in the Figma mockup style. |
 | `responsive` | `dark` / `bare` | The website in Safari with its mobile version on a phone in front. | A site and its mobile adaptation together. |
+| `responsive` · `frame: "laptop"` | The website in the laptop mockup with the phone over its right edge. A web screen with `full` scrolls inside the laptop's screen (wheel, trackpad, drag), like a long phone screen. | A whole desktop homepage beside its mobile version (AskFlow). |
 
 Desktop screens switch instantly (no dissolve); phone screens dissolve. Not available on purpose: light Safari, tilted or perspective mockups, stacked or overlapping windows, crops, tiled grids, and Safari (or any browser) around mobile screens. Mobile screens always go in a phone.
 
@@ -282,7 +285,7 @@ So a pasted file lands everywhere it needs to:
 - Block shapes (`ProjectSlideMedia` in `project-slides.ts`):
   - `{ kind: "browser", screens, url?, ratio? }` — `ratio` (e.g. `"1728 / 980"`) when the pages aren't the default 1728 / 1064, so wide screens show whole instead of being cropped; `compare` takes `ratio` too.
   - `{ kind: "image", src, alt, full?: { src, ratio, label? } }` — with `full`, the preview and "View full presentation".
-  - `{ kind: "images", images: [...] }` — finished images with tabs.
+  - `{ kind: "images", images: [...] }` — finished images with tabs; add `fill: true` to cover the frame, `control: "player"` for timed dots.
   - `{ kind: "posters", images: [...] }` — the poster strip.
   - `{ kind: "compare", before, after, frame?: "browser" | "bare" | "device" | "row", more?: [{ before, after }] }`.
   - `{ kind: "component", demo: "<slug>/<name>" }` and `{ kind: "components", demos: [...], wide?: [...] }`.
@@ -293,7 +296,7 @@ So a pasted file lands everywhere it needs to:
   - The project's font: `src/cases/<slug>/font.ts` (next/font).
   - System components (Button, Ruler…): `src/cases/<slug>/components/`.
   - Demos (what a frame shows): `src/cases/<slug>/demos/`. Each is a controlled component taking `value` / `onValueChange`; `value` is whatever the tabs pick.
-  - Register each demo in `src/cases/demos.tsx`: `title`, `frame` (`device` | `stage`), `initial`, `presets` (the tabs; `icon` and `anim` for animated tab icons), `presetsLabel`, `numbered`, `ratio` (frame proportions, e.g. `"1152 / 400"`), `badge: false` to drop the Interactive label, `hintTop` to place a stage's label just above its mock.
+  - Register each demo in `src/cases/demos.tsx`: `title`, `frame` (`device` | `stage`), `initial`, `presets` (the tabs; `icon` and `anim` for animated tab icons), `presetsLabel`, `numbered`, `ratio` (frame proportions, e.g. `"1152 / 400"`), `badge: false` to drop the Interactive label, `hintTop` to place a stage's label just above its mock. `window: true` frames a stage demo as its own window.
   - Also register it in `src/cases/demo-files.ts`, which maps the demo to its source for the Code tab. The tab is off (`SHOW_CODE` in `case-media.tsx`).
 - **Sounds:** every interactive component has sounds. Inside a case block they come for free (`CaseMedia` in `case-media.tsx`): a key or a delete in any field, a click on any button, tab, link or option, a switch or radio flipped. For a meaningful moment, play a cue from `@/components/ui-sound` (`playCue("success" | "error" | "open" | "close" | "toggle" | "key" | "erase" | "click")`), and put `data-sound="off"` on the element so the default click doesn't play too, or `data-sound="toggle"` (any cue) to swap it. Sliders tick on each step (see the Ruler). Cues play only when the visitor has turned sound on. Interactive pieces outside case blocks call `playCue` the same way.
 - **Scroll lock:** `useScrollLock` in `case-media.tsx` sets `data-scroll-lock` on a figure until 80% of it is in view, and turns off scrolling only on its parts that actually scroll. A demo with its own wheel handler returns early inside `[data-scroll-lock]`.

@@ -263,6 +263,10 @@
 .case-images-body { position: absolute; inset: calc(4 * var(--stage-unit)) calc(4 * var(--stage-unit)) calc(10 * var(--stage-unit)); }
 .case-images-picture { position: absolute; inset: 0; }
 .case-images-picture img { object-fit: contain; }
+/* fill: presentation images with their own background cover the whole frame. */
+.case-images[data-fill] { overflow: hidden; }
+.case-images[data-fill] .case-images-body { inset: 0; }
+.case-images[data-fill] .case-images-picture img { object-fit: cover; }
 /* Scrollable inside the phone: no bar, the page takes over at either end. */
 .case-screen-scrollable { overflow-y: auto; overscroll-behavior-y: auto; scrollbar-width: none; }
 /* A tall presentation's preview: a pill over the bottom of the stage opens the whole thing in the viewer. */
@@ -274,6 +278,8 @@
 .case-scroll-sheet[data-dragging] { cursor: grabbing; }
 .case-scroll-sheet img { object-fit: cover; object-position: top; }
 .case-scroll-sheet .case-scroll-cover { position: absolute; top: 0; left: 0; width: 100%; height: auto; }
+/* With a phone: the sheet moves left and the phone stands over its right edge, fixed while the sheet slides. */
+.case-stage-scroll-image[data-phone] .case-scroll-sheet { left: 12%; }
 .case-view-full { position: absolute; bottom: 20px; left: 50%; z-index: 2; display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px 0 16px; border-radius: 999px; background: rgb(255 255 255 / .92); box-shadow: 0 1px 2px rgb(0 0 0 / .08), 0 6px 18px -8px rgb(0 0 0 / .35); color: var(--home-ink, #191919); font-size: var(--text-ui); font-weight: 500; translate: -50% 0; backdrop-filter: blur(8px); transition: background-color var(--motion-fast) ease, transform var(--motion-press) var(--motion-ease-out); }
 .case-view-full:hover { background: #fff; }
 .case-view-full:active { transform: scale(.97); }
@@ -1205,6 +1211,12 @@ img.media-viewer-media[data-tall="web"] { width: min(1120px, 100cqw); }
 /* "Interactive" on a stage frame: the same small grey note as above a phone, centred at the top. */
 .case-demo-hint { position: absolute; top: 16px; left: 50%; display: flex; align-items: center; gap: 4px; color: var(--muted-foreground); font-size: var(--text-caption); font-weight: 500; line-height: 16px; translate: -50% 0; pointer-events: none; }
 .case-demo-hint svg { width: 12px; height: 12px; }
+/* A demo with `window`: its own rounded app window, as wide as a screenshot frame, centred on the grey. The demo is
+ * laid out at DEMO_WIDTH (1152px) and scaled by --demo-scale (set from the window's width) to fit. */
+.case-demo[data-window] { display: grid; place-items: center; background: var(--home-fill); }
+.case-demo-window { position: relative; width: 64%; overflow: hidden; border-radius: 10px; box-shadow: 0 0 0 1px rgb(25 25 25 / .07), 0 1px 2px rgb(25 25 25 / .05), 0 18px 40px -22px rgb(25 25 25 / .32); }
+.case-demo-window .case-demo-stage { inset: auto; top: 0; left: 0; width: 1152px; height: calc(100% / var(--demo-scale, 1)); transform: scale(var(--demo-scale, 1)); transform-origin: 0 0; }
+@media (max-width: 767px) { .case-demo-window { width: 76%; } }
 .case-demo-views { position: absolute; top: 16px; right: 16px; isolation: isolate; display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--secondary); font-size: var(--text-caption); line-height: 18px; }
 .case-demo-views button { position: relative; height: 24px; padding: 0 10px; border-radius: 7px; color: var(--muted-foreground); }
 .case-demo-views button[aria-selected="true"] { color: var(--foreground); font-weight: 500; }
@@ -1248,3 +1260,10 @@ html[data-intro-seen] .intro-loader { display: none; }
   .intro-loader, .intro-loader-mark, .intro-loader-track > span { transition: opacity 200ms ease; animation: none; }
   .intro-loader[data-phase="leaving"] .intro-loader-mark { transform: none; filter: none; }
 }
+
+/* Placed after .case-phone so it wins: the phone beside a scrolling sheet (ScrollImageStage with `phone`). */
+.case-stage-scroll-image .case-phone.case-scroll-phone { position: absolute; right: 14%; bottom: 7cqh; z-index: 2; --phone-w: 16cqw; -webkit-box-reflect: unset; }
+
+/* Responsive with a laptop (frame: "laptop"): the laptop takes the browser's place; a web screen with `full` scrolls in its lid. */
+.case-responsive[data-laptop] .case-laptop { --laptop-w: calc(78 * var(--stage-unit)); }
+.case-responsive[data-laptop] .case-responsive-phone { bottom: calc(-2 * var(--stage-unit)); }

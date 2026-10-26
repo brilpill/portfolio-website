@@ -12,7 +12,7 @@ import "./logic-jump.css";
  * the rule dialog opens, and Save, Cancel or the cross come back to the two cards, with focus returned. No canvas
  * editor, generated quiz or publishing; the values are samples.
  */
-const Q = { x: 200, y: 150 }, L = { x: 560, y: 158 }, W = 268;
+const Q = { x: 200, y: 230 }, L = { x: 560, y: 238 }, W = 268;
 const operators = ["is equal to", "is greater than", "is less than"];
 const targets = ["Result step title", "Q2: What's your budget?"];
 
@@ -53,16 +53,20 @@ export function LogicJump() {
   };
   const remove = () => { setDialog(false); setLinked(false); setSaved(null); playCue("erase"); requestAnimationFrame(() => root.current?.querySelector<HTMLButtonElement>(".af-port")?.focus()); };
 
+  // The pointer in the canvas's own pixels: the canvas can be shown scaled (a framed window), so screen distances
+  // are divided by that scale.
+  const at = (event: ReactPointerEvent) => {
+    const element = root.current!, box = element.getBoundingClientRect(), scale = box.width / element.offsetWidth || 1;
+    return { x: (event.clientX - box.left) / scale, y: (event.clientY - box.top) / scale };
+  };
   const down = (event: ReactPointerEvent<HTMLButtonElement>) => {
     if (linked) return;
     event.currentTarget.setPointerCapture(event.pointerId);
-    const box = root.current!.getBoundingClientRect();
-    setDragging({ x: event.clientX - box.left, y: event.clientY - box.top });
+    setDragging(at(event));
   };
   const move = (event: ReactPointerEvent) => {
     if (!dragging) return;
-    const box = root.current!.getBoundingClientRect();
-    setDragging({ x: event.clientX - box.left, y: event.clientY - box.top });
+    setDragging(at(event));
   };
   const up = (event: ReactPointerEvent<HTMLButtonElement>) => {
     if (!dragging) return;

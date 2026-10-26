@@ -13,6 +13,7 @@ export const demoFiles: Record<string, string> = {
   "luminasset/tokens-phone": "luminasset/tokens.ts",
   "askflow/logic-jump": "askflow/demos/logic-jump.tsx",
   "askflow/product-picker": "askflow/demos/product-picker.tsx",
+  "askflow/answer-colour": "askflow/demos/answer-colour.tsx",
   "tutor-iq/calendar": "tutor-iq/demos/kit.tsx",
   "tutor-iq/classroom-toolbar": "tutor-iq/demos/kit.tsx",
 };

@@ -51,16 +51,20 @@ export type ProjectSlideMedia = { annotation?: MediaAnnotation } & (
    * under the same divider. */
   | { kind: "compare"; before: CaseScreen; after: CaseScreen; more?: { before: CaseScreen; after: CaseScreen }[]; frame?: "browser" | "bare" | "device" | "row"; url?: string; ratio?: string; caption?: string }
   /** A website and its mobile version side by side: `web[i]` and `mobile[i]` step together. */
-  | { kind: "responsive"; web: CaseScreen[]; mobile: CaseScreen[]; frame?: "dark" | "bare"; url?: string; ratio?: string; control?: "tabs" | "player"; caption?: string }
+  | { kind: "responsive"; web: CaseScreen[]; mobile: CaseScreen[]; frame?: "dark" | "bare" | "laptop"; url?: string; ratio?: string; control?: "tabs" | "player"; caption?: string }
   /** One image. `full`: a much taller original (a long presentation) that the stage previews from its top; the viewer
    * opens it at full length, and a "View full presentation" button sits on the stage. */
   /** `scroll`: instead of the cropped preview, the whole `full` image is one narrower sheet that runs off the bottom
    * of the frame and slides up through it with the wheel or a mouse drag over it (case studies only). */
-  | { kind: "image"; src: string; alt: string; caption?: string; full?: { src: string; ratio: number; label?: string }; scroll?: true }
+  /** `phone` (with `scroll`): a phone beside the sheet, overlapping its right edge, like the responsive layout; a phone
+   * screen with `full` scrolls inside it. */
+  | { kind: "image"; src: string; alt: string; caption?: string; full?: { src: string; ratio: number; label?: string }; scroll?: true; phone?: CaseScreen }
   /** Finished posters (App Store screenshots) in a horizontal strip, about three in view, each opening in the viewer. */
   | { kind: "posters"; images: CaseScreen[]; caption?: string }
-  /** Several finished images (flows, boards) in one frame, each fitted whole, switched by tabs. */
-  | { kind: "images"; images: CaseScreen[]; caption?: string }
+  /** Several finished images (flows, boards) in one frame, each fitted whole, switched by tabs. `fill`: each covers the
+   * whole frame edge to edge instead (presentation images with their own background), cropping what overflows.
+   * `control: "player"` swaps the tabs for the auto-playing step player. */
+  | { kind: "images"; images: CaseScreen[]; fill?: true; control?: "tabs" | "player"; caption?: string }
   /** A live, rebuilt component to try (src/cases/demos.tsx), with its state tabs and a Code tab. `source` and `file`
    * are filled in by the case page from src/cases/demo-files.ts; leave them out in content. */
   | { kind: "component"; demo: string; caption?: string; source?: string; file?: string }
@@ -281,8 +285,8 @@ export const projectSlides: ProjectSlideContent[] = [
     webUrl: "https://www.askflow.ai/",
     caseStudyUrl: "/cases/askflow",
     media: [
+      { kind: "images", fill: true, control: "player", images: [af.fmWebsite, af.fmQuiz, af.fmHowItWorks], caption: "The marketing website: its sections, the product quiz and onboarding. Sample designs." },
       { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.builder, "Quiz builder"), as(af.productMatch, "Product matching"), as(af.chatWorkspace, "AI assistant"), as(af.insightsMap, "Flow insights")], caption: "The product from creation to configuration and review. Sample designs." },
-      { kind: "image", src: af.articleAssistant.src, alt: af.articleAssistant.alt, caption: "A finished presentation of AskFlow's shopping-assistant experience. Sample design." },
       { kind: "device", screens: [as(af.shopperChoiceMobile, "Choice"), as(af.shopperImageMobile, "Image choices"), as(af.shopperFormMobile, "Form")], caption: "Three examples of the shopper-facing experience on mobile. Sample designs." },
     ],
   },

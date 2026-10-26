@@ -13,6 +13,7 @@ import { CircleIcon, CpuIcon, DeviceMobileIcon, DropIcon, TriangleIcon } from "@
 import { SiteSurvey } from "./luminasset/demos/site-survey";
 import { LogicJump } from "./askflow/demos/logic-jump";
 import { ProductPicker } from "./askflow/demos/product-picker";
+import { AnswerColour } from "./askflow/demos/answer-colour";
 import { KitButton, KitInput, KitMinimap, KitQuestionCard, KitSelect, KitSelection } from "./askflow/demos/kit";
 import { CalendarDemo, ClassroomToolbar, HomeworkCard, ProgressCard } from "./tutor-iq/demos/kit";
 
@@ -38,6 +39,9 @@ export type Demo = {
   badge?: boolean;
   /** Where the note sits in a stage frame (CSS `top`), to put it just above the mock instead of at the frame's top. */
   hintTop?: string;
+  /** Stage demos only: shown as their own rounded app window (border and shadow), the size of a screenshot frame,
+   * centred on the grey. The demo keeps its 1152-wide layout (`ratio` is the window's) and is scaled down to fit. */
+  window?: boolean;
   /** What the tabs pick, for screen readers ("Styles", "Sections"). */
   presetsLabel?: string;
   Component: ComponentType<{ value: DemoValue; onValueChange: (value: DemoValue) => void }>;
@@ -93,8 +97,9 @@ export const demos: Record<string, Demo> = {
   "luminasset/select": { title: "Select", frame: "stage", initial: "", presets: [], ratio: "568 / 260", Component: SelectDemo as Demo["Component"] },
   "luminasset/otp": { title: "OTP input", frame: "stage", initial: "", presets: [], ratio: "568 / 260", Component: CodeInputDemo as Demo["Component"] },
   "luminasset/toggles": { title: "Toggles", frame: "stage", initial: "", presets: [], ratio: "568 / 260", Component: TogglesDemo as Demo["Component"] },
-  "askflow/logic-jump": { title: "Logic jump", frame: "stage", initial: "", presets: [], ratio: "1152 / 560", Component: LogicJump as Demo["Component"] },
-  "askflow/product-picker": { title: "Product picker", frame: "stage", initial: "", presets: [], ratio: "1152 / 600", Component: ProductPicker as Demo["Component"] },
+  "askflow/logic-jump": { title: "Logic jump", frame: "stage", initial: "", presets: [], ratio: "16 / 10", window: true, Component: LogicJump as Demo["Component"] },
+  "askflow/product-picker": { title: "Product picker", frame: "stage", initial: "", presets: [], ratio: "16 / 10", window: true, Component: ProductPicker as Demo["Component"] },
+  "askflow/answer-colour": { title: "Answer colours", frame: "stage", initial: "", presets: [], ratio: "16 / 10", window: true, Component: AnswerColour as Demo["Component"] },
   // AskFlow UI kit, one per frame, for a components grid (docs/cases/askflow.md, Components chapter).
   "askflow/button": {
     title: "Button", frame: "stage", initial: "primary", presetsLabel: "Styles", ratio: "1152 / 300",

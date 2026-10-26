@@ -1,0 +1,49 @@
+/* AskFlow answer colours (answer-colour.tsx): the control panel on the left, the states and a live question on the right.
+ * Every answer colour is the brand colour (--c) at the board's opacities. */
+.af-colour { display: grid; grid-template-columns: 300px minmax(0, 1fr); }
+.af-colour-panel { display: grid; align-content: start; gap: 14px; padding: 22px 20px; background: #fff; box-shadow: 1px 0 0 var(--af-line); }
+.af-colour-panel h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.af-colour-swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.af-colour-swatches button { display: grid; place-items: center; aspect-ratio: 1; padding: 0; border: 0; border-radius: 6px; color: #fff; transition: scale 120ms ease, box-shadow 120ms ease; }
+.af-colour-swatches button:active { scale: .94; }
+.af-colour-swatches button[aria-pressed="true"] { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--c); }
+.af-colour-swatches svg { width: 14px; height: 14px; }
+.af-colour-hex { display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 10px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--af-line-strong); }
+.af-colour-hex:focus-within { box-shadow: inset 0 0 0 1.5px var(--af-blue); }
+.af-colour-hex[data-invalid] { box-shadow: inset 0 0 0 1.5px #dc2626; }
+.af-colour-hex span { width: 18px; height: 18px; border-radius: 4px; }
+.af-colour-hex input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font-variant-numeric: tabular-nums; text-transform: uppercase; }
+.af-colour-tabs { display: grid; grid-template-columns: repeat(3, 1fr); padding: 3px; border-radius: 6px; background: #f3f4f6; }
+.af-colour-tabs button { height: 28px; padding: 0; border: 0; border-radius: 4px; background: none; color: var(--af-muted); font-size: 12px !important; }
+.af-colour-tabs button[aria-selected="true"] { background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / .08); color: var(--af-ink); }
+.af-colour-tokens { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.af-colour-tokens li { display: flex; align-items: center; gap: 10px; font-size: 13px; animation: af-colour-in 200ms ease; }
+.af-colour-tokens i { flex: none; width: 18px; height: 18px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .08); transition: background-color 200ms ease; }
+.af-colour-tokens small { display: block; color: var(--af-muted); font-size: 11px; }
+@keyframes af-colour-in { from { opacity: 0; translate: 0 2px; } }
+
+.af-colour-preview { display: grid; align-content: center; gap: 28px; padding: 28px 36px; }
+.af-colour-states { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.af-colour-state { display: grid; align-content: start; gap: 8px; padding: 12px; border: 0; border-radius: 8px; background: none; text-align: left; transition: background-color 150ms ease; }
+.af-colour-state:hover, .af-colour-state[aria-pressed="true"] { background: rgb(31 41 55 / .04); }
+.af-colour-state b { margin-bottom: 2px; color: var(--af-muted); font-size: 12px; font-weight: 400; }
+
+/* An answer, in one of three states. */
+.af-answer { --bg: 5%; --line: 20%; --dot: 20%; position: relative; display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 12px; border-radius: 6px; background: color-mix(in srgb, var(--c) var(--bg), #fff); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) var(--line), #fff); color: var(--c); font-size: 13px; transition: background-color 150ms ease, box-shadow 150ms ease, color 200ms ease; }
+.af-answer i { display: grid; place-items: center; flex: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--c) var(--dot), #fff); transition: inherit; }
+.af-answer[data-kind="check"] i { border-radius: 4px; }
+.af-answer i svg { width: 11px; height: 11px; color: #fff; }
+.af-colour-state[data-state="hover"] .af-answer, .af-answer[data-live]:hover { --bg: 10%; --line: 50%; --dot: 60%; }
+.af-colour-state[data-state="active"] .af-answer, .af-answer[data-checked] { --bg: 10%; --line: 80%; --dot: 100%; }
+.af-colour-state[data-state="active"] .af-answer[data-kind="radio"] i, .af-answer[data-kind="radio"][data-checked] i { background: color-mix(in srgb, var(--c) 15%, #fff); }
+.af-colour-state[data-state="active"] .af-answer[data-kind="radio"] i::after, .af-answer[data-kind="radio"][data-checked] i::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--c); animation: af-colour-dot 180ms cubic-bezier(.22, 1, .36, 1); }
+.af-colour-state[data-state="active"] .af-answer[data-kind="check"] i { background: var(--c); box-shadow: none; }
+@keyframes af-colour-dot { from { scale: 0; } }
+
+.af-colour-live { display: grid; gap: 12px; padding: 20px 22px; border-radius: 8px; background: #fff; box-shadow: 0 0 0 1px var(--af-line), 0 1px 2px rgb(0 0 0 / .04); }
+.af-colour-live p { margin: 0; color: var(--af-ink); font-size: 16px; font-weight: 500; }
+.af-colour-live [role="radiogroup"] { display: grid; gap: 8px; }
+.af-answer[data-live] { cursor: pointer; }
+.af-answer[data-live]:active { scale: .99; }
+.af-answer input { position: absolute; opacity: 0; pointer-events: none; }
+.af-answer:has(input:focus-visible) { outline: 2px solid var(--c); outline-offset: 2px; }

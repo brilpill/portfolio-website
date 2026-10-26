@@ -17,6 +17,8 @@ const phone = (file: string, alt: string): CaseScreen => ({ src: `${dir}/${file}
 const long = (file: string, alt: string, height: number): CaseScreen => ({ ...phone(file, alt), full: { src: `${dir}/${file}-full.png`, ratio: height / 375 } });
 /** A screen with its label for tabs. */
 export const as = (screen: CaseScreen, label: string): CaseScreen => ({ ...screen, label });
+/** A finished presentation image from the fourmeta.com project page (fm-*.webp), with its tab label. */
+const fm = (file: string, alt: string, label: string): CaseScreen => ({ src: `${dir}/fm-${file}.webp`, alt: `Sample AskFlow ${alt}`, label });
 
 export const af = {
   dashboard: art("dashboard", "Sample AskFlow dashboard"),
@@ -48,6 +50,9 @@ export const af = {
   analyticsEmpty: art("analytics-empty", "Sample AskFlow analytics empty"),
   websiteHome: art("website-home", "Sample AskFlow website home"),
   websiteHomeMobile: long("website-home-mobile", "Sample AskFlow website home mobile", 9878),
+  /** The whole desktop homepage (AskFlow Website Figma file, 2001:21659), 1728 × 13095, for a scrolling sheet; its top
+   * as the cover. Review ratings and the contact email read "Sample", as on the mobile export. */
+  websiteHomeFull: { src: `${dir}/website-home-cover.jpg`, alt: "Sample AskFlow website homepage, from the hero through quizzes, the AI agent, features, use cases and FAQ", full: { src: `${dir}/website-home-full.jpg`, ratio: 13095 / 1728 } } as CaseScreen,
   connectStore: art("connect-store", "Sample AskFlow Store connection"),
   storeConnected: art("store-connected", "Sample AskFlow Connected store"),
   cmsChoice: art("cms-choice", "Sample AskFlow Commerce platform choice"),
@@ -133,4 +138,44 @@ export const af = {
   articleWebsite: art("article-website", "Sample AskFlow marketing website on a tablet"),
   articleMobile: art("article-mobile", "Sample AskFlow mobile industry-page presentation"),
   articleAssistant: art("article-assistant", "Sample AskFlow shopping assistant presentation"),
+  // Added 26 Oct 2026 from the AskFlow App Figma file (approved pages), 1x. The storefront frames had the demo store's
+  // name, tab title and URL painted out; the trial plans have their prices blurred.
+  storeStart: art("store-start", "Sample AskFlow quiz opening as a popup over a demo store"),
+  storeQuestion: art("store-question", "Sample AskFlow quiz question with a hint, in a popup over a demo store"),
+  storeImages: art("store-images", "Sample AskFlow image answers in a popup over a demo store"),
+  storeResults: art("store-results", "Sample AskFlow recommended products in a popup over a demo store"),
+  resultsMenu: art("results-menu", "Sample AskFlow settings menu with start, form and results settings"),
+  resultsStart: art("results-start", "Sample AskFlow start settings beside the start screen"),
+  resultsPage: art("results-page", "Sample AskFlow results page settings for cart and product buttons and image scaling"),
+  /** The same screen whole on the card grey at 4:3, for a pair card (which crops to 4:3). */
+  resultsPageCard: art("results-page-4x3", "Sample AskFlow results page settings for cart and product buttons and image scaling"),
+  resultsAssistant: art("results-assistant", "Sample AskFlow assistant results settings for sorting and product media"),
+  matchMenu: art("match-menu", "Sample AskFlow answer menu with a Match product action"),
+  matchEmpty: art("match-empty", "Sample AskFlow product panel opened from an answer"),
+  matchOne: art("match-one", "Sample AskFlow answer with one matched product"),
+  matchThree: art("match-three", "Sample AskFlow answer with three matched products"),
+  matchScores: art("match-scores", "Sample AskFlow matched products with a score for each"),
+  trialAAi: art("trial-a-ai", "Sample AskFlow first quiz generated with AI, version A"),
+  trialAPlans: art("trial-a-plans", "Sample AskFlow plan choice with a free trial, version A (prices hidden)"),
+  trialBPlans: art("trial-b-plans", "Sample AskFlow plan choice over the builder, version B (prices hidden)"),
+  trialBEmbed: art("trial-b-embed", "Sample AskFlow share and embed dialog after activation, version B"),
+  themeSans: art("theme-sans", "Sample AskFlow quiz theme with a warm background and blue sans-serif type"),
+  themeForm: art("theme-form", "Sample AskFlow quiz theme with green type on a form step"),
+  themeSerif: art("theme-serif", "Sample AskFlow quiz theme with serif type and coral accents"),
+  themeLilac: art("theme-lilac", "Sample AskFlow quiz theme on lilac with a progress bar"),
+  themeLilacForm: art("theme-lilac-form", "Sample AskFlow lilac theme on a form step"),
+  themeDark: art("theme-dark", "Sample AskFlow quiz theme on a dark background"),
+  // Presentation images from the AskFlow project page on fourmeta.com (26 Oct 2026), at their published size (about
+  // 2250 px wide). The two phone pairs are joined from side-by-side images on that page.
+  fmWebsite: fm("website", "website sections laid out at an angle", "Website"),
+  fmMobile: fm("mobile", "mobile website pages on phones against a lilac background", "Mobile"),
+  fmQuiz: fm("quiz", "product quiz section with quiz examples, on a tablet", "Product quiz"),
+  fmAdvisor: fm("advisor", "AI product advisor chat on a tablet", "AI advisor"),
+  fmHowItWorks: fm("how-it-works", "onboarding cards explaining how AskFlow AI works", "How it works"),
+  fmInstagram: fm("instagram", "AskFlow post on a phone held in a hand", "Social"),
+  fmPhonesHome: fm("phones-home", "mobile homepage and blog on two phones", "Mobile pages"),
+  fmFullPage: fm("full-page", "full website page beside its mobile version", "Full page"),
+  fmPhonesNewsletter: fm("phones-newsletter", "mobile newsletter and sign-up sections on two phones", "Newsletter"),
+  fmInsights: fm("insights", "insights and social links section on a tablet", "Insights"),
+  fmQuizAi: fm("quiz-ai", "AI quiz generation and results sections on two tablets", "Quiz with AI"),
 };

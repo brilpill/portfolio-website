@@ -183,8 +183,8 @@
   background-size: 180px 180px;
 }
 
-/* Dark version of the unlinked Playground experiment. Keep the light production shell unchanged. */
-.home-screen[data-layout="card-shell"][data-playground-theme="dark"] {
+/* The appearance setting themes the portfolio shell and the file canvas together. */
+.home-screen[data-layout="card-shell"][data-site-theme="dark"] {
   color-scheme: dark;
   --background: #17181b;
   --foreground: #f3f4f5;
@@ -200,10 +200,15 @@
   --home-muted: #a1a4ab;
   --home-fill: #2a2c31;
   --home-line: #3b3d43;
+  --shell-shadow: 0 1px 4px rgb(0 0 0 / .12), 0 12px 36px rgb(0 0 0 / .16);
   background: #141518;
 }
-.home-screen[data-layout="card-shell"][data-playground-theme="dark"] :is(.playground-view, .playground-board) { background-color: #1e1f22; }
-.home-screen[data-layout="card-shell"][data-playground-theme="dark"] .playground-board::before { filter: invert(1); opacity: .13; }
+.home-screen[data-layout="card-shell"][data-site-theme="dark"] :is(.playground-view, .playground-board, .portfolio-page > section:not(.project-slide), .project-media > .case-media, .portfolio-pager > .more-slide) { background-color: #1e1f22; }
+.home-screen[data-layout="card-shell"][data-site-theme="dark"] .playground-board::before { filter: invert(1); opacity: .13; }
+.home-screen[data-layout="card-shell"][data-site-theme="dark"] .assistant-composer-box { background: rgb(42 44 49 / .8); }
+@media (max-width: 767px) {
+  .home-screen[data-layout="card-shell"][data-site-theme="dark"] .portfolio-assistant { background: #141518; }
+}
 
 /* Previous sections reveal their overview immediately; only forward entry rises in. */
 .home-screen[data-layout="card-shell"][data-navigation-direction="backward"] .portfolio-page[data-state="active"] .project-info :is(.project-draft-label, .project-overview, .project-facts, .case-links) {

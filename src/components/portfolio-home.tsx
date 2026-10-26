@@ -20,7 +20,7 @@ import { AskAiIcon } from "./ask-ai-icon";
 import { AssistantPanel } from "./assistant-panel";
 import { SoundWaveform } from "./sound-waveform";
 import { playCue, playUiSound } from "./ui-sound";
-import { useSidebarVisible, setSidebarVisible, useSoundEnabled, setSoundEnabled, useSectionSnap, usePlaygroundAppearance, setPlaygroundAppearance } from "./settings-store";
+import { useSidebarVisible, setSidebarVisible, useSoundEnabled, setSoundEnabled, useSectionSnap, usePlaygroundAppearance, setPlaygroundAppearance, usePortfolioAppearance, setPortfolioAppearance } from "./settings-store";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/sheet";
@@ -143,6 +143,10 @@ export function PortfolioHome({ layout = "default", playgroundExperiment = false
   const [morePage, setMorePage] = useState<MorePage | null>(null);
   const [panel, setPanel] = useState<Panel>(playgroundExperiment ? "playground" : null);
   const playgroundTheme = usePlaygroundAppearance();
+  const portfolioTheme = usePortfolioAppearance();
+  const appearance = playgroundExperiment
+    ? { value: playgroundTheme, onChange: setPlaygroundAppearance }
+    : { value: portfolioTheme, onChange: setPortfolioAppearance };
   const [factIndex, setFactIndex] = useState(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [projectPreviewOpen, setProjectPreviewOpen] = useState(false);
@@ -289,11 +293,11 @@ export function PortfolioHome({ layout = "default", playgroundExperiment = false
     {layout === "card-shell" && <ControlHint label={soundEnabled ? "Turn sound off" : "Turn sound on"}><Button data-sound-toggle variant="quiet" size="icon" aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"} aria-pressed={soundEnabled} onClick={toggleSound}>{soundEnabled ? <SoundWaveform /> : <WaveformSlashIcon aria-hidden />}</Button></ControlHint>}
     <ControlHint label="Currently unavailable."><Button hidden={assistantOpen} data-ai-trigger className="ask-ai-trigger" variant="quiet" aria-label="Ask AI preview" aria-expanded={assistantOpen} aria-controls="portfolio-assistant" onClick={openAssistant}><AskAiIcon />Ask AI</Button></ControlHint>
   </div>;
-  const sidebarControls = { openPanel: panel, assistantOpen, onAsk: () => { if (assistantOpen) closeAssistant(); else openAssistant(); }, soundEnabled, onSound: toggleSound, sidebarExpanded: sidebarVisible, onSidebar: commitSidebar, onProfileOpenChange: setProfileMenuOpen, appearance: playgroundExperiment && panel === "playground" ? { value: playgroundTheme, onChange: setPlaygroundAppearance } : undefined };
+  const sidebarControls = { openPanel: panel, assistantOpen, onAsk: () => { if (assistantOpen) closeAssistant(); else openAssistant(); }, soundEnabled, onSound: toggleSound, sidebarExpanded: sidebarVisible, onSidebar: commitSidebar, onProfileOpenChange: setProfileMenuOpen, appearance };
   const close = () => setPanel(null);
 
   return (
-    <div className="home-screen" data-layout={layout} data-playground-theme={playgroundExperiment && panel === "playground" ? playgroundTheme : undefined} id="home" data-sidebar-resizing={sidebarResizing} data-section={active} data-navigation-direction={direction} data-sidebar={sidebarVisible ? "open" : "closed"} data-assistant={assistantOpen ? "open" : "closed"} data-snap={sectionSnap ? "on" : "off"}>
+    <div className="home-screen" data-layout={layout} data-site-theme={appearance.value} id="home" data-sidebar-resizing={sidebarResizing} data-section={active} data-navigation-direction={direction} data-sidebar={sidebarVisible ? "open" : "closed"} data-assistant={assistantOpen ? "open" : "closed"} data-snap={sectionSnap ? "on" : "off"}>
       <a className="home-skip" href="#slide-content" onClick={(event) => { event.preventDefault(); viewportRef.current?.querySelector<HTMLElement>('[data-state="active"] [data-slide-heading]')?.focus(); }}>Skip to content</a>
       <aside ref={sidebarRef} id="portfolio-sidebar" className="home-sidebar" aria-label="Portfolio navigation">
         <div className="sidebar-expanded" hidden={!sidebarVisible}>
@@ -324,7 +328,7 @@ export function PortfolioHome({ layout = "default", playgroundExperiment = false
           })}
         </div>
         {morePage && panel !== "playground" && <MoreProjectsSlide key={morePage} group={morePage === "mobile-more" ? "Mobile" : "Web"} onPreviewChange={setProjectPreviewOpen} />}
-        {panel === "playground" && <Playground variant={playgroundExperiment ? "files" : "default"} theme={playgroundTheme} onClose={() => { setPanel(null); requestAnimationFrame(() => returnFocus.current?.focus()); }} />}
+        {panel === "playground" && <Playground variant="files" theme={appearance.value} onClose={() => { setPanel(null); requestAnimationFrame(() => returnFocus.current?.focus()); }} />}
       </main>
       <span className="home-sr-only" role="status" aria-live="polite">{sectionTitles[active] ?? projectSlides.find((project) => project.slug === active)?.title}</span>
       <Sheet open={panel === "menu"} onOpenChange={(open) => { if (!open) close(); }}>

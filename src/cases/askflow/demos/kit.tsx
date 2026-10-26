@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import { CaretDownIcon, CaretUpIcon, CheckCircleIcon, CheckIcon, CircleNotchIcon, CursorClickIcon, DotsSixVerticalIcon, EyeIcon, FlagIcon, ImageIcon, ListBulletsIcon, MagnifyingGlassIcon, MapTrifoldIcon, MinusIcon, PlusIcon, TextAaIcon, TextboxIcon, UserIcon, WarningCircleIcon, XIcon } from "@phosphor-icons/react";
+import { CaretDownIcon, CaretUpIcon, CheckIcon, CircleNotchIcon, CursorClickIcon, DotsSixVerticalIcon, EyeIcon, FlagIcon, ImageIcon, ListBulletsIcon, MagnifyingGlassIcon, MapTrifoldIcon, MinusIcon, PlusIcon, TextAaIcon, TextboxIcon, UserIcon, XIcon } from "@phosphor-icons/react";
 import { playCue } from "@/components/ui-sound";
 import { inter } from "../font";
+import { InTabRow } from "@/cases/demo-slot";
 import "./kit.css";
 
 /**
@@ -24,9 +25,10 @@ function Segmented<T extends string>({ label, options, value, onChange }: { labe
   </div>;
 }
 
-/* Button: the kit's six styles as tabs; size, destructive and disabled inside the frame. */
+/* Button: the kit's six styles as tabs and its sizes as a second tab group beside them; destructive and disabled in the corner. */
 type ButtonStyle = "primary" | "secondary" | "ghost" | "toolbar" | "link" | "highlighted";
 const destructiveStyles: ButtonStyle[] = ["primary", "secondary"];
+const sizes = ["Xs", "Sm", "Md", "Lg"] as const;
 export function KitButton({ value }: { value: string | number }) {
   const style = String(value) as ButtonStyle;
   const [size, setSize] = useState<"Xs" | "Sm" | "Md" | "Lg">("Md");
@@ -40,8 +42,16 @@ export function KitButton({ value }: { value: string | number }) {
   }, [loading]);
   const canDestroy = destructiveStyles.includes(style);
   return <Surface className="afk-button-demo">
+    {/* Size sits in the block's tab row, as its own group beside the style tabs; outside a case block, in the corner. */}
+    <InTabRow fallback={<div className="afk-corner afk-corner-left"><Segmented label="Size" options={sizes} value={size} onChange={setSize} /></div>}>
+      <div className="case-control case-tabs" role="radiogroup" aria-label="Size">
+        {sizes.map(option => <button key={option} type="button" role="radio" aria-checked={option === size} aria-current={option === size || undefined} onClick={() => setSize(option)}>
+          {option === size && <span className="case-tabs-thumb" aria-hidden />}
+          <span className="case-tabs-label">{option}</span>
+        </button>)}
+      </div>
+    </InTabRow>
     <div className="afk-corner">
-      <Segmented label="Size" options={["Xs", "Sm", "Md", "Lg"] as const} value={size} onChange={setSize} />
       {canDestroy && <Switch label="Destructive" on={destructive} onChange={setDestructive} />}
       <Switch label="Disabled" on={disabled} onChange={on => { setDisabled(on); setLoading(false); }} />
     </div>
@@ -52,30 +62,23 @@ export function KitButton({ value }: { value: string | number }) {
   </Surface>;
 }
 
-/* Input: one labelled field; Validate shows Error when empty and Success otherwise. */
+/* Input: one labelled field; Small and Disabled switches in the corner, as on the Button. */
 export function KitInput() {
   const [text, setText] = useState("");
-  const [status, setStatus] = useState<"idle" | "error" | "success">("idle");
   const [disabled, setDisabled] = useState(false);
   const [small, setSmall] = useState(false);
-  const validate = () => { const ok = !!text.trim(); setStatus(ok ? "success" : "error"); playCue(ok ? "success" : "error"); };
-  const help = status === "error" ? "Add a quiz name to continue" : status === "success" ? "Looks good (a demo check only)" : "";
   return <Surface className="afk-center">
-    <div className="afk-field" data-status={status} data-size={small ? "small" : undefined}>
+    <div className="afk-corner">
+      <Switch label="Small" on={small} onChange={setSmall} />
+      <Switch label="Disabled" on={disabled} onChange={setDisabled} />
+    </div>
+    <div className="afk-field" data-size={small ? "small" : undefined}>
       <label htmlFor="afk-input">Quiz name</label>
       <div className="afk-box" data-disabled={disabled || undefined}>
         <MagnifyingGlassIcon aria-hidden />
-        <input id="afk-input" value={text} disabled={disabled} placeholder="Find your perfect size" aria-describedby={help ? "afk-input-help" : undefined} aria-invalid={status === "error" || undefined}
-          onChange={event => { setText(event.target.value); setStatus("idle"); }} onKeyDown={event => { if (event.key === "Enter") validate(); }} />
+        <input id="afk-input" value={text} disabled={disabled} placeholder="Find your perfect size" onChange={event => setText(event.target.value)} />
         <EyeIcon aria-hidden />
       </div>
-      {/* Only the validation result shows under the field; no standing helper text. */}
-      {help && <p id="afk-input-help" aria-live="polite">{status === "error" && <WarningCircleIcon weight="fill" />}{status === "success" && <CheckCircleIcon weight="fill" />}{help}</p>}
-    </div>
-    <div className="afk-row afk-dock">
-      <button type="button" className="afk-btn" data-style="secondary" data-size="Sm" onClick={validate} disabled={disabled} data-sound="off">Validate</button>
-      <Switch label="Small" on={small} onChange={setSmall} />
-      <Switch label="Disabled" on={disabled} onChange={on => { setDisabled(on); setStatus("idle"); }} />
     </div>
   </Surface>;
 }

@@ -10,6 +10,7 @@ import { CaseAnnotation } from "./case-annotation";
 import { useViewer } from "./case-study-viewer";
 import { playCue, type SoundCue } from "./ui-sound";
 import { demos } from "@/cases/demos";
+import { DemoTabRow } from "@/cases/demo-slot";
 
 /** How long each screen stays in the auto-playing step player (Bencho-style: the dot grows into a bar that fills). */
 const PLAYER_PACE = 3600; // ms
@@ -434,6 +435,7 @@ function ScreensStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "de
 
   const at = (offset: number, list = screens) => list[(index + offset) % list.length];
   let body: ReactNode;
+  let bothScroll = false;
   if (media.kind === "device") {
     const frame = media.frame ?? "dark";
     if (groups) body = <div className="case-phone-row">{groups[index].map((item, i) => <Phone key={i} scrollable={scrolls(item)}><Swap screen={item} sizes={phoneSizes} /></Phone>)}</div>;
@@ -448,9 +450,13 @@ function ScreensStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "de
     body = frame === "laptop" ? <Laptop><Swap screen={at(0)} sizes={sizes} still={!scrolls(at(0))} /></Laptop> : <Browser url={media.url} frame={frame} ratio={media.ratio}><Swap screen={at(0)} sizes={sizes} still /></Browser>;
   } else {
     const web = <Swap screen={at(0)} sizes={sizes} still={!scrolls(at(0))} />;
+    const phone = media.mobile[index % media.mobile.length];
+    // When the laptop's page scrolls too, one label at the top of the block covers both screens.
+    bothScroll = media.frame === "laptop" && scrolls(at(0));
     body = <div className="case-responsive" data-laptop={media.frame === "laptop" || undefined}>
       {media.frame === "laptop" ? <Laptop>{web}</Laptop> : <Browser url={media.url} frame={media.frame ?? "dark"} ratio={media.ratio}>{web}</Browser>}
-      <Phone className="case-responsive-phone" scrollable={scrolls(at(0, media.mobile))}><Swap screen={at(0, media.mobile)} sizes={phoneSizes} /></Phone>
+      {/* A page without a mobile version (null) shows the laptop alone. */}
+      {phone && <Phone className="case-responsive-phone" scrollable={!bothScroll && scrolls(phone)}><Swap screen={phone} sizes={phoneSizes} /></Phone>}
     </div>;
   }
 
@@ -459,6 +465,7 @@ function ScreensStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "de
   return <div ref={stage} className={`case-stage${bleed ? " case-stage-bleed" : ""}`} data-ground={figma || undefined} data-frame={media.kind === "responsive" ? "responsive" : media.frame ?? "dark"} data-layout={media.kind === "device" && !groups && media.frame !== "pair" ? "single-phone" : undefined} onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)} onFocus={() => setHovered(true)} onBlur={() => setHovered(false)}>
     {bleed && <Image className="case-stage-background" src={media.background!} alt="" fill sizes={sizes} />}
     <div className={`case-stage-body case-stage-${media.kind === "responsive" ? "browser" : media.kind}`} aria-live="polite">{body}</div>
+    {bothScroll && <span className="case-demo-hint" aria-hidden><ArrowsDownUpIcon weight="bold" />Scrollable</span>}
     {many && <>
       <StageArrows index={index} count={screens.length} onGo={go} noun="screen" />
       {player
@@ -630,6 +637,8 @@ function ComponentStage({ media, hint = true }: { media: Extract<ProjectSlideMed
   const [copied, setCopied] = useState(false);
   // A framed demo renders at its design width and is scaled to fit its window (the same size as a screenshot frame).
   const win = useRef<HTMLDivElement>(null);
+  // The tab row's extra slot, where a demo can render its own control group (InTabRow).
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
   const framed = !!demo?.window && view === "preview";
   useLayoutEffect(() => {
     const element = win.current;
@@ -649,10 +658,10 @@ function ComponentStage({ media, hint = true }: { media: Extract<ProjectSlideMed
   return <div className="case-stage case-demo" data-frame={demo.frame} data-view={view} data-window={demo.window || undefined} style={demo.ratio && !demo.window ? { "--demo-ratio": demo.ratio } as CSSProperties : undefined}>
     {view === "preview"
       ? demo.frame === "device"
-        ? <div className="case-stage-body case-stage-device"><Phone interactive={demo.badge !== false}><HotspotHints><Component value={value} onValueChange={setValue} /></HotspotHints></Phone></div>
+        ? <div className="case-stage-body case-stage-device"><Phone interactive={demo.badge !== false}><HotspotHints><DemoTabRow.Provider value={slot}><Component value={value} onValueChange={setValue} /></DemoTabRow.Provider></HotspotHints></Phone></div>
         : demo.window
-          ? <div ref={win} className="case-demo-window" style={{ aspectRatio: demo.ratio }}><div className="case-demo-stage"><Component value={value} onValueChange={setValue} /></div></div>
-          : <div className="case-demo-stage"><Component value={value} onValueChange={setValue} /></div>
+          ? <div ref={win} className="case-demo-window" style={{ aspectRatio: demo.ratio }}><div className="case-demo-stage"><DemoTabRow.Provider value={slot}><Component value={value} onValueChange={setValue} /></DemoTabRow.Provider></div></div>
+          : <div className="case-demo-stage"><DemoTabRow.Provider value={slot}><Component value={value} onValueChange={setValue} /></DemoTabRow.Provider></div>
       : <div className="case-code">
           <div className="case-code-bar"><span>{media.file?.split("/").pop()}</span>
             <button type="button" onClick={copy}>{copied ? <CheckIcon size={14} aria-hidden /> : <CopyIcon size={14} aria-hidden />}<span aria-live="polite">{copied ? "Copied" : "Copy"}</span></button>
@@ -668,7 +677,8 @@ function ComponentStage({ media, hint = true }: { media: Extract<ProjectSlideMed
     </div>}
     {view === "preview" && demo.presets.length > 1 && <StageArrows index={Math.max(0, demo.presets.findIndex(preset => preset.value === value))} count={demo.presets.length}
       onGo={next => setValue(demo.presets[next].value)} noun={demo.presetsLabel?.toLowerCase().replace(/s$/, "") ?? "state"} />}
-    {view === "preview" && demo.presets.length > 1 && <div className="case-control case-tabs" role="group" aria-label={demo.presetsLabel ?? "States"}>
+    {view === "preview" && demo.presets.length > 1 && <div className="case-control-row">
+      <div className="case-control case-tabs" role="group" aria-label={demo.presetsLabel ?? "States"}>
       {demo.presets.map((preset, i) => {
         const active = preset.value === value;
         return <button key={preset.label} type="button" aria-current={active ? "step" : undefined} onClick={() => setValue(preset.value)}>
@@ -681,6 +691,8 @@ function ComponentStage({ media, hint = true }: { media: Extract<ProjectSlideMed
           </span>
         </button>;
       })}
+      </div>
+      <div ref={setSlot} className="case-control-slot" />
     </div>}
     {view === "preview" && demo.presets.length > 1 && <TabDots count={demo.presets.length} index={Math.max(0, demo.presets.findIndex(preset => preset.value === value))} />}
   </div>;

@@ -382,7 +382,7 @@
   /* Keyboard focus keeps them; a mouse click doesn't, so they fade once the pointer leaves. */
   .case-stage:hover .case-arrow, .case-stage:has(:focus-visible) .case-arrow { opacity: 1; }
   /* On the tabs, the arrows step aside: the tabs are what is being used. */
-  .case-stage:has(> .case-control:hover) .case-arrow { opacity: 0; pointer-events: none; }
+  .case-stage:has(> .case-control:hover, > .case-control-row:hover) .case-arrow { opacity: 0; pointer-events: none; }
 }
 .case-arrow-previous { left: 24px; }
 .case-arrow-next { right: 24px; }
@@ -400,6 +400,11 @@
 }
 .case-tabs-thumb { position: absolute; inset: 0; z-index: -1; border-radius: 7px; background: var(--background); box-shadow: 0 1px 1.5px rgb(25 25 25 / .08), 0 0 0 .5px rgb(25 25 25 / .06); }
 .case-tabs { isolation: isolate; }
+/* A component block's tab row: its tabs plus an optional second group a demo renders into the slot (InTabRow), the
+   whole row centred where the tabs sit. Each group keeps the tabs' pill look. */
+.case-control-row { position: absolute; bottom: max(calc(3.4 * var(--stage-unit)), 24px); left: 50%; display: flex; align-items: center; gap: 8px; translate: -50% 0; }
+.case-control-row .case-control { position: static; transform: none; }
+.case-control-slot { display: contents; }
 .case-tabs-label { display: inline-flex; align-items: center; gap: 6px; max-width: 220px; overflow: hidden; white-space: nowrap; }
 /* With a mouse, a frame's tabs rest as dots (TabDots: one per step, the current one darker, no pill) and the two
    crossfade through a soft blur, the same way in and out, while the pointer is over the frame or a tab has keyboard
@@ -409,11 +414,11 @@
   .case-tabs-dots { position: absolute; bottom: max(calc(3.4 * var(--stage-unit)), 24px); left: 50%; display: flex; align-items: center; gap: 6px; height: 32px; translate: -50% 0; pointer-events: none; transition: opacity 360ms cubic-bezier(.4, 0, .2, 1), filter 360ms cubic-bezier(.4, 0, .2, 1), scale 360ms cubic-bezier(.4, 0, .2, 1); }
   .case-tabs-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgb(25 25 25 / .2); }
   .case-tabs-dots i[data-current] { background: rgb(25 25 25 / .65); }
-  .case-stage > .case-tabs { transition: opacity 360ms cubic-bezier(.4, 0, .2, 1), filter 360ms cubic-bezier(.4, 0, .2, 1), scale 360ms cubic-bezier(.4, 0, .2, 1); }
-  .case-stage:not(:hover):not(:has(:focus-visible)) > .case-tabs { opacity: 0; filter: blur(6px); scale: .94; pointer-events: none; }
+  .case-stage > :is(.case-tabs, .case-control-row) { transition: opacity 360ms cubic-bezier(.4, 0, .2, 1), filter 360ms cubic-bezier(.4, 0, .2, 1), scale 360ms cubic-bezier(.4, 0, .2, 1); }
+  .case-stage:not(:hover):not(:has(:focus-visible)) > :is(.case-tabs, .case-control-row) { opacity: 0; filter: blur(6px); scale: .94; pointer-events: none; }
   .case-stage:is(:hover, :has(:focus-visible)) > .case-tabs-dots { opacity: 0; filter: blur(6px); scale: 1.4; }
 }
-@media (prefers-reduced-motion: reduce) { .case-stage > .case-tabs, .case-tabs-dots { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .case-stage > :is(.case-tabs, .case-control-row), .case-tabs-dots { transition: none !important; } }
 .case-tabs-number { font-variant-numeric: tabular-nums; }
 /* Tab icons (live component tabs): each plays its own small move when its tab is picked, and again on hover. */
 .case-tabs-icon { display: grid; place-items: center; width: 14px; height: 14px; }
@@ -485,6 +490,12 @@
   .case-study-link:hover { background: var(--action-hover); }
 }
 .case-study-link:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+/* A case study still being written (caseStudyDraft): dimmed and inert, with a note on hover or focus. */
+.case-study-link[data-draft] { position: relative; background: var(--secondary); color: var(--muted-foreground); cursor: not-allowed; }
+@media (hover: hover) and (pointer: fine) { .case-study-link[data-draft]:hover { background: var(--secondary); } }
+.case-study-note { position: absolute; bottom: calc(100% + 8px); left: 50%; padding: 6px 10px; border-radius: 8px; background: var(--action); color: var(--action-foreground); font-size: var(--text-caption); font-weight: 500; line-height: 16px; white-space: nowrap; opacity: 0; translate: -50% 4px; pointer-events: none; transition: opacity var(--motion-fast) ease, translate var(--motion-fast) var(--motion-ease-out); }
+.case-study-link[data-draft]:is(:hover, :focus-visible) .case-study-note { opacity: 1; translate: -50% 0; }
+@media (prefers-reduced-motion: reduce) { .case-study-note { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .case-link:active, .case-link-arrow { transform: none !important; } }
 .project-preview-dialog { width: min(980px, calc(100vw - 32px)); max-width: 980px; height: min(820px, calc(100dvh - 32px)); padding: 0; gap: 0; overflow: hidden; grid-template-rows: auto minmax(0, 1fr); }
 .project-preview-note { padding: 16px 52px 12px 24px; border-bottom: 1px solid var(--border); font-size: var(--text-caption); color: var(--muted-foreground); }
@@ -942,12 +953,14 @@
   border-radius: var(--radius-preview);
 }
 
-/* Unlinked file-canvas experiment: leave a clear central lane for a Figma-style selected title. */
+/* The center column frames the selected title with cards above and below it. */
 .playground-view[data-variant="files"] { --playground-canvas: #f3f3f3; --playground-ink: #111; --playground-label: #2b2b2b; --playground-handle: #555; }
 .playground-view[data-variant="files"][data-theme="dark"] { --playground-canvas: #1e1f22; --playground-ink: #f4f4f5; --playground-label: #c7c9cf; --playground-handle: #aaadb4; }
 .playground-view[data-variant="files"] .playground-board { background: var(--playground-canvas); }
-.playground-view[data-variant="files"] .playground-grid { --file-title-gap: 440px; }
-.playground-view[data-variant="files"] .playground-column:nth-child(3) { margin-right: var(--file-title-gap); }
+.playground-view[data-variant="files"] .playground-column-center { --file-title-clearance: 112px; position: relative; flex: 0 0 var(--pin-size); align-self: stretch; width: var(--pin-size); padding-top: 0; }
+.playground-view[data-variant="files"] .playground-column-center .playground-card { position: absolute; left: 0; }
+.playground-view[data-variant="files"] .playground-column-center .playground-card:first-child { top: calc(50% - var(--pin-size) - 25px - var(--file-title-clearance)); }
+.playground-view[data-variant="files"] .playground-column-center .playground-card:last-child { top: calc(50% + var(--file-title-clearance)); }
 .playground-view[data-variant="files"] .playground-card { display: flex; flex-direction: column; align-items: center; height: calc(var(--pin-size) + 25px); max-height: none; overflow: visible; gap: 9px; }
 .playground-view[data-variant="files"] .playground-card-image { flex: 0 0 var(--pin-size); height: var(--pin-size); }
 .playground-file-name { max-width: 100%; overflow: hidden; color: var(--playground-label); font-size: 12px; line-height: 1.3; text-align: center; text-overflow: ellipsis; white-space: nowrap; user-select: none; }
@@ -962,7 +975,7 @@
 .playground-selection i[data-handle="bm"] { left: 50%; top: 100%; }
 .playground-selection i[data-handle="br"] { left: 100%; top: 100%; }
 @media (max-width: 767px) {
-  .playground-view[data-variant="files"] .playground-grid { --file-title-gap: 320px; }
+  .playground-view[data-variant="files"] .playground-column-center { --file-title-clearance: 88px; }
   .playground-selection { font-size: 48px; }
 }
 

@@ -1,5 +1,9 @@
 # Tutor IQ
 
+> **Case study button disabled (26 Oct 2026, at Oleh's request):** `caseStudyDraft: true` in `project-slides.ts`. "Read the case study" shows greyed out with a "Case study under development" note on hover or focus; pressing it plays the error cue. The case is skipped in previous/next case navigation and in the sitemap; `/cases/<slug>` still builds. Remove the flag to publish.
+
+> **Changed 26 Oct 2026, at Oleh's request:** the overview slide's third block (the full website homepage) was removed; the slide now has the two platform blocks. The homepage stays in the case study.
+
 > **As built, 25 Oct 2026.** Built from this MD (`src/content/project-slides.ts`, `src/content/case-studies.ts`, `src/content/tutor-iq-media.ts`, images in `public/cases/tutor-iq/`). It replaces the earlier "tutoriq" placeholder slide; the sidebar item is now "Tutor IQ" (GraduationCap). Timeline shows a dash.
 >
 > **Deviations:**

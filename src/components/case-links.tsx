@@ -1,9 +1,11 @@
 "use client";
 
+import { useId } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 import { AppleLogoIcon, ArrowRightIcon, ArrowUpRightIcon, FigmaLogoIcon, GlobeSimpleIcon, GooglePlayLogoIcon, LinkSimpleIcon, type Icon } from "@phosphor-icons/react";
 import type { ProjectSlideContent } from "@/content/project-slides";
 import { motionTokens } from "@/lib/motion";
+import { playCue } from "./ui-sound";
 
 type Props = { project: ProjectSlideContent };
 
@@ -39,7 +41,7 @@ export function CaseLinks({ project }: Props) {
           ))}
         </ul>
       )}
-      {project.caseStudyUrl && <CaseStudyLink href={project.caseStudyUrl} />}
+      {project.caseStudyUrl && (project.caseStudyDraft ? <CaseStudyDraft /> : <CaseStudyLink href={project.caseStudyUrl} />)}
     </div>
   );
 }
@@ -65,5 +67,21 @@ function CaseStudyLink({ href }: { href: string }) {
       <span>Read the case study</span>
       <motion.span className="case-study-arrow" style={{ x: springArrow }} aria-hidden><ArrowRightIcon size={16} /></motion.span>
     </motion.a>
+  );
+}
+
+/**
+ * A case study still being written: the same button, dimmed and inert, with a small note above it on hover or
+ * keyboard focus. Pressing it plays the error cue instead of navigating.
+ */
+function CaseStudyDraft() {
+  const note = useId();
+  return (
+    <span className="case-study-link" data-draft role="link" aria-disabled="true" aria-describedby={note} tabIndex={0}
+      onClick={() => playCue("error")} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); playCue("error"); } }}>
+      <span>Read the case study</span>
+      <span className="case-study-arrow" aria-hidden><ArrowRightIcon size={16} /></span>
+      <span id={note} role="tooltip" className="case-study-note">Case study under development</span>
+    </span>
   );
 }

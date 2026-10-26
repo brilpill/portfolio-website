@@ -13,6 +13,7 @@
 .afk-dock { position: absolute; bottom: max(calc(3.4 * var(--stage-unit)), 24px); left: 50%; height: 32px; translate: -50% 0; }
 .afk-note { color: var(--k-muted); font-size: 12px; }
 .afk-corner { position: absolute; top: 16px; right: 20px; display: flex; align-items: center; gap: 16px; color: var(--k-muted); font-size: 12px; }
+.afk-corner-left { right: auto; left: 20px; }
 .afk-switch { display: flex; align-items: center; gap: 7px; cursor: pointer; }
 .afk-switch input { position: absolute; opacity: 0; pointer-events: none; }
 .afk-switch i { position: relative; width: 28px; height: 16px; border-radius: 999px; background: #d1d5db; transition: background-color 160ms ease; }

@@ -53,6 +53,24 @@ export const af = {
   /** The whole desktop homepage (AskFlow Website Figma file, 2001:21659), 1728 × 13095, for a scrolling sheet; its top
    * as the cover. Review ratings and the contact email read "Sample", as on the mobile export. */
   websiteHomeFull: { src: `${dir}/website-home-cover.jpg`, alt: "Sample AskFlow website homepage, from the hero through quizzes, the AI agent, features, use cases and FAQ", full: { src: `${dir}/website-home-full.jpg`, ratio: 13095 / 1728 } } as CaseScreen,
+  // More website pages (AskFlow Website Figma file, Section 4022:9763), desktop 1728 wide and mobile 375 wide, each at
+  // full length with its top as the cover. Plan prices are blurred; review ratings, testimonial names and company
+  // domains read "Sample".
+  sitePages: ([
+    ["howto", "How to use", "how-to-use page with setup steps and tutorials", 8154, 8124],
+    ["pricing", "Pricing", "pricing page with plans and a traffic-based plan builder (prices hidden)", 5685, 5270],
+    ["faq", "FAQ", "FAQ page", 6006, 4335],
+    ["health", "Health & Wellbeing", "Health & Wellbeing industry page", 16057, 11599],
+    ["fashion", "Fashion", "Fashion industry page", 15957, 11682],
+    ["beauty", "Beauty", "Beauty industry page", 15920, 11566],
+    ["about", "About us", "About us page", 8679, 7303],
+    ["partners", "Partners", "partner programme page", 5658, 4817],
+    ["blog", "Blog", "blog page with article cards", 5392, 7883],
+    ["article", "Article", "article page", 11075, 7974],
+  ] as const).map(([file, label, alt, desktop, mobile]) => ({
+    web: { src: `${dir}/site/${file}.jpg`, label, alt: `Sample AskFlow website ${alt}`, full: { src: `${dir}/site/${file}-full.jpg`, ratio: desktop / 1728 } } as CaseScreen,
+    mobile: { src: `${dir}/site/${file}-m.jpg`, alt: `Sample AskFlow website ${alt} on mobile`, full: { src: `${dir}/site/${file}-m-full.jpg`, ratio: mobile / 375 } } as CaseScreen,
+  })),
   connectStore: art("connect-store", "Sample AskFlow Store connection"),
   storeConnected: art("store-connected", "Sample AskFlow Connected store"),
   cmsChoice: art("cms-choice", "Sample AskFlow Commerce platform choice"),

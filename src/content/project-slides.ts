@@ -50,8 +50,9 @@ export type ProjectSlideMedia = { annotation?: MediaAnnotation } & (
    * whole frame that you drag to compare them. `frame: "row"` with `more` pairs puts up to three phones side by side
    * under the same divider. */
   | { kind: "compare"; before: CaseScreen; after: CaseScreen; more?: { before: CaseScreen; after: CaseScreen }[]; frame?: "browser" | "bare" | "device" | "row"; url?: string; ratio?: string; caption?: string }
-  /** A website and its mobile version side by side: `web[i]` and `mobile[i]` step together. */
-  | { kind: "responsive"; web: CaseScreen[]; mobile: CaseScreen[]; frame?: "dark" | "bare" | "laptop"; url?: string; ratio?: string; control?: "tabs" | "player"; caption?: string }
+  /** A website and its mobile version side by side: `web[i]` and `mobile[i]` step together; a `null` mobile shows
+   * the website alone for that step. */
+  | { kind: "responsive"; web: CaseScreen[]; mobile: (CaseScreen | null)[]; frame?: "dark" | "bare" | "laptop"; url?: string; ratio?: string; control?: "tabs" | "player"; caption?: string }
   /** One image. `full`: a much taller original (a long presentation) that the stage previews from its top; the viewer
    * opens it at full length, and a "View full presentation" button sits on the stage. */
   /** `scroll`: instead of the cropped preview, the whole `full` image is one narrower sheet that runs off the bottom
@@ -98,6 +99,9 @@ export type ProjectSlideContent = {
   otherUrl?: string;
   /** The full case study page; shown as the one emphasised link. */
   caseStudyUrl?: string;
+  /** The case study is still being written: its button shows, disabled, with an "under development" note on hover
+   * or focus, and the case is left out of case navigation and the sitemap (the page itself still builds). */
+  caseStudyDraft?: boolean;
   media: ProjectSlideMedia[];
   /** The one title of the case details; falls back to "Title: Format". */
   headline?: string;
@@ -303,10 +307,10 @@ export const projectSlides: ProjectSlideContent[] = [
     industry: "Education / Tutoring",
     figmaUrl: "", // the Figma files are private
     caseStudyUrl: "/cases/tutor-iq",
+    caseStudyDraft: true,
     media: [
       { kind: "browser", frame: "bare", ratio: TQ_RATIO.app, screens: [tq.parentHome, tq.studentHome, tq.tutorHome, tq.adminDashboard], caption: "Four roles, each with a distinct view of the same learning journey." },
       { kind: "browser", frame: "bare", ratio: TQ_RATIO.app, screens: [tq.tutorSearch, tq.bookingTime, tq.classroomActive, tq.homeworkFeedback], caption: "Find, book, learn and respond to feedback." },
-      { kind: "image", src: tq.websiteHome.src, alt: tq.websiteHome.alt, full: { ...tq.websiteHome.full!, label: "View full homepage" }, caption: "The complete website homepage introduces the service and leads visitors into the platform." },
     ],
   },
   {
@@ -323,9 +327,10 @@ export const projectSlides: ProjectSlideContent[] = [
     figmaUrl: "", // the Figma file is private
     webUrl: "https://www.staymo.com/",
     caseStudyUrl: "/cases/smarthost",
+    caseStudyDraft: true,
     media: [
-      { kind: "responsive", frame: "bare", ratio: SH_RATIO.page, web: [sh.home], mobile: [sh.homeMobile], caption: "A shared visual language across the desktop and mobile homepage. Sample design." },
-      { kind: "browser", frame: "bare", ratio: SH_RATIO.form, screens: [sh.estimateGoal, sh.estimateDetails, { ...sh.estimateResult, label: "Estimate" }, { ...sh.services, label: "Services" }], caption: "From understanding the service to exploring a property's potential. Sample design; figures are illustrative." },
+      { kind: "responsive", frame: "laptop", web: [sh.home, { ...sh.estimateResult, label: "Estimate" }, { ...sh.services, label: "Services" }], mobile: [sh.homeMobile, sh.resultMobile, null], caption: "The homepage, an estimate and the service overview, each scrolling at full length on desktop and mobile. Sample design; figures are illustrative." },
+      { kind: "browser", frame: "bare", ratio: SH_RATIO.form, screens: [sh.estimateGoal, sh.estimateDetails], caption: "The questionnaire that leads to an estimate. Sample design." },
     ],
   },
   {

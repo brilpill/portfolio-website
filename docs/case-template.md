@@ -86,7 +86,7 @@ annotation: cursor · Oleh · "One button per stage" · 30,40 → 62,56 → 70,3
 annotation: draft · Oleh · 34,30 → 66,52
 ```
 
-All block types are on the unlinked page `/experiments/case-blocks`, and every block and frame together is on `/cases/showcase`.
+Every block and frame together is on `/cases/showcase`.
 
 ### Live components and design systems
 
@@ -119,7 +119,6 @@ A design system doesn't go in as an image or a component sheet (tried, and dropp
 | `luminasset/button` | stage | The button at real size, centred. Hold for Pressed, tap for Loading; a Disabled switch in the top-right corner. White and Dark turn the surface dark. | The seven styles |
 | `luminasset/input` · `select` · `otp` · `toggles` | stage | One input per frame, each a white card (the Figma frame) on the grey: Postcode (focus, clear, Loading, then found or error), Roof orientation select with its menu, OTP code (try 31AG9P), Number of storeys toggles. Made for a `components` grid. | none |
 | `luminasset/inputs` | stage | The same four in a 2 × 2 grid inside one frame. | none |
-| `vestigo/model-builder` | stage | Cogs and databases on a canvas: + beside a block adds the next one connected, blocks drag, the Properties Panel fills in, Test runs it. | none |
 | `askflow/logic-jump` | stage | A question card and a logic jump card: drag from an answer's dot (or press Connect) to join them, the rule dialog opens; Save, Cancel or the cross return to the cards. | none |
 | `askflow/product-picker` | stage | The catalogue panel beside a question: search a sample catalogue, expand variants, tick products or variants; the Match products step and the summary follow. | none |
 | `askflow/button` | stage | AskFlow's button at real size; size, Destructive and Disabled inside the frame; hold for Active, click for Loading. | Primary · Secondary · Ghost · Toolbar · Link · Toolbar - Highlighted |
@@ -167,7 +166,7 @@ For a new project's tokens, give the Figma link to the page or frame that holds 
 
 ### Mockup templates (frames)
 
-Phone and browser blocks take an optional `frame`; leave it out for the default. Live examples of every one: `/experiments/mockups`.
+Phone and browser blocks take an optional `frame`; leave it out for the default.
 
 | Block | `frame` | Looks like | Use it for |
 | --- | --- | --- | --- |
@@ -180,7 +179,7 @@ Phone and browser blocks take an optional `frame`; leave it out for the default.
 | `browser` | `laptop` | The page on a MacBook. | Desktop apps and dashboards. |
 | `browser` | `window` | One whole window with a minimal light bar, on a light grey ground. | Web pages in the Figma mockup style. |
 | `responsive` | `dark` / `bare` | The website in Safari with its mobile version on a phone in front. | A site and its mobile adaptation together. |
-| `responsive` · `frame: "laptop"` | The website in the laptop mockup with the phone over its right edge. A web screen with `full` scrolls inside the laptop's screen (wheel, trackpad, drag), like a long phone screen. | A whole desktop homepage beside its mobile version (AskFlow). |
+| `responsive` · `frame: "laptop"` | The website in the laptop mockup with the phone over its right edge. A web screen with `full` scrolls inside the laptop's screen (wheel, trackpad, drag), like a long phone screen. Then one "Scrollable" label sits at the top centre of the block, for both screens, instead of the phone's own. A page with no mobile version goes in `mobile` as `null`; that tab shows the laptop alone (SmartHost Services). | A whole desktop homepage beside its mobile version (AskFlow). |
 
 Desktop screens switch instantly (no dissolve); phone screens dissolve. Not available on purpose: light Safari, tilted or perspective mockups, stacked or overlapping windows, crops, tiled grids, and Safari (or any browser) around mobile screens. Mobile screens always go in a phone.
 
@@ -276,7 +275,7 @@ What every case study page has without you doing anything:
 
 So a pasted file lands everywhere it needs to:
 
-- Slide content: `src/content/project-slides.ts` (one entry per project; `caseStudyUrl: "/cases/<slug>"` when part 3 exists).
+- Slide content: `src/content/project-slides.ts` (one entry per project; `caseStudyUrl: "/cases/<slug>"` when part 3 exists; add `caseStudyDraft: true` while the case study is still being written: the button shows disabled with an "under development" note, and the case stays out of case navigation and the sitemap).
 - Case study content: `src/content/case-studies.ts`. Screens for a project: `src/content/<slug>-media.ts` (`screen()`, and `long()` for a long screen with `full: { src, ratio }`).
 - A filled-in copy of the case file: `docs/cases/<slug>.md`, kept in step with what the site shows.
 - Sidebar item and its icon: the `groups` list in `src/components/portfolio-home.tsx`.
@@ -296,7 +295,7 @@ So a pasted file lands everywhere it needs to:
   - The project's font: `src/cases/<slug>/font.ts` (next/font).
   - System components (Button, Ruler…): `src/cases/<slug>/components/`.
   - Demos (what a frame shows): `src/cases/<slug>/demos/`. Each is a controlled component taking `value` / `onValueChange`; `value` is whatever the tabs pick.
-  - Register each demo in `src/cases/demos.tsx`: `title`, `frame` (`device` | `stage`), `initial`, `presets` (the tabs; `icon` and `anim` for animated tab icons), `presetsLabel`, `numbered`, `ratio` (frame proportions, e.g. `"1152 / 400"`), `badge: false` to drop the Interactive label, `hintTop` to place a stage's label just above its mock. `window: true` frames a stage demo as its own window.
+  - Register each demo in `src/cases/demos.tsx`: `title`, `frame` (`device` | `stage`), `initial`, `presets` (the tabs; `icon` and `anim` for animated tab icons), `presetsLabel`, `numbered`, `ratio` (frame proportions, e.g. `"1152 / 400"`), `badge: false` to drop the Interactive label, `hintTop` to place a stage's label just above its mock. `window: true` frames a stage demo as its own window. A demo with tabs can add its own second tab group to the block's bottom row (beside the tabs, the row centred) by rendering it inside `<InTabRow>` from `src/cases/demo-slot.tsx`, styled as `case-control case-tabs` (AskFlow Button sizes).
   - Also register it in `src/cases/demo-files.ts`, which maps the demo to its source for the Code tab. The tab is off (`SHOW_CODE` in `case-media.tsx`).
 - **Sounds:** every interactive component has sounds. Inside a case block they come for free (`CaseMedia` in `case-media.tsx`): a key or a delete in any field, a click on any button, tab, link or option, a switch or radio flipped. For a meaningful moment, play a cue from `@/components/ui-sound` (`playCue("success" | "error" | "open" | "close" | "toggle" | "key" | "erase" | "click")`), and put `data-sound="off"` on the element so the default click doesn't play too, or `data-sound="toggle"` (any cue) to swap it. Sliders tick on each step (see the Ruler). Cues play only when the visitor has turned sound on. Interactive pieces outside case blocks call `playCue` the same way.
 - **Scroll lock:** `useScrollLock` in `case-media.tsx` sets `data-scroll-lock` on a figure until 80% of it is in view, and turns off scrolling only on its parts that actually scroll. A demo with its own wheel handler returns early inside `[data-scroll-lock]`.

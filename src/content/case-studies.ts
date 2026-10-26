@@ -341,9 +341,9 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         id: "website", label: "Website", title: "Introducing the product through its interface",
-        body: "I designed the marketing website to explain product quizzes and AI shopping assistance through interface examples, clear product sections, and calls to action. The visual language carries across desktop and mobile.",
+        body: "I designed the marketing website to explain product quizzes and AI shopping assistance through interface examples, clear product sections, and calls to action. The visual language carries across desktop and mobile. The tabs move through the homepage and ten more pages, from How to use and Pricing to three industry pages, About us, Partners and the blog; each scrolls at full length on both screens.",
         figures: [
-          { kind: "responsive", frame: "laptop", web: [as(af.websiteHomeFull, "Homepage")], mobile: [af.websiteHomeMobile] },
+          { kind: "responsive", frame: "laptop", web: [as(af.websiteHomeFull, "Home"), ...af.sitePages.map(page => page.web)], mobile: [af.websiteHomeMobile, ...af.sitePages.map(page => page.mobile)] },
         ],
       },
       {
@@ -372,7 +372,6 @@ export const caseStudies: CaseStudy[] = [
         body: "Questions and answers appear as cards with visible connection points. Branching can direct different answers to different destinations; grouped answers can share a route. Editing also includes smaller operations such as duplicating an answer and reconnecting a broken path. These interaction states explain how the map is intended to be used, beyond its appearance in a finished screenshot.",
         figures: [
           { kind: "browser", frame: "bare", ratio: AF_RATIO, screens: [as(af.choiceBuilder, "Question card"), as(af.choiceMultiselect, "Group answers"), as(af.branchRouting, "Route an answer"), as(af.branchRestore, "Reconnect a path"), as(af.answerDuplicate, "Duplicate an answer")] },
-          { kind: "image", src: af.routingCloseup.src, alt: af.routingCloseup.alt, annotation: { kind: "cursor", name: "Oleh", note: "An answer connects to its next step.", points: [[35, 48], [78, 48]] } },
         ],
       },
       {

@@ -9,6 +9,7 @@ import { playgroundItems, playgroundPoster, type PlaygroundItem } from "@/conten
 import { motionTokens } from "@/lib/motion";
 
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
+const fileCenterIndexes = new Set([8, 13]);
 
 /** An independent, click-only destination. The board pans; the page never scrolls. */
 export function Playground({ onClose, variant = "default", theme = "light" }: { onClose: () => void; variant?: "default" | "files"; theme?: "light" | "dark" }) {
@@ -77,9 +78,15 @@ export function Playground({ onClose, variant = "default", theme = "light" }: { 
       const w = element!.clientWidth, h = element!.clientHeight;
       const gw = content!.offsetWidth * zoom.get(), gh = content!.offsetHeight * zoom.get();
       viewportWidth = w; viewportHeight = h;
-      pins = Array.from(content!.querySelectorAll<HTMLElement>(".playground-card")).map(card => ({
-        image: card.querySelector<HTMLElement>(".playground-card-image")!, left: card.offsetLeft, top: card.offsetTop, width: card.offsetWidth, height: card.offsetHeight,
-      }));
+      const contentRect = content!.getBoundingClientRect();
+      pins = Array.from(content!.querySelectorAll<HTMLElement>(".playground-card")).map(card => {
+        const rect = card.getBoundingClientRect();
+        return {
+          image: card.querySelector<HTMLElement>(".playground-card-image")!,
+          left: (rect.left - contentRect.left) / zoom.get(), top: (rect.top - contentRect.top) / zoom.get(),
+          width: rect.width / zoom.get(), height: rect.height / zoom.get(),
+        };
+      });
       const next = { left: Math.min(0, w - gw) - 100, right: Math.max(0, w - gw) + 100, top: Math.min(0, h - gh) - 80, bottom: Math.max(0, h - gh) + 80 };
       limits.current = next; setBounds(next);
       x.set((w - gw) / 2); y.set((h - gh) / 2);
@@ -155,8 +162,14 @@ export function Playground({ onClose, variant = "default", theme = "light" }: { 
       <motion.div ref={grid} className="playground-grid" style={{ x, y, scale: zoom, transformOrigin: "0 0" }} drag dragConstraints={bounds} dragElastic={.12}
         dragTransition={{ bounceStiffness: 300, bounceDamping: 32, power: .18 }}
         onDragStart={() => { dragging.current = true; }} onDragEnd={event => { dragging.current = false; suppressClickUntil.current = event.timeStamp + 180; }}>
-        {Array.from({ length: 6 }, (_, column) => <div className="playground-column" key={column}>
-        {playgroundItems.filter((_, index) => index % 6 === column).map((item, index) => {
+        {Array.from({ length: variant === "files" ? 7 : 6 }, (_, column) => {
+          const centerColumn = variant === "files" && column === 3;
+          const items = centerColumn
+            ? playgroundItems.filter((_, index) => fileCenterIndexes.has(index))
+            : playgroundItems.filter((_, index) => variant !== "files" || !fileCenterIndexes.has(index))
+              .filter((_, index) => index % 6 === (variant === "files" && column > 3 ? column - 1 : column));
+          return <div className={`playground-column${centerColumn ? " playground-column-center" : ""}`} key={column}>
+        {items.map((item, index) => {
           const card = <button type="button" className="playground-card" data-stack={item.media.length > 1 ? "true" : undefined} key={item.id} style={{ "--pin-order": column + index * 2 } as CSSProperties} aria-label={`Preview ${item.title}${item.media.length > 1 ? `, ${item.media.length} media items` : ""}${item.media.some(media => media.kind === "video") ? ", with video" : ""}`} onClick={event => preview(item, event.currentTarget, event.timeStamp)}
           onFocus={event => {
             if (!event.currentTarget.matches(":focus-visible")) return;
@@ -178,7 +191,8 @@ export function Playground({ onClose, variant = "default", theme = "light" }: { 
         </button>;
           return card;
         })}
-        </div>)}
+        </div>;
+        })}
         {variant === "files" && <div className="playground-selection" aria-hidden="true"><span>Playground</span>{["tl", "tm", "tr", "ml", "mr", "bl", "bm", "br"].map(handle => <i key={handle} data-handle={handle} />)}</div>}
       </motion.div>
     </div>

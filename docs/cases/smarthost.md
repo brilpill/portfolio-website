@@ -1,5 +1,9 @@
 # SmartHost
 
+> **Case study button disabled (26 Oct 2026, at Oleh's request):** `caseStudyDraft: true` in `project-slides.ts`. "Read the case study" shows greyed out with a "Case study under development" note on hover or focus; pressing it plays the error cue. The case is skipped in previous/next case navigation and in the sitemap; `/cases/<slug>` still builds. Remove the flag to publish.
+
+> **Changed 26 Oct 2026, at Oleh's request:** the overview slide's first block is now the laptop + phone block used on AskFlow (`responsive`, `frame: "laptop"`), with three tabs that each scroll at full length: Homepage (desktop + mobile), Estimate (desktop + mobile) and Services (desktop only; a `null` mobile shows the laptop alone). One "Scrollable" label sits at the top of the block. The second block keeps the questionnaire steps (owner goals, property details); the estimate and services moved into the first.
+
 > **As built, 25 Oct 2026.** Saved as given; the slide and case study match it (`src/content/project-slides.ts`, `src/content/case-studies.ts`, `src/content/smarthost-media.ts`, images in `public/cases/smarthost/`). Replaces the placeholder SmartHost slide; sidebar icon changed from Key to HouseLine. My role and Timeline show a dash. Notes: compare gained a `bare` frame for the wireframe comparison. Each browser block uses the proportions of its shortest preview, so the 1100-high pages lose a strip at the bottom rather than the sides (estimate-result and services in overview block 2; blog and article in the Wider website block, framed at the hero height). Full-length desktop pages (home, services, photography, listings, estimate result, blog, article) open in the viewer on the case page. Figure captions inside the case page are not shown.
 
 ## 1. Basics

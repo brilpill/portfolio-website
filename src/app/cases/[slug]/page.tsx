@@ -51,7 +51,7 @@ function viewerItems(media: CaseStudyFigure): ViewerItem[] {
   if (media.kind === "posters") return media.images.map(({ src, alt }) => ({ src, alt }));
   if (media.kind === "images") return media.images.map(long(true));
   if (media.kind === "video") return [media.src ? { kind: "video", src: media.src, poster: media.poster, alt: media.posterAlt } : { src: media.poster, alt: media.posterAlt }];
-  if (media.kind === "responsive") return [...media.web.map(long(true)), ...media.mobile.map(long(false))];
+  if (media.kind === "responsive") return [...media.web.map(long(true)), ...media.mobile.filter(screen => screen !== null).map(long(false))];
   if (media.kind === "compare") return [{ before: media.before, after: media.after }, ...(media.more ?? [])].flatMap(pair => [pair.before, pair.after]).map(({ src, alt }) => ({ src, alt }));
   if (media.kind === "component" || media.kind === "components") return [];
   return media.screens.map(long(media.kind === "browser"));
@@ -133,10 +133,10 @@ export default async function CaseStudyPage({ params }: PageProps<"/cases/[slug]
   if (!study || !name) notFound();
   const ProjectIcon = icons[slug] ?? ChargingStationIcon;
   const back = project ? { href: `/#${slug}`, label: name } : { href: "/", label: "Home" };
-  // Follow the same sequence as the sidebar, skipping projects without a published case-study page.
+  // Follow the same sequence as the sidebar, skipping projects without a published case-study page (or still in draft).
   const caseSequence = portfolioSlideIds.flatMap(id => {
     const item = projectSlides.find(project => project.slug === id);
-    return item?.caseStudyUrl === `/cases/${id}` ? [item] : [];
+    return item?.caseStudyUrl === `/cases/${id}` && !item.caseStudyDraft ? [item] : [];
   });
   const caseIndex = caseSequence.findIndex(item => item.slug === slug);
   const previousCase = caseIndex > 0 ? caseSequence[caseIndex - 1] : undefined;

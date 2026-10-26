@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeftIcon, ArrowRightIcon, BowlFoodIcon, CalendarBlankIcon, ChargingStationIcon, ClockIcon, FlowArrowIcon, FlowerLotusIcon, GraduationCapIcon, HeartbeatIcon, ChartLineUpIcon, HouseLineIcon, MoonIcon, SolarPanelIcon, SquaresFourIcon, UsersThreeIcon } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeftIcon, ArrowRightIcon, BowlFoodIcon, CalendarBlankIcon, ChargingStationIcon, ClockIcon, FlowArrowIcon, FlowerLotusIcon, GraduationCapIcon, HeartbeatIcon, HouseLineIcon, MoonIcon, PackageIcon, SolarPanelIcon, SquaresFourIcon, UsersThreeIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Icon } from "@phosphor-icons/react";
 import { CaseMedia } from "@/components/case-media";
 import { CaseNumbers } from "@/components/case-numbers";
@@ -21,7 +21,7 @@ import { demoFiles } from "@/cases/demo-files";
 import "./case-study.css";
 
 // The sidebar icon of each case that has a study; it matches the icon in the portfolio sidebar.
-const icons: Record<string, Icon> = { luminasset: SolarPanelIcon, "quantum-body": FlowerLotusIcon, snoozeband: MoonIcon, nearbor: UsersThreeIcon, askflow: FlowArrowIcon, smarthost: HouseLineIcon, sellergenius: ChartLineUpIcon, "tutor-iq": GraduationCapIcon, "peach-health": HeartbeatIcon, dangdi: BowlFoodIcon, showcase: SquaresFourIcon };
+const icons: Record<string, Icon> = { luminasset: SolarPanelIcon, "quantum-body": FlowerLotusIcon, snoozeband: MoonIcon, nearbor: UsersThreeIcon, askflow: FlowArrowIcon, smarthost: HouseLineIcon, sellergenius: PackageIcon, "tutor-iq": GraduationCapIcon, "peach-health": HeartbeatIcon, dangdi: BowlFoodIcon, showcase: SquaresFourIcon };
 
 export function generateStaticParams() {
   return caseStudies.filter(({ slug }) => !projectSlides.some(project => project.slug === slug && project.archived)).map(({ slug }) => ({ slug }));
@@ -107,13 +107,13 @@ function Chapter({ chapter }: { chapter: CaseStudyChapter }) {
       {chapter.figures?.map((media, index) => <Figure key={index} media={media} />)}
       {chapter.pair && (
         <div className="case-study-pair">
-          {chapter.pair.map(item => (
-            <div key={item.title}>
-              <div className="case-study-copy">
-                <p className="case-study-label">{item.label}</p>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-              </div>
+          {chapter.pair.map((item, index) => (
+            <div key={index}>
+              {(item.label || item.title || item.body) && <div className="case-study-copy">
+                {item.label && <p className="case-study-label">{item.label}</p>}
+                {item.title && <h3>{item.title}</h3>}
+                {item.body && <p>{item.body}</p>}
+              </div>}
               <Figure media={item.media} />
             </div>
           ))}

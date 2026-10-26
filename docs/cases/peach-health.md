@@ -9,9 +9,11 @@
 ## Overview (two blocks)
 
 1. **Row:** Home, Health agents, Medication kit.
-2. **Tabs:** Mood check, Pill taken?, Inhaler taken?, Lock-screen reminder.
+2. **Tabs:** Mood check (the mood-picked state), Pill taken?, Inhaler taken?, Lock-screen reminder.
 
-## Case study: all 26 screens
+## Case study: 24 screens
+
+The neutral mood-check screen (4043:102320) was removed on request (26 Oct); the mood-picked state stands for the mood check. The edit-kit screen (4043:100220) was removed too (26 Oct).
 
 | Chapter | Screens |
 | --- | --- |
@@ -19,10 +21,10 @@
 | Brand | Loading, Start, All set |
 | Onboarding | Health goals, Profile, Allergies, Permissions, Accessibility |
 | Home | Home, Tasks done, Lock-screen reminder |
-| Check-ins | Mood check, Mood picked, Pill taken?, Inhaler taken? |
+| Check-ins | Mood check (mood picked), Pill taken?, Inhaler taken? |
 | AI agents | Health agents, Your chats, New chat, Chat |
-| Medications | Medication kit, Edit kit, Medication, Refill |
-| Settings | Settings, then Accessibility & App light vs dark (compare) |
+| Medications | Medication kit, Medication, Refill |
+| Settings | A pair of frames: Settings, and Accessibility & App light vs dark (compare) |
 
 ## Boundaries
 

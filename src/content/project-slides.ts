@@ -31,7 +31,7 @@ export type CaseScreen = { src: string; alt: string; label?: string; full?: { sr
  */
 /** Phone frames (master templates, see docs/case-template.md): dark is the default; silver suits screens that
  * read better with a light outline; pair shows the next screen behind the current one; row stands three phones
- * side by side (more than three screens page through in threes, with tabs). */
+ * side by side (more screens page through in balanced groups of two or three, with tabs; `perPage: 2` for pairs). */
 export type PhoneFrame = "dark" | "silver" | "pair" | "row";
 /** Browser frames: macOS Safari (dark, the default) with the project's address; bare window (no chrome); laptop;
  * window (one whole window with a minimal bar on a light grey ground, from the Figma mockups page). */
@@ -42,7 +42,8 @@ export type BrowserFrame = "dark" | "bare" | "laptop" | "window";
 export type MediaAnnotation = { kind: "cursor" | "draft"; name: string; note?: string; points: [number, number][] };
 
 export type ProjectSlideMedia = { annotation?: MediaAnnotation } & (
-  | { kind: "device"; screens: CaseScreen[]; frame?: PhoneFrame; control?: "tabs" | "player"; caption?: string }
+  /** `perPage`: with `frame: "row"`, how many phones stand side by side, 2 or 3 (default 3, balanced so no page has one). */
+  | { kind: "device"; screens: CaseScreen[]; frame?: PhoneFrame; perPage?: 2 | 3; control?: "tabs" | "player"; caption?: string }
   /** `ratio`: the page's proportions (width / height) when they aren't the default 1728 / 1064, so wide screens aren't cropped. */
   | { kind: "browser"; screens: CaseScreen[]; frame?: BrowserFrame; url?: string; ratio?: string; background?: string; control?: "tabs" | "player"; caption?: string }
   /** Before / after: two screens in one mockup (Safari by default, a bare window, or a phone) with a divider across the
@@ -218,7 +219,7 @@ export const projectSlides: ProjectSlideContent[] = [
     caseStudyUrl: "/cases/peach-health",
     media: [
       { kind: "device", frame: "row", screens: [ph.home, ph.agents, ph.medsKit], caption: "Today's tasks, AI health agents and the medication kit. Sample design." },
-      { kind: "device", screens: [ph.moodCheck, ph.pillCheck, ph.medsCheck, ph.lockScreen], caption: "Daily check-ins, one question at a time, and the reminder that starts them. Sample design." },
+      { kind: "device", screens: [ph.moodSelected, ph.pillCheck, ph.medsCheck, ph.lockScreen], caption: "Daily check-ins, one question at a time, and the reminder that starts them. Sample design." },
     ],
   },
   {
@@ -238,7 +239,7 @@ export const projectSlides: ProjectSlideContent[] = [
     caseStudyUrl: "/cases/nearbor",
     media: [
       { kind: "device", frame: "row", screens: [{ ...nb.home, label: "Community calendar" }, { ...nb.careOverview, label: "Helping others" }, { ...nb.serviceHistory, label: "Provider history" }], caption: "The everyday tasks behind Nearbor: getting together, helping, and keeping useful information." },
-      { kind: "compare", frame: "device", before: { ...nb.textSizeDefault, label: "Default text" }, after: { ...nb.textSizeLarge, label: "Large text" }, caption: "A text-size preview gives users a visible way to choose what is comfortable to read. These are two settings, not an old/new redesign comparison." },
+      { kind: "device", frame: "row", screens: [nb.volunteerRoles, nb.volunteerSignup, nb.eventOwner], caption: "Roles, sign-ups and coverage in one event flow. Sample design." },
     ],
   },
   {
@@ -262,7 +263,7 @@ export const projectSlides: ProjectSlideContent[] = [
     webUrl: "https://seller-genius.com/",
     caseStudyUrl: "/cases/sellergenius",
     media: [
-      { kind: "browser", frame: "bare", ratio: SG_RATIO, screens: [sg.dashboard, sg.profit, sg.advertising, sg.brands, sg.aiChat], caption: "From the main dashboard to profit, advertising, brands and the AI assistant. Sample designs." },
+      { kind: "images", images: [sg.dashboard, sg.profit, sg.advertising, sg.brands, sg.aiChat], caption: "From the main dashboard to profit, advertising, brands and the AI assistant. Sample designs." },
       { kind: "compare", frame: "bare", ratio: SG_RATIO, before: { ...sg.dashboard, label: "Light" }, after: sg.dashboardDark, caption: "Every screen was designed in a light and a dark theme. Sample design." },
     ],
   },

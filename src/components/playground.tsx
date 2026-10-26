@@ -179,6 +179,6 @@ export function Playground({ onClose }: { onClose: () => void }) {
     </div>
     <p id="playground-help" className="home-sr-only">Drag or scroll to pan; Shift-scroll moves horizontally. Pinch or press plus/minus to zoom; zero resets. Arrow keys pan when the board is focused; Home resets. Select a shot to preview its images and videos; Escape returns to the previous slide.</p>
     {/* A shot stays one pin, with all its images and videos in the shared viewer. */}
-    {selected && <MediaViewer open={open} onOpenChange={setOpen} title={selected.title} source={{ href: selected.sourceUrl, label: "Dribbble" }} items={selected.media} index={imageIndex} onIndexChange={setImageIndex} trigger={trigger} origin={origin} size="narrow" />}
+    {selected && <MediaViewer open={open} onOpenChange={setOpen} title={selected.title} source={{ href: selected.sourceUrl, label: selected.sourceLabel ?? "Dribbble" }} items={selected.media} index={imageIndex} onIndexChange={setImageIndex} trigger={trigger} origin={origin} size="narrow" />}
   </section>;
 }

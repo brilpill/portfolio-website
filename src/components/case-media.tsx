@@ -385,20 +385,38 @@ function ScrollableScreen({ screen, sizes: imageSizes }: { screen: CaseScreen; s
 const phoneSizes = "(max-width: 767px) 60vw, 340px";
 
 /**
+ * Splits a row's screens into pages of at most `perPage` (3 by default) phones, as evenly as possible, so no page is
+ * left with a lone phone: 4 screens page as 2 + 2, 5 as 3 + 2, 7 as 3 + 2 + 2. `perPage: 2` pages in pairs.
+ */
+function rowGroups<T>(items: T[], perPage = 3) {
+  const pages = Math.max(1, Math.ceil(items.length / perPage));
+  const base = Math.floor(items.length / pages), extra = items.length % pages;
+  const groups: T[][] = [];
+  for (let page = 0, at = 0; page < pages; page++) {
+    const size = base + (page < extra ? 1 : 0);
+    groups.push(items.slice(at, at + size));
+    at += size;
+  }
+  return groups;
+}
+
+/**
  * Phone, browser and responsive blocks, in the frame the block asks for (the master templates in
- * docs/case-template.md). Several screens get arrows plus step tabs or the step player; a `row` shows three phones
- * at once and steps through its screens in threes.
+ * docs/case-template.md). Several screens get arrows plus step tabs or the step player; a `row` shows two or three
+ * phones at once and steps through its screens in balanced groups (see rowGroups).
  */
 function ScreensStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "device" | "browser" | "responsive" }> }) {
   const all = media.kind === "responsive" ? media.web : media.screens;
   const row = media.kind === "device" && media.frame === "row";
-  // A row's steps are groups of three; every other block steps one screen at a time.
-  const groups = row ? Array.from({ length: Math.ceil(all.length / 3) }, (_, i) => all.slice(i * 3, i * 3 + 3)) : null;
+  // A row's steps are groups of two or three; every other block steps one screen at a time.
+  const groups = row ? rowGroups(all, media.kind === "device" ? media.perPage : undefined) : null;
   const screens = groups ? groups.map(group => group[0]) : all;
   const stage = useRef<HTMLDivElement>(null);
   const reduced = !!useReducedMotion();
   const visible = useInView(stage);
-  const [[index], setStep] = useState<[number, number]>([0, 0]);
+  const [[step], setStep] = useState<[number, number]>([0, 0]);
+  // Kept within range when the content changes under it (fewer screens or pages after an edit).
+  const index = Math.min(step, screens.length - 1);
   const [playing, setPlaying] = useState(true);
   const [hovered, setHovered] = useState(false);
   const many = screens.length > 1;
@@ -504,7 +522,7 @@ function CompareStage({ media }: { media: Extract<ProjectSlideMedia, { kind: "co
     </div>;
   };
 
-  return <div ref={stage} className="case-stage" data-frame="compare">
+  return <div ref={stage} className="case-stage" data-frame="compare" data-layout={device && !row ? "single-phone" : undefined}>
     <div ref={area} className="case-compare" data-dragging={dragging || undefined} style={{ "--split": `${split}%` } as CSSProperties}
       onPointerDown={event => { event.currentTarget.setPointerCapture(event.pointerId); setDragging(true); moveTo(event.clientX); }}
       onPointerMove={event => { if (dragging || event.pointerType === "mouse") moveTo(event.clientX); }}

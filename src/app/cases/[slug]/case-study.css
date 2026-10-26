@@ -183,6 +183,12 @@ html:has(.case-study-shell) { overflow-y: auto; scroll-behavior: smooth; }
 .case-study-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
 .case-study-pair > div { display: grid; grid-row: span 2; grid-template-rows: subgrid; }
 .case-study-pair .case-study-copy { padding-bottom: 40px; }
+/* Copy is optional per side: a side without it keeps its figure level with the other's; with none at all, the pair
+   sits under the chapter's text like any other figure. */
+.case-study-pair > div:not(:has(.case-study-copy)) > .case-study-figure { grid-row: 2; }
+.case-study-pair:not(:has(.case-study-copy)) { margin-top: 20px; }
+.case-study-pair:not(:has(.case-study-copy)) > div { grid-row: auto; grid-template-rows: none; }
+.case-study-pair:not(:has(.case-study-copy)) > div > .case-study-figure { grid-row: auto; }
 /* Numbers row (case-numbers.tsx): in the content width, under the chapter's copy. */
 /* A chapter's lesson: one quieter line under the text, with a small label. */
 /* The chapter's lesson: an aside under the text, set off by a rule on the left, its label on a line of its own. */

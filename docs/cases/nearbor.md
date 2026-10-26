@@ -1,5 +1,28 @@
 # Nearbor
 
+> **Changed 26 Oct 2026:** the second overview block is now the volunteer-event row (Define roles, Choose how to help, Organiser overview) instead of the Default vs Large text compare, at Oleh's request. The text-size screens remain in the Readability chapter.
+>
+> **Removed 26 Oct 2026:** the Events chapter's close-up images (recurrence controls, role coverage), at Oleh's request: they were crops of the recurring-schedule and organiser-overview screens, which the chapter already shows in full.
+>
+> **Removed 26 Oct 2026:** the Recovery chapter's second block ("A group is needed" and "Contact access is off"), at Oleh's request; its text now covers contact sync only.
+>
+> **Removed 26 Oct 2026:** the Quick Start invitation screen ("{Referral} invited you…", quick-start-invited) at Oleh's request; the Onboarding text no longer mentions the invitation context.
+>
+> **Added 26 Oct 2026, at Oleh's request:** six new chapters and more screens, 39 new 1x screens from the v3.0 page:
+>
+> - **Structure:** community, group and event side by side on one page. The all-groups screen was dropped (26 Oct) so the three levels show together.
+> - **Home:** Calendar, Network and Discover tabs, then the RSVP, going and create sheets.
+> - **Discover:** the new design (Option 2 in Figma): location access, nearby list, filters, community, group, event.
+> - **Referral:** profile code, code entry, QR scan, no match, empty home, Discover banner. These are shown on request, although the handoff noted the Slack questions about them.
+> - **Event details:** what to bring, photos and files, attendance.
+> - **Notifications:** new, archived, settings, per community.
+> - **Updates:** update available, What's New, update required.
+> - **Who's In?:** grew from 3 to 10 screens (ask, date, time, location, filled; member, I'm in, organiser view, turn into event, event created).
+>
+> **Changed 26 Oct 2026:** `recurrence-detail.png` and `event-coverage.png` were re-cut at 3x and renamed `recurrence-controls.png` and `role-coverage.png` (1125 wide) from fresh exports of 40004950:22908 (y 506–978) and 40004893:159682 (y 1280–1990), because the 1x crops showed blurry at frame size.
+>
+> **Changed 26 Oct 2026:** the "Ongoing work" chapter is now "Community · Keep a growing community understandable". At Oleh's request, the community channel, audience selection and notification controls are presented as designed features, without the concept or ongoing labels. The handoff below still records them as In Progress in Linear.
+>
 > **As built, 25 Oct 2026.** Saved as given; the slide and case study match it (`src/content/project-slides.ts`, `src/content/case-studies.ts`, `src/content/nearbor-media.ts`, images in `public/cases/nearbor/`). Featured in the sidebar under Mobile (UsersThree icon), replacing the earlier hidden placeholder in More projects. Timeline shows a dash. Deviations: the intro highlight marks "focused on improving the experience" from the intro, since highlights must be phrases of the text; the Closing paragraph is a final chapter without figures, titled "Product maintenance as design work"; figure captions inside the case page are not shown (as on every case page). The section-4 handoff is kept here and is not rendered.
 
 ## 1. Basics

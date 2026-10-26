@@ -15,12 +15,13 @@ import { dd } from "./dangdi-media";
  * a header, one large figure, then chapters of short copy each followed by its figures.
  *
  * - chapter: a label, a short title and a paragraph, then any figures. Two `pair` figures sit side by side,
- *   each with its own label, title and line of copy above it.
+ *   each with its own label, title and line of copy above it, or none when the chapter text covers both.
  * - `strong` in a paragraph is a phrase to emphasise; it must appear verbatim in `body`.
  * - `numbers`: an optional row of 2–4 big figures with short labels, under the chapter's copy.
  */
 export type CaseStudyFigure = ProjectSlideMedia;
-export type CaseStudyPairItem = { label: string; title: string; body: string; media: CaseStudyFigure };
+/** A pair item's copy is optional: leave it out when the chapter's text already covers both frames. */
+export type CaseStudyPairItem = { label?: string; title?: string; body?: string; media: CaseStudyFigure };
 export type CaseStudyChapter = {
   id: string;
   label: string;
@@ -525,7 +526,7 @@ export const caseStudies: CaseStudy[] = [
     // Nearbor, from nearbor.md (25 Oct 2026). Oleh improved an existing app and designed most screens within the previous
     // designer's design system; keep that attribution. All screens sample, from the v3.0 page only. No before-state, dates,
     // usability results or outcomes are available, so none are on the page. Quick Start is in review and the community
-    // concepts are ongoing; the copy says so. The intro highlight is a phrase from the intro (the system only highlights
+    // community channel, audience and notification screens are presented as finished features at Oleh's request (26 Oct). The intro highlight is a phrase from the intro (the system only highlights
     // phrases from the text), not the MD's separate line. Notes, evidence and Figma links: docs/cases/nearbor.md.
     slug: "nearbor",
     title: "Improving the experience without starting over.",
@@ -534,38 +535,57 @@ export const caseStudies: CaseStudy[] = [
     hero: { kind: "device", frame: "row", screens: [nb.network, { ...nb.home, label: "Calendar" }, { ...nb.careOverview, label: "Care" }] },
     chapters: [
       {
-        id: "readability", label: "Readability", title: "Start with what people can read",
-        body: "The client specifically raised the needs of older users and asked for more readable chat content. I worked on a typography and readability audit, then designed a text-size control with a message preview. Default, Medium, and Large examples make the effect visible before a person returns to the conversation. This supports the broader accessibility goal through a concrete, understandable choice; it is not a claim of certified accessibility or validated usability for every age group.",
-        figures: [
-          { kind: "device", screens: [nb.textSizeDefault, nb.textSizeMedium, nb.textSizeLarge], annotation: { kind: "draft", name: "Oleh", note: "Preview the reading size before returning to the conversation.", points: [[42, 58], [58, 76]] } },
-        ],
+        id: "onboarding", label: "Onboarding", title: "Join first, finish setting up later",
+        body: "The client described a real situation: getting around twenty people into the app in one room, with full onboarding reportedly taking about ten minutes. I designed a Quick Start alternative that separates entry from optional setup. Profile photo, contact sync, discovery, and the app tour can be revisited later. The design remains in review; the case shows the proposed direction rather than a measured reduction in onboarding time.",
+        figures: [{ kind: "device", frame: "row", screens: [nb.quickStart, nb.quickStartChoice, nb.finishSetup] }],
       },
       {
-        id: "onboarding", label: "Onboarding", title: "Join first, finish setting up later",
-        body: "The client described a real situation: getting around twenty people into the app in one room, with full onboarding reportedly taking about ten minutes. I designed a Quick Start alternative that separates entry from optional setup and keeps the invitation context in view. Profile photo, contact sync, discovery, and the app tour can be revisited later. The design remains in review; the case shows the proposed direction rather than a measured reduction in onboarding time.",
-        figures: [{ kind: "device", screens: [nb.quickStart, nb.quickStartChoice, nb.quickStartInvited, nb.finishSetup] }],
+        id: "structure", label: "Structure", title: "Communities, groups and events",
+        body: "Nearbor organises people in three layers. A community, such as a church or a neighbourhood, holds groups; a group, like a book club, has its own chat and events; an event belongs to a group and carries the plan, the people and the attachments. Each layer has its own page, members and actions, so it's always clear where something lives.",
+        figures: [{ kind: "device", frame: "row", screens: [nb.community, nb.groupOwner, nb.eventParticipant] }],
+      },
+      {
+        id: "home", label: "Home", title: "Calendar, Network and Discover",
+        body: "Home has three tabs. Calendar shows the days ahead and the events someone is going to, with an RSVP sheet that asks a single question. Network lists the communities and groups a person belongs to, with their latest messages. Discover shows what else is nearby. Create starts an event, a care event or a group from any tab.",
+        // One row in two pages of three: the tabs, then RSVP, going and create.
+        figures: [{ kind: "device", frame: "row", screens: [{ ...nb.home, label: "Calendar, Network, Discover" }, nb.network, nb.discover, { ...nb.rsvpSheet, label: "RSVP and create" }, nb.eventsGoing, nb.createSheet] }],
+      },
+      {
+        id: "discover", label: "Discover", title: "A new way to find what's nearby",
+        body: "The redesigned Discover asks for location first and says why. It then shows upcoming events and the groups and communities around, each with a request to join and its next events. A filters sheet narrows the list by event type, by groups or communities, and by distance, and each result opens to its own page with one clear join button.",
+        figures: [{ kind: "device", frame: "row", screens: [nb.locationAccess, nb.discoverAll, nb.discoverFilters, nb.discoverCommunity, nb.discoverGroup, nb.discoverEvent] }],
+      },
+      {
+        id: "referral", label: "Referral", title: "Join with a code or a QR",
+        body: "A referral code connects a new person to the communities of whoever invited them. It can be typed or scanned as a QR code, with a clear message when no one matches. The code lives in the profile, and the same entry appears where people need it most: on an empty home and in Discover.",
+        figures: [{ kind: "device", frame: "row", screens: [nb.referralProfile, nb.referralFilled, nb.referralScan, nb.referralError, nb.referralHome, nb.referralDiscover] }],
       },
       {
         id: "recovery", label: "Recovery", title: "Explain the blocker and offer a next step",
-        body: "A successful contact sync does not always find someone. I designed distinct outcomes for matches and no matches, so the response explains what actually happened. Creation flows also need to explain their prerequisites: an event needs a group, and a group needs people in the network. When contact access is off, sharing an invitation remains an available route. These states turn an empty screen into an explanation and an action.",
-        figures: [
-          { kind: "device", frame: "row", screens: [nb.syncProgress, nb.syncMatches, nb.syncNoMatches] },
-          { kind: "device", screens: [nb.eventNoGroups, nb.contactsDenied] },
-        ],
+        body: "A successful contact sync does not always find someone. I designed distinct outcomes for matches and no matches, so the response explains what actually happened and offers a next step, like inviting people with a link. These states turn an empty screen into an explanation and an action.",
+        figures: [{ kind: "device", frame: "row", screens: [nb.syncProgress, nb.syncMatches, nb.syncNoMatches] }],
       },
       {
         id: "events", label: "Events", title: "Make commitments and consequences visible",
         body: "Organisers need to define a schedule and see where help is still needed. I extended the event flow with recurrence controls, volunteer roles, and clearer participant choices. Editing a recurring event asks whether the change affects one occurrence or the whole series. Role selection shows available places, while the organiser's detail view distinguishes filled roles from shortages. The emphasis is on making the consequence of a choice clear before it is confirmed.",
         figures: [
           { kind: "device", screens: [nb.recurrence, nb.editScope] },
-          { kind: "images", images: [nb.recurrenceDetail, nb.eventCoverage] },
           { kind: "device", frame: "row", screens: [nb.volunteerRoles, nb.volunteerSignup, nb.eventOwner] },
         ],
       },
       {
+        id: "event-details", label: "Event details", title: "Everything an event needs",
+        body: "Organisers can list what people should bring, and participants pick from what's still open. Photos and files attach to the event, open full screen and upload with clear progress. After the event, a notification asks the organiser who came, and the attendance is saved to the event.",
+        // One row in three pages of three: what to bring, photos and files, attendance.
+        figures: [{ kind: "device", frame: "row", screens: [nb.needsItems, nb.itemLog, nb.itemLogSelected, nb.imagesUploaded, nb.imagePreview, nb.filePreview, { ...nb.markAttendance, label: "Attendance" }, nb.attendanceSheet, nb.attendanceSaved] }],
+      },
+      {
         id: "conversation", label: "Conversation", title: "Test an idea before organising an event",
-        body: "Not every gathering starts with a formal plan. Who's In? lets a group ask about an activity inside its existing chat, gather responses, and then turn interest into an event. I designed the creation, member-response, and organiser states around that progression. Keeping the feature within a group conversation avoids introducing another place people need to learn and navigate.",
-        figures: [{ kind: "device", frame: "row", screens: [nb.pollCreate, nb.pollMember, nb.pollToEvent] }],
+        body: "Not every gathering starts with a formal plan. Who's In? lets a group ask about an activity inside its existing chat, with an optional date, time and place, gather responses, and then turn interest into an event. I designed the creation, member-response, and organiser states around that progression. Keeping the feature within a group conversation avoids introducing another place people need to learn and navigate.",
+        figures: [
+          { kind: "device", frame: "row", screens: [nb.whosinAsk, nb.whosinDate, nb.whosinTime, nb.whosinLocation, nb.pollCreate] },
+          { kind: "device", frame: "row", screens: [nb.pollMember, nb.whosinImIn, nb.whosinAdmin, nb.pollToEvent, nb.whosinEventCreated] },
+        ],
       },
       {
         id: "care", label: "Care", title: "Show where help is still needed",
@@ -581,9 +601,26 @@ export const caseStudies: CaseStudy[] = [
         ],
       },
       {
-        id: "ongoing", label: "Ongoing work", title: "Keep a growing community understandable",
-        body: "The next exploration considers how larger communities can share announcements and control notification noise. The concepts separate community announcements from group conversation, let an administrator choose an audience, and give members more specific notification controls. These designs are ongoing work, not confirmed released functionality. They continue the same principle: extend the existing structure before adding another layer to it.",
+        id: "community", label: "Community", title: "Keep a growing community understandable",
+        body: "Larger communities need a way to share announcements without burying them in conversation. I designed a community channel that keeps announcements apart from group chat, an audience picker so an administrator can choose who each announcement reaches, and more specific notification controls for members. They follow the same principle as the rest of the work: extend the existing structure before adding another layer to it.",
         figures: [{ kind: "device", screens: [nb.communityConcept, nb.announcementAudience, nb.notificationsConcept] }],
+      },
+      {
+        id: "readability", label: "Readability", title: "Start with what people can read",
+        body: "The client specifically raised the needs of older users and asked for more readable chat content. I worked on a typography and readability audit, then designed a text-size control with a message preview. Default, Medium, and Large examples make the effect visible before a person returns to the conversation. This supports the broader accessibility goal through a concrete, understandable choice; it is not a claim of certified accessibility or validated usability for every age group.",
+        figures: [
+          { kind: "device", screens: [nb.textSizeDefault, nb.textSizeMedium, nb.textSizeLarge], annotation: { kind: "draft", name: "Oleh", note: "Preview the reading size before returning to the conversation.", points: [[42, 58], [58, 76]] } },
+        ],
+      },
+      {
+        id: "notifications", label: "Notifications", title: "Notifications that ask for a decision",
+        body: "Notifications keep new items apart from archived ones and let people act in place, approving a join request or answering a provider request without leaving the list. Settings control push and chat alerts, then go down to each community and group: everything, events only, custom or off.",
+        figures: [{ kind: "device", frame: "row", screens: [nb.notifications, nb.notificationsArchived, nb.notificationSettings, nb.notificationSettingsCommunity] }],
+      },
+      {
+        id: "updates", label: "Updates", title: "Telling people what changed",
+        body: "When a new version is out, the app offers it without blocking: Update now or Later. What's New lists the changes in plain words. When an old version is no longer supported, a required update explains why before it asks.",
+        figures: [{ kind: "device", frame: "row", screens: [nb.updateAvailable, nb.whatsNew, nb.updateRequired] }],
       },
       {
         id: "closing", label: "Closing", title: "Product maintenance as design work",
@@ -641,30 +678,50 @@ export const caseStudies: CaseStudy[] = [
     title: "Profit, ads and operations in one dashboard.",
     intro: "SellerGenius started from an agency's own frustrations with Amazon analytics: no single place to see every brand, dashboards that couldn't be adjusted, and problems found only by working through spreadsheets. The goal was an MVP that brings sales, profit, advertising and operations into one dashboard, for sellers and for agencies managing several brands. I designed the product from zero to one, along with its design system and brand identity.",
     introHighlight: { text: "one dashboard" },
-    hero: { kind: "browser", frame: "bare", ratio: SG_RATIO, screens: [sg.dashboard] },
+    hero: { kind: "image", src: sg.dashboard.src, alt: sg.dashboard.alt },
     chapters: [
+      {
+        id: "onboarding", label: "Onboarding", title: "From sign-up to connected stores",
+        body: "Sign-up stays on one card over a calm background: an account, a short profile, then connecting Amazon Seller Central and the Amazon Ads account, each step saying what the connection unlocks. Returning people log in with Google, Apple or email and choose which workspace to open.",
+        figures: [{ kind: "images", images: [sg.signup, sg.signupProfile, sg.connectAmazon, sg.connectAds, sg.login, sg.loginWorkspace] }],
+      },
       {
         id: "dashboard", label: "Dashboard", title: "A dashboard each team can shape",
         body: "Finance, advertising and brand managers each look for different numbers first. The dashboard opens with headline metrics and charts, and Customise Dashboard turns it into a grid: widgets can be added from a library, moved, and switched between chart views.",
-        figures: [{ kind: "browser", frame: "bare", ratio: SG_RATIO, screens: [sg.dashboard, sg.customize, sg.addWidget, sg.widgetFormat] }],
+        figures: [{ kind: "images", images: [sg.dashboard, sg.customize, sg.addWidget, sg.widgetFormat] }],
       },
       {
         id: "money", label: "Profit and ads", title: "Where the money goes",
         body: "Profit analytics breaks revenue down into a P&L, profitability by SKU and brand, and fees, so a margin problem can be traced to its cause rather than searched for in a spreadsheet. Advertising follows the same structure, with campaign metrics and recommendations that suggest an action, such as lowering a bid or pausing a campaign.",
         figures: [
-          { kind: "browser", frame: "bare", ratio: SG_RATIO, screens: [sg.profit, sg.plOverview, sg.profitSku, sg.feeBreakdown] },
-          { kind: "browser", frame: "bare", ratio: SG_RATIO, screens: [sg.advertising, sg.recommendations] },
+          { kind: "images", images: [sg.profit, sg.plOverview, sg.profitSku, sg.feeBreakdown] },
+          { kind: "images", images: [sg.advertising, sg.recommendations] },
         ],
+      },
+      {
+        id: "products", label: "Products", title: "Every SKU, its stock and its problems",
+        body: "Products brings performance, the full product list, inventory, alerts and listings into one section, each with headline figures above a filterable table. Costs of goods can be uploaded as a file, and notes, tags and statuses help a team keep track of what needs attention.",
+        figures: [{ kind: "images", images: [sg.products, sg.productPerformance, sg.productsList, sg.inventory, sg.alerts, sg.listings, sg.cogsUpload, sg.productNotes, sg.tagsStatus] }],
+      },
+      {
+        id: "operations", label: "Operations", title: "The account's health at a glance",
+        body: "Operations watches the seller account itself: a health score, issues with an explanation and a recommended action, and returns by product and reason.",
+        figures: [{ kind: "images", images: [sg.operations, sg.sellerHealth, sg.returns] }],
       },
       {
         id: "brands", label: "Brands", title: "Many brands, one workspace",
         body: "Agencies were the first audience, so brands sit at the top of the structure. The overview lists every brand with its stores and key figures, and each brand opens into its own view with its connected marketplaces.",
-        figures: [{ kind: "browser", frame: "bare", ratio: SG_RATIO, screens: [sg.brands, sg.brandDetail] }],
+        figures: [{ kind: "images", images: [sg.brands, sg.brandDetail] }],
       },
       {
         id: "ai", label: "AI", title: "Asking instead of filtering",
         body: "The brief placed AI features in a second step after the MVP. I designed the assistant as a full-screen chat with saved prompts, answers that build a report or chart from a question, and a smaller window that opens over any page.",
-        figures: [{ kind: "browser", frame: "bare", ratio: SG_RATIO, screens: [sg.aiChat, sg.aiReport, sg.aiWindow] }],
+        figures: [{ kind: "images", images: [sg.aiChat, sg.aiReport, sg.aiWindow] }],
+      },
+      {
+        id: "reports", label: "Reports and settings", title: "Reports on a schedule, settings for a team",
+        body: "Custom reports pick the fields, period and format, and can go out on a schedule. Settings cover the account and its sessions, notifications by type, and each workspace's connected seller and Ads accounts, including ones shared from other workspaces.",
+        figures: [{ kind: "images", images: [sg.reports, sg.reportBuilder, sg.settingsSessions, sg.settingsNotifications, sg.settingsSellerAccounts, sg.settingsShared] }],
       },
       {
         id: "themes", label: "Themes", title: "One system, two themes",
@@ -865,7 +922,7 @@ export const caseStudies: CaseStudy[] = [
       {
         id: "check-ins", label: "Check-ins", title: "One question at a time",
         body: "Check-ins rise as a sheet over the home screen and ask a single question, counted 1 of 3. Mood uses a dial of faces with a clear Confirm, while medicine questions show the dose and schedule above a large Yes. Remind me later keeps every check-in easy to postpone.",
-        figures: [{ kind: "device", frame: "row", screens: [ph.moodCheck, ph.moodSelected, ph.pillCheck, ph.medsCheck] }],
+        figures: [{ kind: "device", frame: "row", screens: [ph.moodSelected, ph.pillCheck, ph.medsCheck] }],
       },
       {
         id: "agents", label: "AI agents", title: "Specialist agents, one conversation",
@@ -874,15 +931,15 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         id: "medications", label: "Medications", title: "A medication kit you can see",
-        body: "Medicines sit in a circular kit of 3D icons, so a pill, an inhaler or a bottle is recognisable before its name is read. Edit mode adds actions in place. Each medicine opens to a large illustration with the pills left and its schedule, and a refill sheet uses a single stepper and an Add button.",
-        figures: [{ kind: "device", frame: "row", screens: [ph.medsKit, ph.medsKitTaken, ph.medDetail, ph.medRefill] }],
+        body: "Medicines sit in a circular kit of 3D icons, so a pill, an inhaler or a bottle is recognisable before its name is read. Each medicine opens to a large illustration with the pills left and its schedule, and a refill sheet uses a single stepper and an Add button.",
+        figures: [{ kind: "device", frame: "row", screens: [ph.medsKit, ph.medDetail, ph.medRefill] }],
       },
       {
         id: "settings", label: "Settings", title: "Light, dark and adjustable",
         body: "Settings group the account, documents, devices, privacy and notifications in simple lists. Accessibility & App adjusts text size and adds a dark theme, screen reader support, high contrast and reduced motion. The same screen in both themes shows the palette holding up in the dark.",
-        figures: [
-          { kind: "device", screens: [ph.settings] },
-          { kind: "compare", frame: "device", before: ph.accessibilityLight, after: ph.accessibilityDark },
+        pair: [
+          { media: { kind: "device", screens: [ph.settings] } },
+          { media: { kind: "compare", frame: "device", before: { ...ph.accessibilityLight, label: "Light" }, after: { ...ph.accessibilityDark, label: "Dark" } } },
         ],
       },
     ],

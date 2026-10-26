@@ -1,5 +1,12 @@
 # SellerGenius
 
+> **Changed 26 Oct 2026, at Oleh's request:**
+>
+> - **Icon:** Package, in the sidebar and on the case page.
+> - **Screens:** all now use the Figma presentation frames, the app window on its wallpaper (1888 × 1277), in `public/cases/sellergenius/framed/`. They're shown as `images` blocks; the light/dark compare stays. The exports' rounded corners came out as opaque white; they were made transparent (antialiased) in every PNG.
+> - **New chapters:** Onboarding (sign-up, profile, connecting Seller Central and Amazon Ads, log in, workspace choice); Products (9 screens); Operations (3); Reports and settings (6).
+> - **Left out:** the login code, invite teammates, account settings and workspace members screens, because they show people's names and email addresses.
+>
 > **As built, 25 Oct 2026.** A small case from Oleh's short brief (below) plus the SellerGenius Figma file. The slide and case study are in `src/content/project-slides.ts`, `src/content/case-studies.ts` and `src/content/sellergenius-media.ts`, with images in `public/cases/sellergenius/`. It is featured under Web after AskFlow, with the ChartLineUp icon. All screens are sample. The copy describes visible design decisions only, and no outcomes are claimed.
 
 ## Brief (from Oleh)

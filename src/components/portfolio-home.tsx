@@ -8,7 +8,7 @@ import {
   CaretDownIcon, SolarPanelIcon,
   DiamondsFourIcon,
   GraduationCapIcon, HouseSimpleIcon,
-  ListIcon, MoonIcon, ShieldCheckIcon, UsersThreeIcon, HouseLineIcon, ChartLineUpIcon, HeartbeatIcon, BowlFoodIcon,
+  ListIcon, MoonIcon, ShieldCheckIcon, UsersThreeIcon, HouseLineIcon, PackageIcon, HeartbeatIcon, BowlFoodIcon,
   ShuffleIcon,
   HandWavingIcon, XIcon, WaveformSlashIcon,
   type Icon,
@@ -51,7 +51,7 @@ const groups: { label: "Mobile" | "Web"; more: string; items: { slug: string; la
     { slug: "nearbor", label: "Nearbor", icon: UsersThreeIcon },
   ] },
   { label: "Web", more: "web-more", items: [
-    { slug: "sellergenius", label: "SellerGenius", icon: ChartLineUpIcon },
+    { slug: "sellergenius", label: "SellerGenius", icon: PackageIcon },
     { slug: "askflow", label: "AskFlow", icon: FlowArrowIcon },
     { slug: "tutor-iq", label: "Tutor IQ", icon: GraduationCapIcon },
     { slug: "smarthost", label: "SmartHost", icon: HouseLineIcon },

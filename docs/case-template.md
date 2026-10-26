@@ -172,7 +172,7 @@ Phone and browser blocks take an optional `frame`; leave it out for the default.
 | `device` | `dark` (default) | A dark phone with iPhone proportions and a soft reflection. | Most mobile flows. |
 | `device` | `silver` | A silver phone with the Dynamic Island. | Dark or busy screens that read better on a light outline. |
 | `device` | `pair` | The current screen in front, the next one behind it, both larger than the default phone. | A flow where the next step matters as much as this one. |
-| `device` | `row` | Three phones side by side, filling the frame. More than three screens page through in threes, with tabs (label the first screen of each three). | A flow worth seeing in one look. |
+| `device` | `row` | Two or three phones side by side, filling the frame. More screens page through in balanced groups so no page shows a lone phone (4 → 2 + 2, 5 → 3 + 2, 7 → 3 + 2 + 2), with tabs (label the first screen of each group). `perPage: 2` always pages in pairs. | A flow worth seeing in one look. |
 | `browser` | `dark` (default) | macOS Safari, dark, with the project's address in the field (`url`). | Most web screens. |
 | `browser` | `bare` | The page on a hairline and a shadow, no browser chrome. | Marketing pages and sites that should read as the page itself. |
 | `browser` | `laptop` | The page on a MacBook. | Desktop apps and dashboards. |
@@ -224,6 +224,8 @@ Chapter with a pair
   Pair:                                             ← two figures side by side, each with its own copy
     Left:  label "Term",   title "Pick the term",   text "…",  block: device · term.png
     Right: label "Signed", title "Done, and it says so", text "…", block: device · signed.png
+           Each side's label, title and text are optional: give one side copy, or neither when the chapter's
+           text already covers both frames (Peach Health, Settings).
 
 Numbers (optional, in any chapter): a row of 1–4 big figures under the chapter's text, one column each
   Numbers: "12 → 7" Internal stages to customer stages · "6 × 4" Cases × states · "4" Admin step types

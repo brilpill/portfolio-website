@@ -1,0 +1,4 @@
+#!/bin/sh
+# Figma bootstrap — install dependencies for the Next.js portfolio (v5)
+set -e
+npm install

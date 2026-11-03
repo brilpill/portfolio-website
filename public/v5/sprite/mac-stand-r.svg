@@ -1,0 +1,45 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="26.8622" height="2.52767" viewBox="0 0 26.8622 2.52767" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Rigth Stand">
+<path id="Stands" d="M1.26324 1.26405C1.22639 1.26405 1.20706 1.30778 1.232 1.3349C1.59613 1.73078 2.2051 2.38808 2.2763 2.38808H24.5744C24.6722 2.38808 25.1326 1.8844 25.6214 1.33445C25.6456 1.30717 25.6263 1.26405 25.5898 1.26405H1.26324Z" fill="url(#paint0_radial_0_23)"/>
+<path id="Stand Shadows" d="M1.14445 1.12015L25.6861 1.16376L25.6024 1.31297L1.23267 1.28666L1.14445 1.12015Z" fill="#2E2D2E"/>
+<path id="Body Feet" d="M0.112858 0.222184C0.37218 0.546899 0.957117 1.19633 1.22229 1.19633H25.6138C25.879 1.19633 26.4639 0.546899 26.7232 0.222184H0.112858Z" fill="url(#paint1_radial_0_23)"/>
+<g id="Stand Shadows_2" filter="url(#filter0_f_0_23)">
+<path d="M1.14445 1.12015L25.6978 1.12015L25.5624 1.34099H1.25873L1.14445 1.12015Z" fill="#191717" fill-opacity="0.7"/>
+</g>
+<g id="Stand Shadows_3" filter="url(#filter1_f_0_23)">
+<path d="M0.112858 0.112858L26.7494 0.112858L26.6025 0.333697H0.236843L0.112858 0.112858Z" fill="#222324" fill-opacity="0.66"/>
+</g>
+<g id="Stand Shadows_4" filter="url(#filter2_f_0_23)">
+<path d="M2.02653 2.16575L24.8432 2.16575L24.5695 2.38659H2.25799L2.02653 2.16575Z" fill="#191717" fill-opacity="0.7"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_0_23" x="1.03159" y="1.00729" width="24.7791" height="0.446555" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="0.056429" result="effect1_foregroundBlur_0_23"/>
+</filter>
+<filter id="filter1_f_0_23" x="1.39698e-09" y="1.60071e-09" width="26.8622" height="0.446555" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="0.056429" result="effect1_foregroundBlur_0_23"/>
+</filter>
+<filter id="filter2_f_0_23" x="1.88545" y="2.02468" width="23.0989" height="0.502984" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="0.0705363" result="effect1_foregroundBlur_0_23"/>
+</filter>
+<radialGradient id="paint0_radial_0_23" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13.4254 1.82607) scale(12.2585 2.50814)">
+<stop offset="0.281531" stop-color="#4A484A"/>
+<stop offset="0.65846" stop-color="#1D1D1F"/>
+<stop offset="0.869097" stop-color="#5D5D5E"/>
+<stop offset="1" stop-color="#464547"/>
+</radialGradient>
+<radialGradient id="paint1_radial_0_23" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13.418 0.709256) scale(13.3052 2.17368)">
+<stop offset="0.281531" stop-color="#676468"/>
+<stop offset="0.65846" stop-color="#2A272B"/>
+<stop offset="0.869097" stop-color="#585658"/>
+<stop offset="1" stop-color="#2D2B2E"/>
+</radialGradient>
+</defs>
+</svg>

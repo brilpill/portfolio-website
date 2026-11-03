@@ -1,0 +1,5 @@
+#!/bin/sh
+# Figma bootstrap — start the Next.js dev server
+# Version 5 of the portfolio is served at /v5
+set -e
+npm run dev
